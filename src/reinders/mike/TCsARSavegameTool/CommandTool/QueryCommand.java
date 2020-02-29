@@ -234,7 +234,7 @@ public class QueryCommand extends Command {
             strBuilder.append(minutes);
             strBuilder.append("m");
         }
-        if (seconds > 0) {
+        if (seconds > 0 || strBuilder.length() == 0) {
             if (strBuilder.length() != 0) {
                 strBuilder.append(" ");
             }
