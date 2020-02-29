@@ -14,7 +14,7 @@ import java.util.Collection;
 
 public class QueryCommand extends Command {
 
-    private static final int PLAYER_DETAILS_LEFT_ROW_SIZE = 24;
+    private static final int PLAYER_DETAILS_LEFT_ROW_SIZE = 16;
 
     @Override
     public String getName() {
@@ -123,7 +123,7 @@ public class QueryCommand extends Command {
         strBuilder.append(player.getIncome());
 
         strBuilder.append(System.lineSeparator());
-        strBuilder.append(StringC.pad(Pad.RIGHT, "Income(-Fraction) CountUp:", QueryCommand.PLAYER_DETAILS_LEFT_ROW_SIZE));
+        strBuilder.append(StringC.pad(Pad.RIGHT, "Income Count:", QueryCommand.PLAYER_DETAILS_LEFT_ROW_SIZE));
         strBuilder.append(this.timeToString(player.getIncomeFraction()));
 
         strBuilder.append(System.lineSeparator());
@@ -131,7 +131,7 @@ public class QueryCommand extends Command {
         strBuilder.append(this.timeToString(player.getBonusAmount()));
 
         strBuilder.append(System.lineSeparator());
-        strBuilder.append(StringC.pad(Pad.RIGHT, "Bonus(-Fraction) CountUp:", QueryCommand.PLAYER_DETAILS_LEFT_ROW_SIZE));
+        strBuilder.append(StringC.pad(Pad.RIGHT, "Bonus Count:", QueryCommand.PLAYER_DETAILS_LEFT_ROW_SIZE));
         strBuilder.append(this.timeToString(player.getBonusAmount()));
 
         return strBuilder.toString();
