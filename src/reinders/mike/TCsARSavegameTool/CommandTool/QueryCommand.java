@@ -71,7 +71,6 @@ public class QueryCommand extends Command {
 
     public String playerDetailsToString(Player player) {
         StringBuilder strBuilder = new StringBuilder();
-        //return player.getSteamID64() + " " + player.getName() + " " + this.playTimeToString(player.getTotalPlayedTime());
 
         strBuilder.append(StringC.pad(Pad.RIGHT, "Name:", QueryCommand.PLAYER_DETAILS_LEFT_ROW_SIZE));
         strBuilder.append(player.getName());
