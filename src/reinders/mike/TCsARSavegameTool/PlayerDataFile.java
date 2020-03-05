@@ -5,6 +5,7 @@ import qowyn.ark.arrays.ArkArray;
 import qowyn.ark.properties.*;
 import qowyn.ark.structs.StructPropertyList;
 import reinders.mike.TCsARSavegameTool.Exception.SaveGameException;
+import reinders.mike.TCsARSavegameTool.Util.ObjectA;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -32,7 +33,7 @@ public class PlayerDataFile {
         try {
             ArkSavFile file = new ArkSavFile(path);
 
-            String className = PlayerDataFile.getClassName(file);
+            String className = (String)ObjectA.getPrivateField(file, "className");
             if (className == null || !className.equals(PlayerDataFile.KNOWN__CLASS_NAME)) {
                 throw new SaveGameException("File is not a PlayerData-Savegame!");
             }
@@ -158,18 +159,6 @@ public class PlayerDataFile {
         }
 
         return null;
-    }
-
-    private static String getClassName(ArkSavFile arkSavFile) {
-        try {
-            Field field = arkSavFile.getClass().getDeclaredField("className");
-            if (Modifier.isPrivate(field.getModifiers())) {
-                field.setAccessible(true);
-            }
-            return (String)field.get(arkSavFile);
-        } catch (NoSuchFieldException | IllegalAccessException ignored) {
-            return null;
-        }
     }
 
 }
