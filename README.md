@@ -4,7 +4,7 @@ To export and import into or from json format.
 This tool also supports merging multiple savegame files into one.
 
 ## Features
-- Verify fileformat- and data-integrity
+- Verify file format and data integrity
 - Query playerlist and all informations about one or multiple players at once
 - Lookup savegame structure with the debug command
 
