@@ -7,8 +7,6 @@ import qowyn.ark.structs.StructPropertyList;
 import reinders.mike.TCsARSavegameTool.Exception.SaveGameException;
 import reinders.mike.TCsARSavegameTool.Util.ObjectA;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -147,14 +145,41 @@ public class PlayerDataFile {
         return null;
     }
 
+    public boolean hasPlayer(String steam64ID) {
+        return this.hasPlayer(Long.parseLong(steam64ID));
+    }
+
+    public boolean hasPlayer(long steam64ID) {
+        for (Player player : this.players) {
+            if (player.getSteamID64() == steam64ID) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public Player getPlayerByName(String name) {
-        return this.getPlayerByName(name, true);
+        return this.getPlayerByName(name, false);
     }
 
     public Player getPlayerByName(String name, boolean ignoreCase) {
         for (Player player : this.players) {
             if ((ignoreCase? player.getName().equalsIgnoreCase(name): player.getName().equals(name))) {
                 return player;
+            }
+        }
+
+        return null;
+    }
+
+    public Player putPlayer(Player player) {
+        Player plr;
+        for (int i = 0; i < this.players.size(); i++) {
+            plr = this.players.get(i);
+            if (plr.getSteamID64() == player.getSteamID64()) {
+                this.players.set(i, player);
+                return plr;
             }
         }
 
