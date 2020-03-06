@@ -10,11 +10,11 @@ import reinders.mike.TCsARSavegameTool.Util.SteamIDC;
 import reinders.mike.TCsARSavegameTool.Util.StringC;
 
 import java.nio.file.Paths;
-import java.util.Collection;
+import java.util.*;
 
 public class QueryCommand extends Command {
 
-    private static final int PLAYER_DETAILS_LEFT_ROW_SIZE = 16;
+    private static final int PLAYER_DETAILS_LEFT_ROW_SIZE = 24;
 
     @Override
     public String getName() {
@@ -136,12 +136,64 @@ public class QueryCommand extends Command {
         strBuilder.append(this.timeToString(player.getIncomeFraction()));
 
         strBuilder.append(System.lineSeparator());
+        strBuilder.append(StringC.pad(Pad.RIGHT, "Eligible for Bonus:", QueryCommand.PLAYER_DETAILS_LEFT_ROW_SIZE));
+        strBuilder.append((player.isEligibleForBonus()? "true": "false"));
+
+        strBuilder.append(System.lineSeparator());
         strBuilder.append(StringC.pad(Pad.RIGHT, "Bonus:", QueryCommand.PLAYER_DETAILS_LEFT_ROW_SIZE));
         strBuilder.append(this.timeToString(player.getBonusAmount()));
 
         strBuilder.append(System.lineSeparator());
         strBuilder.append(StringC.pad(Pad.RIGHT, "Bonus Fraction:", QueryCommand.PLAYER_DETAILS_LEFT_ROW_SIZE));
         strBuilder.append(this.timeToString(player.getBonusAmount()));
+
+        strBuilder.append(System.lineSeparator());
+        strBuilder.append(StringC.pad(Pad.RIGHT, "Notify:", QueryCommand.PLAYER_DETAILS_LEFT_ROW_SIZE));
+        strBuilder.append((player.isNotify()? "true": "false"));
+
+        strBuilder.append(System.lineSeparator());
+        strBuilder.append(StringC.pad(Pad.RIGHT, "Tags:", QueryCommand.PLAYER_DETAILS_LEFT_ROW_SIZE));
+        int n = 0;
+        for (String tag : player.getCustomTags()) {
+            if (n++ > 0) {
+                strBuilder.append(", ");
+            }
+            strBuilder.append(tag);
+        }
+
+        strBuilder.append(System.lineSeparator());
+        strBuilder.append(StringC.pad(Pad.RIGHT, "Purchased PIDs:", QueryCommand.PLAYER_DETAILS_LEFT_ROW_SIZE));
+        int o = 0;
+        for (String purchasedPID : player.getPurchasedPIDs()) {
+            if (o++ > 0) {
+                strBuilder.append(", ");
+            }
+            strBuilder.append(purchasedPID);
+        }
+
+        strBuilder.append(System.lineSeparator());
+        strBuilder.append(StringC.pad(Pad.RIGHT, "Purchase Limits:", QueryCommand.PLAYER_DETAILS_LEFT_ROW_SIZE));
+        int p = 0;
+        for (Map.Entry<String, Integer> purchaseLimit : player.getPurchaseLimits().entrySet()) {
+            if (p++ > 0) {
+                strBuilder.append(", ");
+            }
+            strBuilder.append(purchaseLimit.getKey());
+            strBuilder.append(":");
+            strBuilder.append(purchaseLimit.getValue());
+        }
+
+        strBuilder.append(System.lineSeparator());
+        strBuilder.append(StringC.pad(Pad.RIGHT, "Notify:", QueryCommand.PLAYER_DETAILS_LEFT_ROW_SIZE));
+        int q = 0;
+        for (Map.Entry<String, Float> purchaseCooldown : player.getPurchaseCooldowns().entrySet()) {
+            if (q++ > 0) {
+                strBuilder.append(", ");
+            }
+            strBuilder.append(purchaseCooldown.getKey());
+            strBuilder.append(":");
+            strBuilder.append(purchaseCooldown.getValue());
+        }
 
         return strBuilder.toString();
     }
