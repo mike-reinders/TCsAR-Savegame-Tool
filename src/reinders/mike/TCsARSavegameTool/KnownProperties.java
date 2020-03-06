@@ -1,6 +1,10 @@
 package reinders.mike.TCsARSavegameTool;
 
+import qowyn.ark.types.ArkName;
+
 public class KnownProperties {
+
+    public static final ArkName PACK_REQUIREMENTS_STRUCT_TYPE = ArkName.constantPlain("TCsAR_PlayerPackRequirements_Struct");
 
     public static final String PLAYER_NAME = "PlayerName_14_78BA89BD408D8B0D2D9421813B7CBDDF";
     public static final String STEAM_ID_64 = "SteamID64_2_54E49CB44C10E0CB6117CD9DAA5B4313";
@@ -12,7 +16,6 @@ public class KnownProperties {
     public static final String TIME_FRACTION = "TimeFraction_27_5E810EDA445A71DE71A5E5AD9672B65E";
     public static final String ELIGIBLE_FOR_BONUS = "EligibleForBonus_32_71B4E27745F614B6DE22E78D367FBA0C";
     public static final String BONUS_AMOUNT = "BonusAmount_42_783F06A34EF7A88D580227BC2C002786";
-    public static final String TAGS = "Tags_37_BF01F8044AD832046EBAC198DA580DF2";
     public static final String NOTIFY = "Notify_40_DE1561DE4D80B9DB6E6E9DA5C8C5057C";
     public static final String PACK_REQUIREMENTS = "PackRequirements_45_4F30EAE9499C5B7161017D8FDEFF72B0";
 

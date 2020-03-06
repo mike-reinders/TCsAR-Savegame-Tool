@@ -2,6 +2,8 @@ package reinders.mike.TCsARSavegameTool;
 
 import qowyn.ark.ArkSavFile;
 import qowyn.ark.arrays.ArkArray;
+import qowyn.ark.arrays.ArkArrayString;
+import qowyn.ark.arrays.ArkArrayStruct;
 import qowyn.ark.properties.*;
 import qowyn.ark.structs.StructPropertyList;
 import reinders.mike.TCsARSavegameTool.Exception.SaveGameException;
@@ -11,6 +13,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class PlayerDataFile {
 
@@ -58,7 +61,6 @@ public class PlayerDataFile {
                 player.setTimeFraction(((PropertyFloat)playerPropertyList.getProperty(KnownProperties.TIME_FRACTION)).getValue()); // time played (used to payout bonus when target amount is reached; then it resets to 0)
                 player.setEligibleForBonus(((PropertyBool)playerPropertyList.getProperty(KnownProperties.ELIGIBLE_FOR_BONUS)).getValue());
                 player.setBonusAmount(((PropertyInt)playerPropertyList.getProperty(KnownProperties.BONUS_AMOUNT)).getValue()); // player specific bonus amount per timespan
-                // player.setTags(null); // Always null // @Deprecated value
                 player.setNotify(((PropertyBool)playerPropertyList.getProperty(KnownProperties.NOTIFY)).getValue());
 
                 // Query List Values
@@ -119,8 +121,94 @@ public class PlayerDataFile {
         this.players = null;
     }
 
-    public void save(Path path) {
-        // @TODO
+    public void save(Path path) throws SaveGameException {
+        try {
+            ArkSavFile file = new ArkSavFile();
+            ObjectA.setPrivateField(file, "className", PlayerDataFile.KNOWN__CLASS_NAME);
+
+            List<Property<?>> fileProperties = new ArrayList<>();
+
+            // PlayerVersion
+            PropertyInt playerVersion = new PropertyInt("PlayerVersion", this.playerVersion);
+            fileProperties.add(playerVersion);
+
+            // PlayerData
+            ArkArrayStruct playerDataArray = new ArkArrayStruct();
+            PropertyArray playerData = new PropertyArray("PlayerData", playerDataArray);
+
+            // Pack PlayerData
+            List<Property<?>> playerProperties;
+            List<Property<?>> packRequirements;
+            ArkArrayString packCustomTagsArray;
+            ArkArrayString packPurchasedPIDsArray;
+            ArkArrayStruct packPurchasedLimits;
+            List<Property<?>> packPurchasedLimitsList;
+            ArkArrayStruct packPurchaseCooldowns;
+            List<Property<?>> packPurchaseCooldownsList;
+            for (Player player : this.players) {
+                playerProperties = new ArrayList<>();
+
+                // add simple properties
+                playerProperties.add(new PropertyStr(KnownProperties.PLAYER_NAME, player.getName()));
+                playerProperties.add(new PropertyStr(KnownProperties.STEAM_ID_64, String.valueOf(player.getSteamID64())));
+                playerProperties.add(new PropertyInt(KnownProperties.POINTS, player.getPoints()));
+                playerProperties.add(new PropertyInt(KnownProperties.TOTAL_EARNED, player.getTotalEarned()));
+                playerProperties.add(new PropertyInt(KnownProperties.INCOME, player.getIncome()));
+                playerProperties.add(new PropertyFloat(KnownProperties.INCOME_FRACTION, player.getIncomeFraction()));
+                playerProperties.add(new PropertyFloat(KnownProperties.TOTAL_PLAYED_TIME, player.getTotalPlayedTime()));
+                playerProperties.add(new PropertyFloat(KnownProperties.TIME_FRACTION, player.getTimeFraction()));
+                playerProperties.add(new PropertyBool(KnownProperties.ELIGIBLE_FOR_BONUS, player.isEligibleForBonus()));
+                playerProperties.add(new PropertyInt(KnownProperties.BONUS_AMOUNT, player.getBonusAmount()));
+                playerProperties.add(new PropertyBool(KnownProperties.NOTIFY, player.isNotify()));
+
+                // pack requirements
+                packRequirements = new ArrayList<>();
+
+                // Tags
+                packCustomTagsArray = new ArkArrayString();
+                packCustomTagsArray.addAll(player.getCustomTags());
+                packRequirements.add(new PropertyArray(KnownProperties.CUSTOM_TAGS, packCustomTagsArray));
+
+                // Purchased PIDs
+                packPurchasedPIDsArray = new ArkArrayString();
+                packPurchasedPIDsArray.addAll(player.getPurchasedPIDs());
+                packRequirements.add(new PropertyArray(KnownProperties.PURCHASED_PIDs, packPurchasedPIDsArray));
+
+                // Purchase Limits
+                packPurchasedLimits = new ArkArrayStruct();
+                for (Map.Entry<String, Integer> entry : player.getPurchaseLimits().entrySet()) {
+                    packPurchasedLimitsList = new ArrayList<>();
+                    packPurchasedLimitsList.add(new PropertyStr(KnownProperties.PURCHASE_LIMITS_PID, entry.getKey()));
+                    packPurchasedLimitsList.add(new PropertyInt(KnownProperties.PURCHASE_LIMITS_REMAINING, entry.getValue()));
+                    packPurchasedLimits.add(new StructPropertyList(packPurchasedLimitsList));
+                }
+                packRequirements.add(new PropertyArray(KnownProperties.PURCHASE_LIMITS, packPurchasedLimits));
+
+                // Purchase Cooldowns
+                packPurchaseCooldowns = new ArkArrayStruct();
+                for (Map.Entry<String, Float> entry : player.getPurchaseCooldowns().entrySet()) {
+                    packPurchaseCooldownsList = new ArrayList<>();
+                    packPurchaseCooldownsList.add(new PropertyStr(KnownProperties.PURCHASE_COOLDOWNS_PID, entry.getKey()));
+                    packPurchaseCooldownsList.add(new PropertyFloat(KnownProperties.PURCHASE_COOLDOWNS_UNLOCK_TIME, entry.getValue()));
+                    packPurchaseCooldowns.add(new StructPropertyList(packPurchaseCooldownsList));
+                }
+                packRequirements.add(new PropertyArray(KnownProperties.PURCHASE_COOLDOWNS, packPurchaseCooldowns));
+
+                // finally add pack requirements
+                playerProperties.add(new PropertyStruct(KnownProperties.PACK_REQUIREMENTS, new StructPropertyList(packRequirements), KnownProperties.PACK_REQUIREMENTS_STRUCT_TYPE));
+
+                // add player
+                playerDataArray.add(new StructPropertyList(playerProperties));
+            }
+            fileProperties.add(playerData);
+
+            // add fileProperties
+            file.setProperties(fileProperties);
+
+            file.writeBinary(path);
+        } catch (Throwable throwable) {
+            throw new SaveGameException("Failed to save SaveGame", throwable);
+        }
     }
 
     public int getPlayerVersion() {
