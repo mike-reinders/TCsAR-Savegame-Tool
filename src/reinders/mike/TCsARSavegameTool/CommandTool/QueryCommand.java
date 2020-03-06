@@ -97,11 +97,11 @@ public class QueryCommand extends Command {
         strBuilder.append(this.timeToString(player.getTotalPlayedTime()));
 
         strBuilder.append(System.lineSeparator());
-        strBuilder.append(StringC.pad(Pad.RIGHT, "Points:", QueryCommand.PLAYER_DETAILS_LEFT_ROW_SIZE));
+        strBuilder.append(StringC.pad(Pad.RIGHT, "ARc:", QueryCommand.PLAYER_DETAILS_LEFT_ROW_SIZE));
         strBuilder.append(player.getPoints());
 
         strBuilder.append(System.lineSeparator());
-        strBuilder.append(StringC.pad(Pad.RIGHT, "Points spent:", QueryCommand.PLAYER_DETAILS_LEFT_ROW_SIZE));
+        strBuilder.append(StringC.pad(Pad.RIGHT, "ARc spent:", QueryCommand.PLAYER_DETAILS_LEFT_ROW_SIZE));
         int spentPoints = (player.getTotalEarned() - player.getPoints());
         if (spentPoints >= 0) {
             strBuilder.append(spentPoints);
@@ -110,7 +110,7 @@ public class QueryCommand extends Command {
         }
 
         strBuilder.append(System.lineSeparator());
-        strBuilder.append(StringC.pad(Pad.RIGHT, "Total Points:", QueryCommand.PLAYER_DETAILS_LEFT_ROW_SIZE));
+        strBuilder.append(StringC.pad(Pad.RIGHT, "Total ARc:", QueryCommand.PLAYER_DETAILS_LEFT_ROW_SIZE));
         strBuilder.append(player.getTotalEarned());
 
         strBuilder.append(System.lineSeparator());
@@ -122,7 +122,7 @@ public class QueryCommand extends Command {
         strBuilder.append(player.getIncome());
 
         strBuilder.append(System.lineSeparator());
-        strBuilder.append(StringC.pad(Pad.RIGHT, "Income Count:", QueryCommand.PLAYER_DETAILS_LEFT_ROW_SIZE));
+        strBuilder.append(StringC.pad(Pad.RIGHT, "Income Fraction:", QueryCommand.PLAYER_DETAILS_LEFT_ROW_SIZE));
         strBuilder.append(this.timeToString(player.getIncomeFraction()));
 
         strBuilder.append(System.lineSeparator());
@@ -130,7 +130,7 @@ public class QueryCommand extends Command {
         strBuilder.append(this.timeToString(player.getBonusAmount()));
 
         strBuilder.append(System.lineSeparator());
-        strBuilder.append(StringC.pad(Pad.RIGHT, "Bonus Count:", QueryCommand.PLAYER_DETAILS_LEFT_ROW_SIZE));
+        strBuilder.append(StringC.pad(Pad.RIGHT, "Bonus Fraction:", QueryCommand.PLAYER_DETAILS_LEFT_ROW_SIZE));
         strBuilder.append(this.timeToString(player.getBonusAmount()));
 
         return strBuilder.toString();
@@ -160,11 +160,11 @@ public class QueryCommand extends Command {
                 strBuilder.append("--");
                 strBuilder.append(StringC.pad(Pad.RIGHT, "Name", '-', 20));
                 strBuilder.append("--");
-                strBuilder.append(StringC.pad(Pad.RIGHT, "Points", '-', 10));
+                strBuilder.append(StringC.pad(Pad.RIGHT, "ARc", '-', 10));
                 strBuilder.append("--");
-                strBuilder.append(StringC.pad(Pad.RIGHT, "Spent", '-', 10));
+                strBuilder.append(StringC.pad(Pad.RIGHT, "Spent ARc", '-', 10));
                 strBuilder.append("--");
-                strBuilder.append(StringC.pad(Pad.RIGHT, "Total", '-', 10));
+                strBuilder.append(StringC.pad(Pad.RIGHT, "Total ARc", '-', 10));
                 strBuilder.append("--");
                 strBuilder.append(StringC.pad(Pad.RIGHT, "Time-Played", '-', 16));
                 strBuilder.append("--");
