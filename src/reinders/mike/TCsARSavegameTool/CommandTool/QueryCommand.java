@@ -22,6 +22,16 @@ public class QueryCommand extends Command {
     }
 
     @Override
+    public String getUsage() {
+        return " [--players / [--player=steam64ID]*] [file]";
+    }
+
+    @Override
+    public String getDescription() {
+        return "Displays detailed query informations about players";
+    }
+
+    @Override
     public boolean execute() throws Throwable {
         if (this.getParameters().length < 1) {
             try {

@@ -31,6 +31,11 @@ public class DebugCommand extends Command {
     }
 
     @Override
+    public String getDescription() {
+        return "Displays detailed savegame structure independent informations about a given lookup path";
+    }
+
+    @Override
     public boolean execute() throws Throwable {
         if (this.getParameters().length < 1) {
             try {
