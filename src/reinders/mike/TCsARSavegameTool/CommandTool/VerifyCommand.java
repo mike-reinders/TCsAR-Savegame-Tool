@@ -1,8 +1,7 @@
 package reinders.mike.TCsARSavegameTool.CommandTool;
 
 import reinders.mike.TCsARSavegameTool.Command.Command;
-import reinders.mike.TCsARSavegameTool.SavegameTool;
-import reinders.mike.TCsARSavegameTool.PlayerDataFile;
+import reinders.mike.TCsARSavegameTool.PlayerDataSavegame;
 import reinders.mike.TCsARSavegameTool.Util.ThrowableC;
 
 import java.io.IOException;
@@ -30,7 +29,7 @@ public class VerifyCommand extends Command {
         for (String filePath : this.getParameters()) {
             Path path = Paths.get(filePath).toAbsolutePath();
             try {
-                new PlayerDataFile(path);
+                new PlayerDataSavegame(path);
                 System.out.println("File '" + path.getFileName() + "' has been verified.");
             } catch (Throwable throwable) {
                 System.out.println("Failed to verify file '" + path.getFileName() + "'");

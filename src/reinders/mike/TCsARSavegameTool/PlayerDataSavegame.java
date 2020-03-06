@@ -15,18 +15,18 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class PlayerDataFile {
+public class PlayerDataSavegame {
 
     public static final String KNOWN__CLASS_NAME = "TCsAR_SavedPlayerData_C";
 
     private int playerVersion = -1;
     private List<Player> players;
 
-    public PlayerDataFile() {
+    public PlayerDataSavegame() {
         // Empty
     }
 
-    public PlayerDataFile(Path path) throws SaveGameException {
+    public PlayerDataSavegame(Path path) throws SaveGameException {
         this.load(path);
     }
 
@@ -35,7 +35,7 @@ public class PlayerDataFile {
             ArkSavFile file = new ArkSavFile(path);
 
             String className = (String)ObjectA.getPrivateField(file, "className");
-            if (className == null || !className.equals(PlayerDataFile.KNOWN__CLASS_NAME)) {
+            if (className == null || !className.equals(PlayerDataSavegame.KNOWN__CLASS_NAME)) {
                 throw new SaveGameException("File is not a PlayerData-Savegame!");
             }
 
@@ -124,7 +124,7 @@ public class PlayerDataFile {
     public void save(Path path) throws SaveGameException {
         try {
             ArkSavFile file = new ArkSavFile();
-            ObjectA.setPrivateField(file, "className", PlayerDataFile.KNOWN__CLASS_NAME);
+            ObjectA.setPrivateField(file, "className", PlayerDataSavegame.KNOWN__CLASS_NAME);
 
             List<Property<?>> fileProperties = new ArrayList<>();
 

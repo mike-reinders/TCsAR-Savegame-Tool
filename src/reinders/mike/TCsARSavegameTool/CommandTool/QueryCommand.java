@@ -4,7 +4,7 @@ import reinders.mike.TCsARSavegameTool.Command.Command;
 import reinders.mike.TCsARSavegameTool.Exception.MissingCommandException;
 import reinders.mike.TCsARSavegameTool.SavegameTool;
 import reinders.mike.TCsARSavegameTool.Player;
-import reinders.mike.TCsARSavegameTool.PlayerDataFile;
+import reinders.mike.TCsARSavegameTool.PlayerDataSavegame;
 import reinders.mike.TCsARSavegameTool.Util.Pad;
 import reinders.mike.TCsARSavegameTool.Util.SteamIDC;
 import reinders.mike.TCsARSavegameTool.Util.StringC;
@@ -40,7 +40,7 @@ public class QueryCommand extends Command {
             return true;
         }
 
-        PlayerDataFile playerDataFile = new PlayerDataFile(Paths.get(this.getParameters()[0]));
+        PlayerDataSavegame playerDataFile = new PlayerDataSavegame(Paths.get(this.getParameters()[0]));
 
         StringBuilder strBuilder = new StringBuilder();
 
