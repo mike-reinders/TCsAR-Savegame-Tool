@@ -48,7 +48,7 @@ public class QueryCommand extends Command {
             strBuilder.append(this.playersToStringList(playerDataFile.getPlayers()));
         } else if (this.isArgument("player")) {
             String[] argumentValue;
-            if ((argumentValue = this.getArgument("player")) != null) {
+            if ((argumentValue = this.getArguments("player")) != null) {
                 int i = 0;
                 Player player;
 

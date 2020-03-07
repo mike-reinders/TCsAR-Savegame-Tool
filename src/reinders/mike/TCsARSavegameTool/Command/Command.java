@@ -74,7 +74,35 @@ public abstract class Command {
         return this.parameters;
     }
 
-    public final String[] getArgument(@NotNull String name) {
+    public final String getArgument(@NotNull String name) {
+        return this.getArgument(name, "");
+    }
+
+    public final String getArgument(@NotNull String name, String defaults) {
+        String[] arguments = this.getArguments(name);
+
+        if (arguments.length > 0) {
+            return arguments[arguments.length - 1];
+        }
+
+        return defaults;
+    }
+
+    public final String getArgument(@NotNull String ...names) {
+        return this.getArgument("", names);
+    }
+
+    public final String getArgument(String defaults, @NotNull String ...names) {
+        String[] arguments = this.getArguments(names);
+
+        if (arguments.length > 0) {
+            return arguments[arguments.length - 1];
+        }
+
+        return defaults;
+    }
+
+    public final String[] getArguments(@NotNull String name) {
         for (Map.Entry<String, String[]> entry : this.getArguments()) {
             if (entry.getKey().equals(name)) {
                 return entry.getValue();
@@ -84,7 +112,7 @@ public abstract class Command {
         return new String[0];
     }
 
-    public final String[] getArgument(@NotNull  String ...names) {
+    public final String[] getArguments(@NotNull  String ...names) {
         List<String[]> found = new ArrayList<>();
 
         for (Map.Entry<String, String[]> entry : this.getArguments()) {
@@ -111,7 +139,7 @@ public abstract class Command {
     }
 
     public final String[] requireArgument(@NotNull  String name) throws MissingArgumentException {
-        String[] value = this.getArgument(name);
+        String[] value = this.getArguments(name);
 
         if (value == null) {
             throw new MissingArgumentException("Missing argument '" + name + "'");
