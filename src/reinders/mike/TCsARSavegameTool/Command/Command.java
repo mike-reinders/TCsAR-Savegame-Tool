@@ -75,10 +75,10 @@ public abstract class Command {
     }
 
     public final String getArgument(@NotNull String name) {
-        return this.getArgument(name, "");
+        return this.getArgumentDefault(name, "");
     }
 
-    public final String getArgument(@NotNull String name, String defaults) {
+    public final String getArgumentDefault(@NotNull String name, String defaults) {
         String[] arguments = this.getArguments(name);
 
         if (arguments.length > 0) {
@@ -89,10 +89,10 @@ public abstract class Command {
     }
 
     public final String getArgument(@NotNull String ...names) {
-        return this.getArgument("", names);
+        return this.getArgumentDefault("", names);
     }
 
-    public final String getArgument(String defaults, @NotNull String ...names) {
+    public final String getArgumentDefault(String defaults, @NotNull String ...names) {
         String[] arguments = this.getArguments(names);
 
         if (arguments.length > 0) {
