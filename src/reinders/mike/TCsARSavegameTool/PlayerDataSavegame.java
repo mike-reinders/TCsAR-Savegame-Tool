@@ -215,6 +215,10 @@ public class PlayerDataSavegame {
         return this.playerVersion;
     }
 
+    public void setPlayerVersion(int playerVersion) {
+        this.playerVersion = playerVersion;
+    }
+
     public List<Player> getPlayers() {
         return this.players;
     }
