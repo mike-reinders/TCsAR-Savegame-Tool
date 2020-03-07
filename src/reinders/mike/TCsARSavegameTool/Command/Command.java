@@ -81,7 +81,7 @@ public abstract class Command {
             }
         }
 
-        return null;
+        return new String[0];
     }
 
     public final String[] getArgument(@NotNull  String ...names) {
