@@ -4,9 +4,7 @@ import com.sun.istack.internal.NotNull;
 import com.sun.istack.internal.Nullable;
 import reinders.mike.TCsARSavegameTool.Exception.MissingArgumentException;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public abstract class Command {
 
@@ -76,7 +74,7 @@ public abstract class Command {
         return this.parameters;
     }
 
-    public final String[] getArgument(@NotNull  String name) {
+    public final String[] getArgument(@NotNull String name) {
         for (Map.Entry<String, String[]> entry : this.getArguments()) {
             if (entry.getKey().equals(name)) {
                 return entry.getValue();
@@ -84,6 +82,32 @@ public abstract class Command {
         }
 
         return null;
+    }
+
+    public final String[] getArgument(@NotNull  String ...names) {
+        List<String[]> found = new ArrayList<>();
+
+        for (Map.Entry<String, String[]> entry : this.getArguments()) {
+            for (String name : names) {
+                if (entry.getKey().equals(name)) {
+                    found.add(entry.getValue());
+                }
+            }
+        }
+
+        int totalLength = 0;
+        for (String[] items : found) {
+            totalLength += items.length;
+        }
+
+        String[] finalItems = new String[totalLength];
+        int index = 0;
+        for (String[] items : found) {
+            System.arraycopy(items, 0, finalItems, index, items.length);
+            index += items.length;
+        }
+
+        return finalItems;
     }
 
     public final String[] requireArgument(@NotNull  String name) throws MissingArgumentException {
