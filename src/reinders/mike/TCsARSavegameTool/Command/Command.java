@@ -74,68 +74,58 @@ public abstract class Command {
         return this.parameters;
     }
 
-    public final String getArgument(@NotNull String name) {
-        return this.getArgumentDefault(name, "");
-    }
-
-    public final String getArgumentDefault(@NotNull String name, String defaults) {
-        String[] arguments = this.getArguments(name);
-
-        if (arguments.length > 0) {
-            return arguments[arguments.length - 1];
-        }
-
-        return defaults;
-    }
-
     public final String getArgument(@NotNull String ...names) {
         return this.getArgumentDefault("", names);
     }
 
-    public final String getArgumentDefault(String defaults, @NotNull String ...names) {
-        String[] arguments = this.getArguments(names);
+    public final String getArgumentDefault(String defaultValue, @NotNull String ...names) {
+        String[] arguments;
+
+        if (names.length == 1) {
+            arguments = this.getArguments(names[0]);
+        } else {
+            arguments = this.getArguments(names);
+        }
 
         if (arguments.length > 0) {
             return arguments[arguments.length - 1];
         }
 
-        return defaults;
-    }
-
-    public final String[] getArguments(@NotNull String name) {
-        for (Map.Entry<String, String[]> entry : this.getArguments()) {
-            if (entry.getKey().equals(name)) {
-                return entry.getValue();
-            }
-        }
-
-        return new String[0];
+        return defaultValue;
     }
 
     public final String[] getArguments(@NotNull  String ...names) {
-        List<String[]> found = new ArrayList<>();
+        List<String[]> foundItems = new ArrayList<>();
 
-        for (Map.Entry<String, String[]> entry : this.getArguments()) {
-            for (String name : names) {
-                if (entry.getKey().equals(name)) {
-                    found.add(entry.getValue());
+        if (names.length > 0) {
+            for (Map.Entry<String, String[]> entry : this.getArguments()) {
+                for (String name : names) {
+                    if (entry.getKey().equals(name)) {
+                        foundItems.add(entry.getValue());
+                    }
                 }
             }
         }
 
-        int totalLength = 0;
-        for (String[] items : found) {
-            totalLength += items.length;
-        }
+        if (foundItems.size() == 0) {
+            return new String[0];
+        } else if (foundItems.size() == 1) {
+            return foundItems.get(0);
+        } else {
+            int totalLength = 0;
+            for (String[] items : foundItems) {
+                totalLength += items.length;
+            }
 
-        String[] finalItems = new String[totalLength];
-        int index = 0;
-        for (String[] items : found) {
-            System.arraycopy(items, 0, finalItems, index, items.length);
-            index += items.length;
-        }
+            String[] finalItems = new String[totalLength];
+            int index = 0;
+            for (String[] items : foundItems) {
+                System.arraycopy(items, 0, finalItems, index, items.length);
+                index += items.length;
+            }
 
-        return finalItems;
+            return finalItems;
+        }
     }
 
     public final String[] requireArgument(@NotNull  String name) throws MissingArgumentException {
