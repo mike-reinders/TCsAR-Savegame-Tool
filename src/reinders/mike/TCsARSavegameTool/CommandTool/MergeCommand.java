@@ -9,84 +9,53 @@ import reinders.mike.TCsARSavegameTool.SavegameTool;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map;
 
 public class MergeCommand extends Command {
 
-    //            String name;                      // NO OPTIONS
-    // no options at all
-
-    //            long steamID64;                   // NO OPTIONS
-    // no options at all
-
-    //            int points;                       // STACK (default), RESET, SET TO x, LOWEST, HIGHEST,
     public static final int MERGE_POINTS_ADD_ALL = 1;
     public static final int MERGE_POINTS_SET = 2;
     public static final int MERGE_POINTS_LOWEST = 3;
     public static final int MERGE_POINTS_HIGHEST = 4;
 
-    //            int totalEarned;                  // NO OPTIONS
-    // no options at all
-
-    //            int income;                       // RESET, SET TO x, LOWEST, HIGHEST (default)
     public static final int MERGE_INCOME_SET = 1;
     public static final int MERGE_INCOME_LOWEST = 2;
     public static final int MERGE_INCOME_HIGHEST = 3;
 
-    //            float incomeFraction;             // RESET, SET TO x, LOWEST, HIGHEST (default)
     public static final int MERGE_INCOME_FRACTION_SET = 1;
     public static final int MERGE_INCOME_FRACTION_LOWEST = 2;
     public static final int MERGE_INCOME_FRACTION_HIGHEST = 3;
 
-    //            float totalPlayedTime;            // STACK (default), RESET, SET TO x
     public static final int MERGE_TOTAL_PLAYED_TIME_ADD_ALL = 1;
     public static final int MERGE_TOTAL_PLAYED_TIME_SET = 2;
 
-    //            float timeFraction;               // RESET, SET TO x, LOWEST, HIGHEST (default)
     public static final int MERGE_TIME_FRACTION_SET = 1;
     public static final int MERGE_TIME_FRACTION_LOWEST = 2;
     public static final int MERGE_TIME_FRACTION_HIGHEST = 3;
 
-    //            boolean eligibleForBonus;         // SET TO x
-    public static final int MERGE_ELIGIBLE_FOR_BONUS_REGULAR = 0;
     public static final int MERGE_ELIGIBLE_FOR_BONUS_SET = 1;
 
-    //            int bonusAmount;                  // RESET, SET TO x, LOWEST, HIGHEST (default)
     public static final int MERGE_BONUS_AMOUNT_SET = 1;
     public static final int MERGE_BONUS_AMOUNT_LOWEST = 2;
     public static final int MERGE_BONUS_AMOUNT_HIGHEST = 3;
 
-    //            boolean notify;                   // SET TO x
-    public static final int MERGE_NOTIFY_REGULAR = 0;
     public static final int MERGE_NOTIFY_SET = 1;
 
-    //            <String> customTags;              // PRESENCE (default), RESET, SET to x, +ENSURE x, +OMIT x
-    public static final int MERGE_TAGS_PRESENCE = 1;
-    public static final int MERGE_TAGS_SET = 2;
-    // no extra option for ENSURE
-    // no extra option for OMIT
+    public static final int MERGE_TAGS_PRESENCE = 0;
+    public static final int MERGE_TAGS_SET = 1;
 
-    //            <String> purchasedPIDs;           // PRESENCE (default), RESET, SET to x, +ENSURE x, +OMIT x
-    public static final int MERGE_PURCHASED_PIDS_PRESENCE = 1;
-    public static final int MERGE_PURCHASED_PIDS_SET = 2;
-    // no extra option for ENSURE
-    // no extra option for OMIT
+    public static final int MERGE_PURCHASED_PIDS_PRESENCE = 0;
+    public static final int MERGE_PURCHASED_PIDS_SET = 1;
 
-    //            <String, Integer> purchaseLimits; // RESET, LOWEST, HIGHEST (default), +OMIT x, +SET y to X
-    public static final int MERGE_PURCHASE_LIMITS_RESET = 1;
+    public static final int MERGE_PURCHASE_LIMITS_SET = 1;
     public static final int MERGE_PURCHASE_LIMITS_LOWEST = 2;
     public static final int MERGE_PURCHASE_LIMITS_HIGHEST = 3;
-    // no extra option for OMIT
-    // no extra option for SET
 
-    //            <String, Float> purchaseCooldowns;// RESET, LOWEST, HIGHEST (default), +OMIT x, +SET y to X
-    public static final int MERGE_PURCHASE_COOLDOWNS_RESET = 1;
+    public static final int MERGE_PURCHASE_COOLDOWNS_SET = 1;
     public static final int MERGE_PURCHASE_COOLDOWNS_LOWEST = 2;
     public static final int MERGE_PURCHASE_COOLDOWNS_HIGHEST = 3;
-    // no extra option for OMIT
-    // no extra option for SET
-
-    int merge_option_name;
 
     int merge_option_points;
     int merge_option_points_set;
@@ -175,7 +144,7 @@ public class MergeCommand extends Command {
             System.out.println("Memory usage: " + String.format("%,d", memoryUsage) + " Bytes");
             System.out.println("Merging source file '" + sourceSavegamePath.getFileName().toString() + "'");
 
-            
+            this.merge(targetSavegame, sourceSavegame);
         }
 
         return true;
@@ -418,32 +387,263 @@ public class MergeCommand extends Command {
         }
     }
 
-    public void merge(PlayerDataSavegame targetSavegame, PlayerDataSavegame sourceSavegame) {
+    public PlayerDataSavegame merge(PlayerDataSavegame targetSavegame, PlayerDataSavegame sourceSavegame) {
         if (sourceSavegame.getPlayerVersion() > targetSavegame.getPlayerVersion()) {
             targetSavegame.setPlayerVersion(sourceSavegame.getPlayerVersion());
         }
+
+        System.out.println("Merging " + sourceSavegame.getPlayers().size() + " Players");
 
         Player targetPlayer;
         for (Player sourcePlayer : sourceSavegame.getPlayers()) {
             targetPlayer = targetSavegame.getPlayer(sourcePlayer.getSteamID64());
 
-//            int points; // STACK (default), RESET, SET TO x, LOWEST, HIGHEST,
-//            int totalEarned; // NO OPTIONS
-//            int income; // RESET, SET TO x, LOWEST, HIGHEST (default)
-//            float incomeFraction; // RESET, SET TO x, LOWEST, HIGHEST (default)
-//            float totalPlayedTime; // STACK (default), RESET, SET TO x
-//            float timeFraction; // RESET, SET TO x, LOWEST, HIGHEST (default)
-//            boolean eligibleForBonus; // SET TO x
-//            int bonusAmount; // RESET, SET TO x, LOWEST, HIGHEST (default)
-//            boolean notify; // SET TO x
+            if (targetPlayer == null) {
+                targetPlayer = sourcePlayer.clone();
+                assert targetPlayer != null;
+                targetSavegame.getPlayers().add(targetPlayer);
 
-//            <String> customTags; // RESET, SET to x, OMIT x
-//            <String> purchasedPIDs; // RESET, SET to x, OMIT x
-//            <String, Integer> purchaseLimits; // RESET, LOWEST, HIGHEST, +OMIT x, +SET y to X
-//            <String, Float> purchaseCooldowns; // RESET, LOWEST, HIGHEST, +OMIT x, +SET y to X
+                System.out.println("Added Player " + targetPlayer.getSteamID64() + " (" + targetPlayer.getName() + ")");
 
+                // Points
+                if (this.merge_option_points == MergeCommand.MERGE_POINTS_SET) {
+                    targetPlayer.setPoints(this.merge_option_points_set);
+                }
+                // Income
+                if (this.merge_option_income == MergeCommand.MERGE_INCOME_SET) {
+                    targetPlayer.setIncome(this.merge_option_income_set);
+                }
+                // Income Fraction
+                if (this.merge_option_incomeFraction == MergeCommand.MERGE_INCOME_FRACTION_SET) {
+                    targetPlayer.setIncomeFraction(this.merge_option_incomeFraction_set);
+                }
+                // Total Played Time
+                if (this.merge_option_totalPlayedTime == MergeCommand.MERGE_TOTAL_PLAYED_TIME_SET) {
+                    targetPlayer.setTotalPlayedTime(this.merge_option_totalPlayedTime_set);
+                }
+                // Time Fraction
+                if (this.merge_option_timeFraction == MergeCommand.MERGE_TIME_FRACTION_SET) {
+                    targetPlayer.setTimeFraction(this.merge_option_timeFraction_set);
+                }
 
+                // Eligible For Bonus
+                if (this.merge_option_eligibleForBonus == MergeCommand.MERGE_ELIGIBLE_FOR_BONUS_SET) {
+                    targetPlayer.setEligibleForBonus(this.merge_option_eligibleForBonus_set);
+                }
+
+                // Bonus Amount
+                if (this.merge_option_bonusAmount == MergeCommand.MERGE_BONUS_AMOUNT_SET) {
+                    targetPlayer.setBonusAmount(this.merge_option_bonusAmount_set);
+                }
+
+                // Notify
+                if (this.merge_option_notify == MergeCommand.MERGE_NOTIFY_SET) {
+                    targetPlayer.setNotify(this.merge_option_notify_set);
+                }
+
+                // Tags
+                if (this.merge_option_customTags == MergeCommand.MERGE_TAGS_SET) {
+                    targetPlayer.getCustomTags().clear();
+                    targetPlayer.getCustomTags().addAll(Arrays.asList(this.merge_option_customTags_ensure));
+                }
+
+                // Purchased PIDs
+                if (this.merge_option_purchasedPIDs == MergeCommand.MERGE_PURCHASED_PIDS_SET) {
+                    targetPlayer.getPurchasedPIDs().clear();
+                    targetPlayer.getPurchasedPIDs().addAll(Arrays.asList(this.merge_option_purchasedPIDs_ensure));
+                }
+
+                // Purchase Limits
+                if (this.merge_option_purchaseLimits == MergeCommand.MERGE_PURCHASE_LIMITS_SET) {
+                    targetPlayer.getPurchaseLimits().clear();
+                    targetPlayer.getPurchaseLimits().putAll(this.merge_option_purchaseLimits_ensure);
+                }
+
+                // Purchase Cooldowns
+                if (this.merge_option_purchaseCooldowns == MergeCommand.MERGE_PURCHASE_COOLDOWNS_SET) {
+                    targetPlayer.getPurchaseCooldowns().clear();
+                    targetPlayer.getPurchaseCooldowns().putAll(this.merge_option_purchaseCooldowns_ensure);
+                }
+            } else {
+                System.out.println("Merging Player " + targetPlayer.getSteamID64() + " (" + targetPlayer.getName() + ")");
+
+                // Points
+                if (this.merge_option_points == MergeCommand.MERGE_POINTS_ADD_ALL) {
+                    targetPlayer.setPoints(targetPlayer.getPoints() + sourcePlayer.getPoints());
+                } else if (this.merge_option_points == MergeCommand.MERGE_POINTS_LOWEST) {
+                    if (targetPlayer.getPoints() > sourcePlayer.getPoints()) {
+                        targetPlayer.setPoints(sourcePlayer.getPoints());
+                    }
+                } else if (this.merge_option_points == MergeCommand.MERGE_POINTS_HIGHEST) {
+                    if (targetPlayer.getPoints() < sourcePlayer.getPoints()) {
+                        targetPlayer.setPoints(sourcePlayer.getPoints());
+                    }
+                }
+
+                // Income
+                if (this.merge_option_income == MergeCommand.MERGE_INCOME_LOWEST) {
+                    if (targetPlayer.getIncome() > sourcePlayer.getIncome()) {
+                        targetPlayer.setIncome(sourcePlayer.getIncome());
+                    }
+                } else if (this.merge_option_income == MergeCommand.MERGE_INCOME_HIGHEST) {
+                    if (targetPlayer.getIncome() < sourcePlayer.getIncome()) {
+                        targetPlayer.setIncome(sourcePlayer.getIncome());
+                    }
+                }
+
+                // Income Fraction
+                if (this.merge_option_incomeFraction == MergeCommand.MERGE_INCOME_FRACTION_LOWEST) {
+                    if (targetPlayer.getIncomeFraction() > sourcePlayer.getIncomeFraction()) {
+                        targetPlayer.setIncomeFraction(sourcePlayer.getIncomeFraction());
+                    }
+                } else if (this.merge_option_incomeFraction == MergeCommand.MERGE_INCOME_FRACTION_HIGHEST) {
+                    if (targetPlayer.getIncomeFraction() < sourcePlayer.getIncomeFraction()) {
+                        targetPlayer.setIncomeFraction(sourcePlayer.getIncomeFraction());
+                    }
+                }
+
+                // Total Played Time
+                if (this.merge_option_totalPlayedTime == MergeCommand.MERGE_TOTAL_PLAYED_TIME_ADD_ALL) {
+                    targetPlayer.setTotalPlayedTime(targetPlayer.getTotalPlayedTime() + sourcePlayer.getTotalPlayedTime());
+                }
+
+                // Time Fraction
+                if (this.merge_option_timeFraction == MergeCommand.MERGE_TIME_FRACTION_LOWEST) {
+                    if (targetPlayer.getTimeFraction() > sourcePlayer.getTimeFraction()) {
+                        targetPlayer.setTimeFraction(sourcePlayer.getTimeFraction());
+                    }
+                } else if (this.merge_option_timeFraction == MergeCommand.MERGE_TIME_FRACTION_HIGHEST) {
+                    if (targetPlayer.getTimeFraction() < sourcePlayer.getTimeFraction()) {
+                        targetPlayer.setTimeFraction(sourcePlayer.getTimeFraction());
+                    }
+                }
+
+                // Bonus Amount
+                if (this.merge_option_bonusAmount == MergeCommand.MERGE_BONUS_AMOUNT_LOWEST) {
+                    if (targetPlayer.getBonusAmount() > sourcePlayer.getBonusAmount()) {
+                        targetPlayer.setBonusAmount(sourcePlayer.getBonusAmount());
+                    }
+                } else if (this.merge_option_bonusAmount == MergeCommand.MERGE_BONUS_AMOUNT_HIGHEST) {
+                    if (targetPlayer.getBonusAmount() < sourcePlayer.getBonusAmount()) {
+                        targetPlayer.setBonusAmount(sourcePlayer.getBonusAmount());
+                    }
+                }
+
+                // Tags
+                if (this.merge_option_customTags == MergeCommand.MERGE_TAGS_PRESENCE) {
+                    for (String ensuredTag : sourcePlayer.getCustomTags()) {
+                        if (!targetPlayer.getCustomTags().contains(ensuredTag)) {
+                            targetPlayer.getCustomTags().add(ensuredTag);
+                        }
+                    }
+                }
+
+                // Purchased PIDs
+                if (this.merge_option_purchasedPIDs == MergeCommand.MERGE_PURCHASED_PIDS_PRESENCE) {
+                    for (String ensuredPID : sourcePlayer.getPurchasedPIDs()) {
+                        if (!targetPlayer.getPurchasedPIDs().contains(ensuredPID)) {
+                            targetPlayer.getPurchasedPIDs().add(ensuredPID);
+                        }
+                    }
+                }
+
+                // Purchase Limits
+                if (this.merge_option_purchaseLimits == MergeCommand.MERGE_PURCHASE_LIMITS_LOWEST) {
+                    Integer targetValue;
+                    for (Map.Entry<String, Integer> sourceLimit : sourcePlayer.getPurchaseLimits().entrySet()) {
+                        targetValue = targetPlayer.getPurchaseLimits().getOrDefault(sourceLimit.getKey(), null);
+
+                        if (targetValue == null || targetValue > sourceLimit.getValue()) {
+                            targetPlayer.getPurchaseLimits().put(sourceLimit.getKey(), sourceLimit.getValue());
+                        }
+                    }
+                } else if (this.merge_option_purchaseLimits == MergeCommand.MERGE_PURCHASE_LIMITS_HIGHEST) {
+                    Integer targetValue;
+                    for (Map.Entry<String, Integer> sourceLimit : sourcePlayer.getPurchaseLimits().entrySet()) {
+                        targetValue = targetPlayer.getPurchaseLimits().getOrDefault(sourceLimit.getKey(), null);
+
+                        if (targetValue == null || targetValue < sourceLimit.getValue()) {
+                            targetPlayer.getPurchaseLimits().put(sourceLimit.getKey(), sourceLimit.getValue());
+                        }
+                    }
+                }
+
+                // Purchase Cooldowns
+                if (this.merge_option_purchaseCooldowns == MergeCommand.MERGE_PURCHASE_COOLDOWNS_LOWEST) {
+                    Float targetValue;
+                    for (Map.Entry<String, Float> sourceCooldown : sourcePlayer.getPurchaseCooldowns().entrySet()) {
+                        targetValue = targetPlayer.getPurchaseCooldowns().getOrDefault(sourceCooldown.getKey(), null);
+
+                        if (targetValue == null || targetValue > sourceCooldown.getValue()) {
+                            targetPlayer.getPurchaseCooldowns().put(sourceCooldown.getKey(), sourceCooldown.getValue());
+                        }
+                    }
+                } else if (this.merge_option_purchaseCooldowns == MergeCommand.MERGE_PURCHASE_COOLDOWNS_HIGHEST) {
+                    Float targetValue;
+                    for (Map.Entry<String, Float> sourceCooldown : sourcePlayer.getPurchaseCooldowns().entrySet()) {
+                        targetValue = targetPlayer.getPurchaseCooldowns().getOrDefault(sourceCooldown.getKey(), null);
+
+                        if (targetValue == null || targetValue < sourceCooldown.getValue()) {
+                            targetPlayer.getPurchaseCooldowns().put(sourceCooldown.getKey(), sourceCooldown.getValue());
+                        }
+                    }
+                }
+            }
+
+            // Tags
+            if (this.merge_option_customTags == MergeCommand.MERGE_TAGS_PRESENCE) {
+                if (this.merge_option_customTags_omit.length > 0) {
+                    targetPlayer.getCustomTags().removeAll(Arrays.asList(this.merge_option_customTags_omit));
+                }
+                if (this.merge_option_customTags_ensure.length > 0) {
+                    for (String ensuredTag : this.merge_option_customTags_ensure) {
+                        if (!targetPlayer.getCustomTags().contains(ensuredTag)) {
+                            targetPlayer.getCustomTags().add(ensuredTag);
+                        }
+                    }
+                }
+            }
+
+            // Purchased PIDs
+            if (this.merge_option_purchasedPIDs == MergeCommand.MERGE_PURCHASED_PIDS_PRESENCE) {
+                if (this.merge_option_purchasedPIDs_omit.length > 0) {
+                    targetPlayer.getPurchasedPIDs().removeAll(Arrays.asList(this.merge_option_purchasedPIDs_omit));
+                }
+                if (this.merge_option_purchasedPIDs_ensure.length > 0) {
+                    for (String ensuredPID : this.merge_option_purchasedPIDs_ensure) {
+                        if (!targetPlayer.getPurchasedPIDs().contains(ensuredPID)) {
+                            targetPlayer.getPurchasedPIDs().add(ensuredPID);
+                        }
+                    }
+                }
+            }
+
+            // Purchase Limits
+            if (this.merge_option_purchaseLimits > MergeCommand.MERGE_PURCHASE_LIMITS_SET) {
+                if (this.merge_option_purchaseLimits_omit.length > 0) {
+                    targetPlayer.getPurchaseLimits().keySet().removeAll(Arrays.asList(this.merge_option_purchaseLimits_omit));
+                }
+                if (this.merge_option_purchaseLimits_ensure.size() > 0) {
+                    for (Map.Entry<String, Integer> ensureLimit : this.merge_option_purchaseLimits_ensure.entrySet()) {
+                        targetPlayer.getPurchaseLimits().put(ensureLimit.getKey(), ensureLimit.getValue());
+                    }
+                }
+            }
+
+            // Purchase Cooldowns
+            if (this.merge_option_purchaseCooldowns > MergeCommand.MERGE_PURCHASE_COOLDOWNS_SET) {
+                if (this.merge_option_purchaseCooldowns_omit.length > 0) {
+                    targetPlayer.getPurchaseCooldowns().keySet().removeAll(Arrays.asList(this.merge_option_purchaseCooldowns_omit));
+                }
+                if (this.merge_option_purchaseCooldowns_ensure.size() > 0) {
+                    for (Map.Entry<String, Float> ensureCooldown : this.merge_option_purchaseCooldowns_ensure.entrySet()) {
+                        targetPlayer.getPurchaseCooldowns().put(ensureCooldown.getKey(), ensureCooldown.getValue());
+                    }
+                }
+            }
         }
+
+        return targetSavegame;
     }
 
 }
