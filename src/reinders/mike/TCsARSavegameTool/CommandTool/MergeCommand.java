@@ -127,23 +127,14 @@ public class MergeCommand extends Command {
             return true;
         }
 
-        long startUsedMemory = Runtime.getRuntime().totalMemory();
-        long memoryUsage;
         PlayerDataSavegame targetSavegame = new PlayerDataSavegame();
         PlayerDataSavegame sourceSavegame;
         Path sourceSavegamePath;
 
         for (int i = 1; i < this.getParameters().length; i++) {
             sourceSavegamePath = Paths.get(this.getParameters()[i]).toAbsolutePath();
-            System.out.println("Loading source file '" + sourceSavegamePath.getFileName().toString() + "'");
-            sourceSavegame = new PlayerDataSavegame(sourceSavegamePath);
-
-            memoryUsage = (Runtime.getRuntime().totalMemory() - startUsedMemory);
-            if (memoryUsage < 0) {
-                memoryUsage = 0;
-            }
-            System.out.println("Memory usage: " + String.format("%,d", memoryUsage) + " Bytes");
             System.out.println("Merging source file '" + sourceSavegamePath.getFileName().toString() + "'");
+            sourceSavegame = new PlayerDataSavegame(sourceSavegamePath);
 
             this.merge(targetSavegame, sourceSavegame);
         }
