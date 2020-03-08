@@ -148,4 +148,32 @@ public abstract class Command {
         return false;
     }
 
+    public final int getOption(@NotNull String ...names) {
+        Boolean[] options = new Boolean[names.length];
+
+        for (int i = 1; i < names.length; i++) {
+            if (this.isArgument(names[i])) {
+                return i;
+            }
+        }
+
+        return 0;
+    }
+
+    public final int getOptionDefault(@NotNull String ...names) {
+        return this.getOptionDefault(1, names);
+    }
+
+    public final int getOptionDefault(int defaultOption, @NotNull String ...names) {
+        int option = this.getOption(names);
+
+        if (option > 0) {
+            return option;
+        }
+
+        return defaultOption;
+    }
+
+
+
 }
