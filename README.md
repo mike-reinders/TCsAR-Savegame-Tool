@@ -7,8 +7,6 @@ This tool also supports merging multiple savegame files into one.
 - Verify file format and data integrity
 - Query playerlist and all informations about one or multiple players at once
 - Lookup savegame structure with the debug command
-
-## In Progress
 - Merge multiple savegame files
 
 ## Planned Features
