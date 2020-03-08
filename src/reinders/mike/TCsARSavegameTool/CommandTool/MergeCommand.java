@@ -479,6 +479,9 @@ public class MergeCommand extends Command {
                     }
                 }
 
+                // Total Earned
+                targetPlayer.setTotalEarned(targetPlayer.getTotalEarned() + sourcePlayer.getTotalEarned());
+
                 // Income
                 if (this.merge_option_income == MergeCommand.MERGE_INCOME_LOWEST) {
                     if (targetPlayer.getIncome() > sourcePlayer.getIncome()) {
