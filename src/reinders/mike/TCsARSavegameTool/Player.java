@@ -2,9 +2,7 @@ package reinders.mike.TCsARSavegameTool;
 
 import reinders.mike.TCsARSavegameTool.Util.SteamIDC;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public final class Player {
 
@@ -30,12 +28,37 @@ public final class Player {
         // Empty
     }
 
-    public Player clone() {
-        try {
-            return (Player)super.clone();
-        } catch (CloneNotSupportedException ignored) {
-            return null;
+    public Player clone() throws CloneNotSupportedException {
+        Player newPlayer = new Player();
+
+        newPlayer.setName(this.getName());
+        newPlayer.setSteamID64(this.getSteamID64());
+        newPlayer.setPoints(this.getPoints());
+        newPlayer.setTotalEarned(this.getTotalEarned());
+        newPlayer.setIncome(this.getIncome());
+        newPlayer.setIncomeFraction(this.getIncomeFraction());
+        newPlayer.setTotalPlayedTime(this.getTotalPlayedTime());
+        newPlayer.setTimeFraction(this.getTimeFraction());
+        newPlayer.setEligibleForBonus(this.isEligibleForBonus());
+        newPlayer.setBonusAmount(this.getBonusAmount());
+        newPlayer.setNotify(this.isNotify());
+
+        newPlayer.getCustomTags().addAll(Arrays.asList(this.getCustomTags().toArray(new String[0])));
+        newPlayer.getPurchasedPIDs().addAll(Arrays.asList(this.getPurchasedPIDs().toArray(new String[0])));
+
+        HashMap<String, Integer> purchaseLimits = new HashMap<>();
+        for (Map.Entry<String, Integer> limit : this.getPurchaseLimits().entrySet()) {
+            purchaseLimits.put(limit.getKey(), limit.getValue());
         }
+        newPlayer.setPurchaseLimits(purchaseLimits);
+
+        HashMap<String, Float> purchaseCooldowns = new HashMap<>();
+        for (Map.Entry<String, Float> cooldown : this.getPurchaseCooldowns().entrySet()) {
+            purchaseCooldowns.put(cooldown.getKey(), cooldown.getValue());
+        }
+        newPlayer.setPurchaseCooldowns(purchaseCooldowns);
+
+        return newPlayer;
     }
 
     public String getName() {
