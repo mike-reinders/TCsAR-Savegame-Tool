@@ -23,7 +23,8 @@ public class PlayerDataSavegame {
     private List<Player> players;
 
     public PlayerDataSavegame() {
-        // Empty
+        this.playerVersion = 0;
+        this.players = new ArrayList<>();
     }
 
     public PlayerDataSavegame(Path path) throws SaveGameException {
