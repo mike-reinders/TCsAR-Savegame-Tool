@@ -30,6 +30,14 @@ public final class Player {
         // Empty
     }
 
+    public Player clone() {
+        try {
+            return (Player)super.clone();
+        } catch (CloneNotSupportedException ignored) {
+            return null;
+        }
+    }
+
     public String getName() {
         return this.name;
     }
