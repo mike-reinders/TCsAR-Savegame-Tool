@@ -93,9 +93,9 @@ public class PlayerDataSavegame {
                 }
                 for(Object obj2 : purchaseCooldowns) {
                     StructPropertyList purchaseCooldown = (StructPropertyList)obj2;
-                    purchaseLimitsList.put(
+                    purchaseCooldownsList.put(
                             ((PropertyStr)purchaseCooldown.getProperty(KnownProperties.PURCHASE_COOLDOWNS_PID)).getValue(),
-                            ((PropertyInt)purchaseCooldown.getProperty(KnownProperties.PURCHASE_COOLDOWNS_UNLOCK_TIME)).getValue()
+                            ((PropertyFloat)purchaseCooldown.getProperty(KnownProperties.PURCHASE_COOLDOWNS_UNLOCK_TIME)).getValue()
                     );
                 }
 
