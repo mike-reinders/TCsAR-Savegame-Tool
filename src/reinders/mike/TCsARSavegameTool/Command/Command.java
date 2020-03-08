@@ -74,6 +74,44 @@ public abstract class Command {
         return this.parameters;
     }
 
+    public final Integer getInteger(@NotNull String ...names) throws MissingArgumentException {
+        try {
+            return Integer.parseInt(this.requireArgument(names));
+        } catch (NumberFormatException ex) {
+            throw new IllegalArgumentException(String.join(" ", names));
+        }
+    }
+
+    public final Float getFloat(@NotNull String ...names) throws MissingArgumentException {
+        try {
+            return Float.parseFloat(this.requireArgument(names));
+        } catch (NumberFormatException ex) {
+            throw new IllegalArgumentException(String.join(" ", names));
+        }
+    }
+
+    public final Boolean getBoolean(@NotNull String ...names) throws MissingArgumentException {
+        String argument = this.requireArgument(names);
+
+        if (argument.equalsIgnoreCase("true")) {
+            return true;
+        } else if (argument.equalsIgnoreCase("false")) {
+            return false;
+        } else {
+            throw new IllegalArgumentException(String.join(" ", names));
+        }
+    }
+
+    public final String requireArgument(@NotNull String ...names) throws MissingArgumentException {
+        String argument = this.getArgumentDefault(null, names);
+
+        if (argument == null) {
+            throw new MissingArgumentException("Missing argument '" + String.join(" ", names) + "'");
+        }
+
+        return argument;
+    }
+
     public final String getArgument(@NotNull String ...names) {
         return this.getArgumentDefault("", names);
     }
@@ -128,7 +166,7 @@ public abstract class Command {
         }
     }
 
-    public final String[] requireArgument(@NotNull  String name) throws MissingArgumentException {
+    public final String[] requireArguments(@NotNull  String name) throws MissingArgumentException {
         String[] value = this.getArguments(name);
 
         if (value == null) {
