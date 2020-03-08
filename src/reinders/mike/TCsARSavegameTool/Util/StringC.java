@@ -50,4 +50,23 @@ public final class StringC {
         return String.valueOf(newValue);
     }
 
+    public static String padLines(String text, char chr, int length) {
+        char[] pad = new char[length];
+        for (int i = 0; i < length; i++) {
+            pad[i] = chr;
+        }
+        String padStr = String.valueOf(pad);
+
+        StringBuilder result = new StringBuilder();
+        String[] lines = text.split("\\n");
+
+        for (String line : lines) {
+            result.append(padStr);
+            result.append(line);
+            result.append(System.lineSeparator());
+        }
+
+        return result.toString();
+    }
+
 }

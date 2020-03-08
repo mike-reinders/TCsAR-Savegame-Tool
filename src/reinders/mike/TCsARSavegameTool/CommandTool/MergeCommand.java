@@ -104,11 +104,41 @@ public class MergeCommand extends Command {
 
     @Override
     public String getDescription() {
-        return "Merges two or more files into a single newly created file.";
+        return "Merges one or more files into a single newly created file.";
     }
 
+    @Override
     public String getUsage() {
-        return "[target file] [source file] [source file] [... additional source files]";
+        return "[...parameters] [target file] [source file] [source file] [... additional source files]" + System.lineSeparator()
+                + System.lineSeparator()
+                + "The following parameters are available:" + System.lineSeparator()
+                + "[points-stack] | [points-reset] | [points-set=<value>] | [points-lowest] | [points-highest]" + System.lineSeparator()
+                + "[[income-reset] | [income-set] | [income-lowest] | [income-highest]]" + System.lineSeparator()
+                + "[[income-fraction-reset] | [income-fraction-set=<value>] | [income-fraction-lowest] | [income-fraction-highest]]" + System.lineSeparator()
+                + "[[total-played-time-stack] | [total-played-time-reset] | [total-played-time-set=<value>]]" + System.lineSeparator()
+                + "[[time-fraction-reset] | [time-fraction-set=<value>] | [time-fraction-lowest] | [time-fraction-highest]]" + System.lineSeparator()
+                + "[eligible-for-bonus-set=<value>]" + System.lineSeparator()
+                + "[[bonus-amount-reset] | [bonus-amount-set=<value>] | [bonus-amount-lowest] | [bonus-amount-highest]]" + System.lineSeparator()
+                + "[notify-set=<value>]" + System.lineSeparator()
+                + "[[tags-reset] | [tags-set=<value>]]" + System.lineSeparator()
+                + "[[purchased-pids-reset] | [purchased-pids-set=<value>]]" + System.lineSeparator()
+                + "[[purchase-limits-reset] | [purchase-limits-set=<value>] | [purchase-limits-lowest] | [purchase-limits-highest]]" + System.lineSeparator()
+                + "[[purchase-cooldowns-reset] [purchase-cooldowns-set] [purchase-cooldowns-lowest] [purchase-cooldowns-highest]]" + System.lineSeparator()
+                + System.lineSeparator()
+                + "To explain this a little. The following:" + System.lineSeparator()
+                + "[[tags-reset] | [tags-set=<value>]]" + System.lineSeparator()
+                + ".. shows that the parameters \"tags-reset\" and \"tags-set\" can be used." + System.lineSeparator()
+                + "But only one of them because they exclude each other." + System.lineSeparator()
+                + "The \"tags-set\" parameter also requires a value. Tags have to be delimetered by a ',' (comma)" + System.lineSeparator()
+                + System.lineSeparator()
+                + "Here are a few more parameters which not always work depending on what parameters have been provided already:" + System.lineSeparator()
+                + "[ensure-tag=<value>]* [omit-tag=<value>]*" + System.lineSeparator()
+                + "[ensure-purchased-pid=<value>]* [omit-purchased-pid=<value>]*" + System.lineSeparator()
+                + "[ensure-purchase-limit=<value>]* [omit-purchase-limit=<value>]*" + System.lineSeparator()
+                + "[ensure-purchase-cooldown=<value>]* [omit-purchase-cooldown=<value>]*" + System.lineSeparator()
+                + System.lineSeparator()
+                + "These parameters can be repeated indefinitely an require a value." + System.lineSeparator()
+                + "To ensure a purchase limit or purchase cooldown the value has to be => '<key>=<value>' e.g. '--ensure-purchase-limit=<key>=<value>'";
     }
 
     @Override

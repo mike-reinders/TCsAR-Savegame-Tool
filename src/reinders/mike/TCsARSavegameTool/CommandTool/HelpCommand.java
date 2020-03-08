@@ -1,6 +1,7 @@
 package reinders.mike.TCsARSavegameTool.CommandTool;
 
 import reinders.mike.TCsARSavegameTool.Command.Command;
+import reinders.mike.TCsARSavegameTool.Util.StringC;
 
 public class HelpCommand extends Command {
 
@@ -75,13 +76,11 @@ public class HelpCommand extends Command {
                     strBuilder.append(":");
                     if (description.length() > 0) {
                         strBuilder.append(System.lineSeparator());
-                        strBuilder.append("            ");
-                        strBuilder.append(description);
+                        strBuilder.append(StringC.padLines(description, ' ', 12));
                     }
                     if (usage.length() > 0) {
                         strBuilder.append(System.lineSeparator());
-                        strBuilder.append("            ");
-                        strBuilder.append(usage);
+                        strBuilder.append(StringC.padLines(usage, ' ', 12));
                     }
                 }
             } else {
