@@ -28,7 +28,7 @@ public final class Player {
         // Empty
     }
 
-    public Player clone() throws CloneNotSupportedException {
+    public Player clone() {
         Player newPlayer = new Player();
 
         newPlayer.setName(this.getName());

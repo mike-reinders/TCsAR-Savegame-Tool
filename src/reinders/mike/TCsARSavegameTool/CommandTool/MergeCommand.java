@@ -124,6 +124,7 @@ public class MergeCommand extends Command {
             this.parseArguments();
         } catch (IllegalArgumentException ex) {
             System.out.println("Invalid argument '" + ex.getMessage() + "'");
+            return true;
         }
 
         long startUsedMemory = Runtime.getRuntime().totalMemory();
@@ -146,6 +147,14 @@ public class MergeCommand extends Command {
 
             this.merge(targetSavegame, sourceSavegame);
         }
+
+        // Increase Player Version by 1 to ensure the data is being synced with the API
+        targetSavegame.setPlayerVersion(targetSavegame.getPlayerVersion() + 1);
+
+        Path targetFilePath = Paths.get(this.getParameters()[0]).toAbsolutePath();
+
+        System.out.println("Saving Target File '" + targetFilePath + "'");
+        targetSavegame.save(targetFilePath);
 
         return true;
     }
@@ -387,7 +396,7 @@ public class MergeCommand extends Command {
         }
     }
 
-    public PlayerDataSavegame merge(PlayerDataSavegame targetSavegame, PlayerDataSavegame sourceSavegame) {
+    public PlayerDataSavegame merge(PlayerDataSavegame targetSavegame, PlayerDataSavegame sourceSavegame) throws CloneNotSupportedException {
         if (sourceSavegame.getPlayerVersion() > targetSavegame.getPlayerVersion()) {
             targetSavegame.setPlayerVersion(sourceSavegame.getPlayerVersion());
         }
@@ -400,7 +409,6 @@ public class MergeCommand extends Command {
 
             if (targetPlayer == null) {
                 targetPlayer = sourcePlayer.clone();
-                assert targetPlayer != null;
                 targetSavegame.getPlayers().add(targetPlayer);
 
                 System.out.println("Added Player " + targetPlayer.getSteamID64() + " (" + targetPlayer.getName() + ")");
