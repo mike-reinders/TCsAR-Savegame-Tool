@@ -253,6 +253,9 @@ public class PlayerDataSavegame {
                     jsonGenerator.writeNumberField(KnownPropertiesSimplified.BONUS_AMOUNT, player.getBonusAmount());
                     jsonGenerator.writeBooleanField(KnownPropertiesSimplified.NOTIFY, player.isNotify());
 
+                    // Pack Requirements
+                    jsonGenerator.writeObjectFieldStart(KnownPropertiesSimplified.PACK_REQUIREMENTS);
+
                     // Custom Tags
                     jsonGenerator.writeArrayFieldStart(KnownPropertiesSimplified.CUSTOM_TAGS);
                     for (String tag : player.getCustomTags()) {
@@ -286,6 +289,9 @@ public class PlayerDataSavegame {
                         jsonGenerator.writeEndObject();
                     }
                     jsonGenerator.writeEndArray();
+
+                    // Pack Requirements
+                    jsonGenerator.writeEndObject();
 
                     // Player
                     jsonGenerator.writeEndObject();

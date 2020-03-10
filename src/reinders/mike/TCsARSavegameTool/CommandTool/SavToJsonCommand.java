@@ -12,7 +12,7 @@ public class ExportCommand extends Command {
 
     @Override
     public String getName() {
-        return "export";
+        return "sav-to-json";
     }
 
     @Override
