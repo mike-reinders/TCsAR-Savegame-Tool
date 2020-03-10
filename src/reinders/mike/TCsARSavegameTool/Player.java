@@ -77,6 +77,8 @@ public final class Player {
 
     public Player setSteamID64(long steamID64) {
         this.steamID64 = steamID64;
+        this.steamID3 = null;
+        this.steamID = null;
 
         return this;
     }
