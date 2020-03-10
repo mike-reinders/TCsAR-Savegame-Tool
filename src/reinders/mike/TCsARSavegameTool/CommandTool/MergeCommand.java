@@ -163,7 +163,7 @@ public class MergeCommand extends Command {
 
         for (int i = 1; i < this.getParameters().length; i++) {
             sourceSavegamePath = Paths.get(this.getParameters()[i]).toAbsolutePath();
-            System.out.println("Merging source file '" + sourceSavegamePath.getFileName().toString() + "'");
+            System.out.println("Merging source file '" + sourceSavegamePath.getFileName() + "'");
             sourceSavegame = new PlayerDataSavegame(sourceSavegamePath);
 
             this.merge(targetSavegame, sourceSavegame);
@@ -174,7 +174,7 @@ public class MergeCommand extends Command {
 
         Path targetFilePath = Paths.get(this.getParameters()[0]).toAbsolutePath();
 
-        System.out.println("Saving Target File '" + targetFilePath + "'");
+        System.out.println("Saving Target File '" + targetFilePath.getFileName() + "'");
         targetSavegame.save(targetFilePath);
 
         return true;

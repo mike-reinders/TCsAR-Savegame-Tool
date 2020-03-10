@@ -33,10 +33,10 @@ public class ExportCommand extends Command {
         Path targetSavegamePath = Paths.get(this.getParameters()[1]).toAbsolutePath();
         boolean pretty = this.isArgument("pretty");
 
-        System.out.println("Loading source file '" + sourceSavegamePath.getFileName().toString() + "'");
+        System.out.println("Loading source file '" + sourceSavegamePath.getFileName() + "'");
         PlayerDataSavegame sourceSavegame = new PlayerDataSavegame(sourceSavegamePath);
 
-        System.out.print("Saving Target File '" + targetSavegamePath.getFileName().toString() + "'");
+        System.out.print("Saving Target File '" + targetSavegamePath.getFileName() + "'");
         if (pretty) {
             System.out.print(" (pretty formatted)");
         }
