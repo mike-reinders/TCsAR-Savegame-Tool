@@ -4,7 +4,9 @@ import qowyn.ark.types.ArkName;
 
 public class KnownProperties {
 
-    public static final ArkName PACK_REQUIREMENTS_STRUCT_TYPE = ArkName.constantPlain("TCsAR_PlayerPackRequirements_Struct");
+    public static final String CLASS_NAME = "className";
+    public static final String PLAYER_VERSION = "PlayerVersion";
+    public static final String PLAYER_DATA = "PlayerData";
 
     public static final String PLAYER_NAME = "PlayerName_14_78BA89BD408D8B0D2D9421813B7CBDDF";
     public static final String STEAM_ID_64 = "SteamID64_2_54E49CB44C10E0CB6117CD9DAA5B4313";
@@ -17,7 +19,9 @@ public class KnownProperties {
     public static final String ELIGIBLE_FOR_BONUS = "EligibleForBonus_32_71B4E27745F614B6DE22E78D367FBA0C";
     public static final String BONUS_AMOUNT = "BonusAmount_42_783F06A34EF7A88D580227BC2C002786";
     public static final String NOTIFY = "Notify_40_DE1561DE4D80B9DB6E6E9DA5C8C5057C";
+
     public static final String PACK_REQUIREMENTS = "PackRequirements_45_4F30EAE9499C5B7161017D8FDEFF72B0";
+    public static final ArkName PACK_REQUIREMENTS_STRUCT_TYPE = ArkName.constantPlain("TCsAR_PlayerPackRequirements_Struct");
 
     public static final String CUSTOM_TAGS = "CustomTags_15_A3B01F3147D823F2025FE38E55397201";
     public static final String PURCHASED_PIDs = "PurchasedPIDs_3_2694E4AE470167A4A99AFA88153A3113";

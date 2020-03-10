@@ -2,6 +2,10 @@ package reinders.mike.TCsARSavegameTool;
 
 public class KnownPropertiesSimplified {
 
+    public static final String CLASS_NAME = "className";
+    public static final String PLAYER_VERSION = "PlayerVersion";
+    public static final String PLAYER_DATA = "PlayerData";
+
     public static final String PLAYER_NAME = "PlayerName";
     public static final String STEAM_ID_64 = "SteamID64";
     public static final String POINTS = "Points";
@@ -14,8 +18,8 @@ public class KnownPropertiesSimplified {
     public static final String BONUS_AMOUNT = "BonusAmount";
     public static final String TAGS = "Tags";
     public static final String NOTIFY = "Notify";
-    public static final String PACK_REQUIREMENTS = "PackRequirements";
 
+    public static final String PACK_REQUIREMENTS = "PackRequirements";
     public static final String CUSTOM_TAGS = "CustomTags";
     public static final String PURCHASED_PIDs = "PurchasedPIDs";
     public static final String PURCHASE_LIMITS = "PurchaseLimits";

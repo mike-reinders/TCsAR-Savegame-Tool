@@ -1,5 +1,8 @@
 package reinders.mike.TCsARSavegameTool;
 
+import com.fasterxml.jackson.core.JsonEncoding;
+import com.fasterxml.jackson.core.JsonFactory;
+import com.fasterxml.jackson.core.JsonGenerator;
 import qowyn.ark.ArkSavFile;
 import qowyn.ark.arrays.ArkArray;
 import qowyn.ark.arrays.ArkArrayString;
@@ -35,18 +38,18 @@ public class PlayerDataSavegame {
         try {
             ArkSavFile file = new ArkSavFile(path);
 
-            String className = (String)ObjectA.getPrivateField(file, "className");
+            String className = (String)ObjectA.getPrivateField(file, KnownProperties.CLASS_NAME);
             if (className == null || !className.equals(PlayerDataSavegame.KNOWN__CLASS_NAME)) {
                 throw new SaveGameException("File is not a PlayerData-Savegame!");
             }
 
-            int playerVersion = ((PropertyInt)file.getProperty("PlayerVersion")).getValue();
+            int playerVersion = ((PropertyInt)file.getProperty(KnownProperties.PLAYER_VERSION)).getValue();
             if (playerVersion < 0) {
                 throw new SaveGameException("SaveGame: PlayerVersion must not be negative.");
             }
 
             List<Player> playerData = new ArrayList<>();
-            ArkArray<?> playerData_array = ((PropertyArray)file.getProperty("PlayerData")).getValue();
+            ArkArray<?> playerData_array = ((PropertyArray)file.getProperty(KnownProperties.PLAYER_DATA)).getValue();
 
             for (Object obj : playerData_array) {
                 StructPropertyList playerPropertyList = (StructPropertyList)obj;
@@ -125,17 +128,17 @@ public class PlayerDataSavegame {
     public void save(Path path) throws SaveGameException {
         try {
             ArkSavFile file = new ArkSavFile();
-            ObjectA.setPrivateField(file, "className", PlayerDataSavegame.KNOWN__CLASS_NAME);
+            ObjectA.setPrivateField(file, KnownProperties.CLASS_NAME, PlayerDataSavegame.KNOWN__CLASS_NAME);
 
             List<Property<?>> fileProperties = new ArrayList<>();
 
             // PlayerVersion
-            PropertyInt playerVersion = new PropertyInt("PlayerVersion", this.playerVersion);
+            PropertyInt playerVersion = new PropertyInt(KnownProperties.PLAYER_VERSION, this.playerVersion);
             fileProperties.add(playerVersion);
 
             // PlayerData
             ArkArrayStruct playerDataArray = new ArkArrayStruct();
-            PropertyArray playerData = new PropertyArray("PlayerData", playerDataArray);
+            PropertyArray playerData = new PropertyArray(KnownProperties.PLAYER_DATA, playerDataArray);
 
             // Pack PlayerData
             List<Property<?>> playerProperties;
@@ -209,6 +212,92 @@ public class PlayerDataSavegame {
             file.writeBinary(path);
         } catch (Throwable throwable) {
             throw new SaveGameException("Failed to save SaveGame", throwable);
+        }
+    }
+
+    public void saveJson(Path path) throws SaveGameException {
+        this.saveJson(path, false);
+    }
+
+    public void saveJson(Path path, boolean pretty) throws SaveGameException {
+        try {
+            JsonFactory jsonFactory = new JsonFactory();
+            try (JsonGenerator jsonGenerator = jsonFactory.createGenerator(path.toFile(), JsonEncoding.UTF8)) {
+                if (pretty) {
+                    jsonGenerator.useDefaultPrettyPrinter();
+                }
+
+                // JsonFile
+                jsonGenerator.writeStartObject();
+
+                // PlayerVersion
+                jsonGenerator.writeNumberField(KnownPropertiesSimplified.PLAYER_VERSION, this.getPlayerVersion());
+
+                // PlayerData
+                jsonGenerator.writeArrayFieldStart(KnownPropertiesSimplified.PLAYER_DATA);
+
+                // Write all Players
+                for (Player player : this.getPlayers()) {
+                    // Player
+                    jsonGenerator.writeStartObject();
+
+                    jsonGenerator.writeStringField(KnownPropertiesSimplified.PLAYER_NAME, player.getName());
+                    jsonGenerator.writeNumberField(KnownPropertiesSimplified.POINTS, player.getSteamID64());
+                    jsonGenerator.writeNumberField(KnownPropertiesSimplified.TOTAL_EARNED, player.getTotalEarned());
+                    jsonGenerator.writeNumberField(KnownPropertiesSimplified.INCOME, player.getIncome());
+                    jsonGenerator.writeNumberField(KnownPropertiesSimplified.INCOME_FRACTION, player.getIncomeFraction());
+                    jsonGenerator.writeNumberField(KnownPropertiesSimplified.TOTAL_PLAYED_TIME, player.getTotalPlayedTime());
+                    jsonGenerator.writeNumberField(KnownPropertiesSimplified.TIME_FRACTION, player.getTimeFraction());
+                    jsonGenerator.writeBooleanField(KnownPropertiesSimplified.ELIGIBLE_FOR_BONUS, player.isEligibleForBonus());
+                    jsonGenerator.writeNumberField(KnownPropertiesSimplified.BONUS_AMOUNT, player.getBonusAmount());
+                    jsonGenerator.writeBooleanField(KnownPropertiesSimplified.NOTIFY, player.isNotify());
+
+                    // Custom Tags
+                    jsonGenerator.writeArrayFieldStart(KnownPropertiesSimplified.CUSTOM_TAGS);
+                    for (String tag : player.getCustomTags()) {
+                        jsonGenerator.writeString(tag);
+                    }
+                    jsonGenerator.writeEndArray();
+
+                    // Purchased PIDs
+                    jsonGenerator.writeArrayFieldStart(KnownPropertiesSimplified.PURCHASED_PIDs);
+                    for (String pid : player.getPurchasedPIDs()) {
+                        jsonGenerator.writeString(pid);
+                    }
+                    jsonGenerator.writeEndArray();
+
+                    // Purchase Limits
+                    jsonGenerator.writeArrayFieldStart(KnownPropertiesSimplified.PURCHASE_LIMITS);
+                    for (Map.Entry<String, Integer> limit : player.getPurchaseLimits().entrySet()) {
+                        jsonGenerator.writeStartObject();
+                        jsonGenerator.writeStringField(KnownPropertiesSimplified.PURCHASE_LIMITS_PID, limit.getKey());
+                        jsonGenerator.writeNumberField(KnownPropertiesSimplified.PURCHASE_LIMITS_REMAINING, limit.getValue());
+                        jsonGenerator.writeEndObject();
+                    }
+                    jsonGenerator.writeEndArray();
+
+                    // Purchase Cooldowns
+                    jsonGenerator.writeArrayFieldStart(KnownPropertiesSimplified.PURCHASE_COOLDOWNS);
+                    for (Map.Entry<String, Float> cooldown : player.getPurchaseCooldowns().entrySet()) {
+                        jsonGenerator.writeStartObject();
+                        jsonGenerator.writeStringField(KnownPropertiesSimplified.PURCHASE_COOLDOWNS_PID, cooldown.getKey());
+                        jsonGenerator.writeNumberField(KnownPropertiesSimplified.PURCHASE_COOLDOWNS_UNLOCK_TIME, cooldown.getValue());
+                        jsonGenerator.writeEndObject();
+                    }
+                    jsonGenerator.writeEndArray();
+
+                    // Player
+                    jsonGenerator.writeEndObject();
+                }
+
+                // PlayerData
+                jsonGenerator.writeEndArray();
+
+                // JsonFile
+                jsonGenerator.writeEndObject();
+            }
+        } catch (Throwable throwable) {
+            throw new SaveGameException("Failed to save SaveGame as json format", throwable);
         }
     }
 
