@@ -242,7 +242,8 @@ public class PlayerDataSavegame {
                     jsonGenerator.writeStartObject();
 
                     jsonGenerator.writeStringField(KnownPropertiesSimplified.PLAYER_NAME, player.getName());
-                    jsonGenerator.writeNumberField(KnownPropertiesSimplified.POINTS, player.getSteamID64());
+                    jsonGenerator.writeNumberField(KnownPropertiesSimplified.STEAM_ID_64, player.getSteamID64());
+                    jsonGenerator.writeNumberField(KnownPropertiesSimplified.POINTS, player.getPoints());
                     jsonGenerator.writeNumberField(KnownPropertiesSimplified.TOTAL_EARNED, player.getTotalEarned());
                     jsonGenerator.writeNumberField(KnownPropertiesSimplified.INCOME, player.getIncome());
                     jsonGenerator.writeNumberField(KnownPropertiesSimplified.INCOME_FRACTION, player.getIncomeFraction());
