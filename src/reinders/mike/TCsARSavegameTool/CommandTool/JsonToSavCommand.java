@@ -8,16 +8,16 @@ import reinders.mike.TCsARSavegameTool.SavegameTool;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-public class SavToJsonCommand extends Command {
+public class JsonToSavCommand extends Command {
 
     @Override
     public String getName() {
-        return "sav-to-json";
+        return "json-to-sav";
     }
 
     @Override
     public String getUsage() {
-        return "[--pretty] [source file] [target file]";
+        return "[source file] [target file]";
     }
 
     @Override
@@ -31,18 +31,13 @@ public class SavToJsonCommand extends Command {
 
         Path sourceSavegamePath = Paths.get(this.getParameters()[0]).toAbsolutePath();
         Path targetSavegamePath = Paths.get(this.getParameters()[1]).toAbsolutePath();
-        boolean pretty = this.isArgument("pretty");
 
         System.out.println("Loading source file '" + sourceSavegamePath.getFileName() + "'");
-        PlayerDataSavegame sourceSavegame = new PlayerDataSavegame(sourceSavegamePath);
+        PlayerDataSavegame sourceSavegame = new PlayerDataSavegame();
+        sourceSavegame.loadJson(sourceSavegamePath);
 
-        System.out.print("Saving Target File '" + targetSavegamePath.getFileName() + "'");
-        if (pretty) {
-            System.out.print(" (pretty formatted)");
-        }
-        System.out.println();
-
-        sourceSavegame.saveJson(targetSavegamePath, pretty);
+        System.out.println("Saving Target File '" + targetSavegamePath.getFileName() + "'");
+        sourceSavegame.save(targetSavegamePath);
 
         return true;
     }

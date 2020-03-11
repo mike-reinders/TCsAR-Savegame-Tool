@@ -1,8 +1,6 @@
 package reinders.mike.TCsARSavegameTool;
 
-import com.fasterxml.jackson.core.JsonEncoding;
-import com.fasterxml.jackson.core.JsonFactory;
-import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.*;
 import qowyn.ark.ArkSavFile;
 import qowyn.ark.arrays.ArkArray;
 import qowyn.ark.arrays.ArkArrayString;
@@ -117,6 +115,236 @@ public class PlayerDataSavegame {
             throw ex;
         } catch (Throwable throwable) {
             throw new SaveGameException("Failed to load SaveGame", throwable);
+        }
+    }
+
+    public void loadJson(Path path) throws SaveGameException {
+        try {
+            JsonFactory jsonFactory = new JsonFactory();
+
+            int playerVersion = -1;
+            List<Player> playerData = new ArrayList<>();
+
+            try (JsonParser jsonParser = jsonFactory.createParser(path.toFile())) {
+                if (jsonParser.nextToken() != JsonToken.START_OBJECT) {
+                    throw new SaveGameException("Invalid Savegame Format: Expected Json Object, got '" + jsonParser.currentToken().toString() + "'");
+                }
+
+                String fieldName;
+                String fieldName2;
+                String fieldName3;
+                String fieldName4;
+                Player player;
+                List<String> customTags;
+                List<String> purchasedPIDs;
+                HashMap<String, Integer> purchaseLimits;
+                HashMap<String, Float> purchaseCooldowns;
+                String limitPID = null;
+                Integer limitRemaining = null;
+                String cooldownPID = null;
+                Float cooldownUnlockTime = null;
+
+                while (jsonParser.nextToken() != JsonToken.END_OBJECT) {
+                    fieldName = jsonParser.getCurrentName();
+                    jsonParser.nextToken();
+
+                    switch (fieldName) {
+                        case KnownPropertiesSimplified.PLAYER_VERSION:
+                            playerVersion = jsonParser.getIntValue();
+                            break;
+                        case KnownPropertiesSimplified.PLAYER_DATA:
+                            if (jsonParser.currentToken() == JsonToken.START_ARRAY) {
+                                while (jsonParser.nextToken() != JsonToken.END_ARRAY) {
+                                    if (jsonParser.currentToken() != JsonToken.START_OBJECT) {
+                                        throw new SaveGameException("Invalid Savegame Format: Expected Json Object, got '" + jsonParser.currentToken().toString() + "'");
+                                    }
+
+                                    player = new Player();
+                                    while (jsonParser.nextToken() != JsonToken.END_OBJECT) {
+                                        fieldName2 = jsonParser.getCurrentName();
+                                        jsonParser.nextToken();
+
+                                        switch (fieldName2) {
+                                            case KnownPropertiesSimplified.PLAYER_NAME:
+                                                player.setName(jsonParser.getText());
+                                                break;
+                                            case KnownPropertiesSimplified.STEAM_ID_64:
+                                                player.setSteamID64(jsonParser.getLongValue());
+                                                break;
+                                            case KnownPropertiesSimplified.POINTS:
+                                                player.setPoints(jsonParser.getIntValue());
+                                                break;
+                                            case KnownPropertiesSimplified.TOTAL_EARNED:
+                                                player.setTotalEarned(jsonParser.getIntValue());
+                                                break;
+                                            case KnownPropertiesSimplified.INCOME:
+                                                player.setIncome(jsonParser.getIntValue());
+                                                break;
+                                            case KnownPropertiesSimplified.INCOME_FRACTION:
+                                                player.setIncomeFraction(jsonParser.getFloatValue());
+                                                break;
+                                            case KnownPropertiesSimplified.TOTAL_PLAYED_TIME:
+                                                player.setTotalPlayedTime(jsonParser.getFloatValue());
+                                                break;
+                                            case KnownPropertiesSimplified.TIME_FRACTION:
+                                                player.setTimeFraction(jsonParser.getFloatValue());
+                                                break;
+                                            case KnownPropertiesSimplified.ELIGIBLE_FOR_BONUS:
+                                                player.setEligibleForBonus(jsonParser.getBooleanValue());
+                                                break;
+                                            case KnownPropertiesSimplified.BONUS_AMOUNT:
+                                                player.setBonusAmount(jsonParser.getIntValue());
+                                                break;
+                                            case KnownPropertiesSimplified.NOTIFY:
+                                                player.setNotify(jsonParser.getBooleanValue());
+                                                break;
+                                            case KnownPropertiesSimplified.PACK_REQUIREMENTS:
+                                                if (jsonParser.currentToken() != JsonToken.START_OBJECT) {
+                                                    throw new SaveGameException("Invalid Savegame Format: Expected Json Object, got '" + jsonParser.currentToken().toString() + "'");
+                                                }
+
+                                                while (jsonParser.nextToken() != JsonToken.END_OBJECT) {
+                                                    fieldName3 = jsonParser.getCurrentName();
+                                                    jsonParser.nextToken();
+
+                                                    switch (fieldName3) {
+                                                        case KnownPropertiesSimplified.CUSTOM_TAGS:
+                                                            if (jsonParser.getCurrentToken() == JsonToken.START_ARRAY) {
+                                                                customTags = new ArrayList<>();
+
+                                                                while (jsonParser.nextToken() != JsonToken.END_ARRAY) {
+                                                                    customTags.add(jsonParser.getText());
+                                                                }
+
+                                                                player.setCustomTags(customTags);
+                                                            } else if (jsonParser.getCurrentToken() != JsonToken.VALUE_NULL) {
+                                                                throw new SaveGameException("Invalid Savegame Format: Expected Json Array, got '" + jsonParser.currentToken().toString() + "'");
+                                                            }
+                                                            break;
+                                                        case KnownPropertiesSimplified.PURCHASED_PIDs:
+                                                            if (jsonParser.getCurrentToken() == JsonToken.START_ARRAY) {
+                                                                purchasedPIDs = new ArrayList<>();
+
+                                                                while (jsonParser.nextToken() != JsonToken.END_ARRAY) {
+                                                                    purchasedPIDs.add(jsonParser.getText());
+                                                                }
+
+                                                                player.setPurchasedPIDs(purchasedPIDs);
+                                                            } else if (jsonParser.getCurrentToken() != JsonToken.VALUE_NULL) {
+                                                                throw new SaveGameException("Invalid Savegame Format: Expected Json Array, got '" + jsonParser.currentToken().toString() + "'");
+                                                            }
+                                                            break;
+                                                        case KnownPropertiesSimplified.PURCHASE_LIMITS:
+                                                            if (jsonParser.getCurrentToken() == JsonToken.START_ARRAY) {
+                                                                purchaseLimits = new HashMap<>();
+
+                                                                while (jsonParser.nextToken() != JsonToken.END_ARRAY) {
+                                                                    if (jsonParser.getCurrentToken() == JsonToken.START_OBJECT) {
+                                                                        limitPID = null;
+                                                                        limitRemaining = null;
+
+                                                                        while (jsonParser.nextToken() != JsonToken.END_OBJECT) {
+                                                                            fieldName4 = jsonParser.getCurrentName();
+                                                                            jsonParser.nextToken();
+
+                                                                            switch (fieldName4) {
+                                                                                case KnownPropertiesSimplified.PURCHASE_LIMITS_PID:
+                                                                                    limitPID = jsonParser.getText();
+                                                                                    break;
+                                                                                case KnownPropertiesSimplified.PURCHASE_LIMITS_REMAINING:
+                                                                                    limitRemaining = jsonParser.getIntValue();
+                                                                                    break;
+                                                                                default:
+                                                                                    jsonParser.skipChildren();
+                                                                                    break;
+                                                                            }
+                                                                        }
+
+                                                                        if (limitPID == null || limitRemaining == null) {
+                                                                            throw new SaveGameException("Invalid Savegame Format: Missing values in Purchase Limits");
+                                                                        }
+
+                                                                        purchaseLimits.put(limitPID, limitRemaining);
+                                                                    } else if (jsonParser.getCurrentToken() != JsonToken.VALUE_NULL) {
+                                                                        throw new SaveGameException("Invalid Savegame Format: Expected Json Object, got '" + jsonParser.currentToken().toString() + "'");
+                                                                    }
+                                                                }
+
+                                                                player.setPurchaseLimits(purchaseLimits);
+                                                            } else if (jsonParser.getCurrentToken() != JsonToken.VALUE_NULL) {
+                                                                throw new SaveGameException("Invalid Savegame Format: Expected Json Array, got '" + jsonParser.currentToken().toString() + "'");
+                                                            }
+                                                            break;
+                                                        case KnownPropertiesSimplified.PURCHASE_COOLDOWNS:
+                                                            if (jsonParser.getCurrentToken() == JsonToken.START_ARRAY) {
+                                                                purchaseCooldowns = new HashMap<>();
+
+                                                                while (jsonParser.nextToken() != JsonToken.END_ARRAY) {
+                                                                    if (jsonParser.getCurrentToken() == JsonToken.START_OBJECT) {
+                                                                        cooldownPID = null;
+                                                                        cooldownUnlockTime = null;
+
+                                                                        while (jsonParser.nextToken() != JsonToken.END_OBJECT) {
+                                                                            fieldName4 = jsonParser.getCurrentName();
+                                                                            jsonParser.nextToken();
+
+                                                                            switch (fieldName4) {
+                                                                                case KnownPropertiesSimplified.PURCHASE_LIMITS_PID:
+                                                                                    cooldownPID = jsonParser.getText();
+                                                                                    break;
+                                                                                case KnownPropertiesSimplified.PURCHASE_LIMITS_REMAINING:
+                                                                                    cooldownUnlockTime = jsonParser.getFloatValue();
+                                                                                    break;
+                                                                                default:
+                                                                                    jsonParser.skipChildren();
+                                                                                    break;
+                                                                            }
+                                                                        }
+
+                                                                        if (cooldownPID == null || cooldownUnlockTime == null) {
+                                                                            throw new SaveGameException("Invalid Savegame Format: Missing values in Purchase Cooldowns");
+                                                                        }
+
+                                                                        purchaseCooldowns.put(cooldownPID, cooldownUnlockTime);
+                                                                    } else if (jsonParser.getCurrentToken() != JsonToken.VALUE_NULL) {
+                                                                        throw new SaveGameException("Invalid Savegame Format: Expected Json Object, got '" + jsonParser.currentToken().toString() + "'");
+                                                                    }
+                                                                }
+
+                                                                player.setPurchaseCooldowns(purchaseCooldowns);
+                                                            } else if (jsonParser.getCurrentToken() != JsonToken.VALUE_NULL) {
+                                                                throw new SaveGameException("Invalid Savegame Format: Expected Json Object, got '" + jsonParser.currentToken().toString() + "'");
+                                                            }
+
+                                                            break;
+                                                        default:
+                                                            jsonParser.skipChildren();
+                                                            break;
+                                                    }
+                                                }
+                                                break;
+                                            default:
+                                                jsonParser.skipChildren();
+                                                break;
+                                        }
+                                    }
+                                    playerData.add(player);
+                                }
+                            } else if (jsonParser.currentToken() != JsonToken.VALUE_NULL) {
+                                throw new SaveGameException("Invalid Savegame Format: Expected Json Array or null, got '" + jsonParser.currentToken().toString() + "'");
+                            }
+                            break;
+                        default:
+                            jsonParser.skipChildren();
+                            break;
+                    }
+                }
+            }
+
+            this.playerVersion = playerVersion;
+            this.players = playerData;
+        } catch (Throwable throwable) {
+            throw new SaveGameException("Failed to load SaveGame from json", throwable);
         }
     }
 

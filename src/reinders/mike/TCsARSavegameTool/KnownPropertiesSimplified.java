@@ -16,11 +16,10 @@ public class KnownPropertiesSimplified {
     public static final String TIME_FRACTION = "TimeFraction";
     public static final String ELIGIBLE_FOR_BONUS = "EligibleForBonus";
     public static final String BONUS_AMOUNT = "BonusAmount";
-    public static final String TAGS = "Tags";
     public static final String NOTIFY = "Notify";
 
     public static final String PACK_REQUIREMENTS = "PackRequirements";
-    public static final String CUSTOM_TAGS = "CustomTags";
+    public static final String CUSTOM_TAGS = "Tags";
     public static final String PURCHASED_PIDs = "PurchasedPIDs";
     public static final String PURCHASE_LIMITS = "PurchaseLimits";
     public static final String PURCHASE_LIMITS_PID = "PID";
