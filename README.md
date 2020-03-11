@@ -8,10 +8,8 @@ This tool also supports merging multiple savegame files into one.
 - Query playerlist and all informations about one or multiple players at once
 - Lookup savegame structure with the debug command
 - Merge multiple savegame files
-
-## Planned Features
-- Export savegames to human friendly json format
-- import savegames from human friendly json format
+- Convert savegames to human friendly json format
+- Convert savegames from json format back to sav format
 
 ## Build Dependencies
 [ARK-Savegame-Toolkit](https://github.com/Qowyn/ark-savegame-toolkit "ARK-Savegame-Toolkit")
