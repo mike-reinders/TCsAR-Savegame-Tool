@@ -6,8 +6,8 @@ public class CommandManager extends reinders.mike.TCsARSavegameTool.Command.Comm
         this.register(new MergeCommand());
         this.register(new VerifyCommand());
         this.register(new QueryCommand());
-        this.register(new JsonToSavCommand());
         this.register(new SavToJsonCommand());
+        this.register(new JsonToSavCommand());
         this.register(new DebugCommand());
         this.register(new HelpCommand());
     }

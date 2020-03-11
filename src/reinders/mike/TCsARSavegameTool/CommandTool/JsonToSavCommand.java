@@ -21,6 +21,11 @@ public class JsonToSavCommand extends Command {
     }
 
     @Override
+    public String getDescription() {
+        return "Convert json format to sav savegame";
+    }
+
+    @Override
     public boolean execute() throws Throwable {
         if (this.getParameters().length < 2) {
             try {
