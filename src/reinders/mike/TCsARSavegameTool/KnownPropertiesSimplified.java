@@ -3,7 +3,7 @@ package reinders.mike.TCsARSavegameTool;
 public class KnownPropertiesSimplified {
 
     public static final String CLASS_NAME = "className";
-    public static final String PLAYER_VERSION = "PlayerVersion";
+    public static final String MOD_VERSION = "ModVersion";
     public static final String PLAYER_DATA = "PlayerData";
 
     public static final String PLAYER_NAME = "PlayerName";

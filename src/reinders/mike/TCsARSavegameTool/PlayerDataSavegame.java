@@ -7,6 +7,7 @@ import qowyn.ark.arrays.ArkArrayString;
 import qowyn.ark.arrays.ArkArrayStruct;
 import qowyn.ark.properties.*;
 import qowyn.ark.structs.StructPropertyList;
+import reinders.mike.TCsARSavegameTool.Exception.ModVersionMismatchException;
 import reinders.mike.TCsARSavegameTool.Exception.SaveGameException;
 import reinders.mike.TCsARSavegameTool.Util.ObjectA;
 
@@ -19,12 +20,13 @@ import java.util.Map;
 public class PlayerDataSavegame {
 
     public static final String KNOWN__CLASS_NAME = "TCsAR_SavedPlayerData_C";
+    public static final Float KNOWN__MOD_VERSION = 1.12f;
 
-    private int playerVersion = -1;
+    private float modVersion = -1;
     private List<Player> players;
 
     public PlayerDataSavegame() {
-        this.playerVersion = 0;
+        this.modVersion = PlayerDataSavegame.KNOWN__MOD_VERSION;
         this.players = new ArrayList<>();
     }
 
@@ -41,9 +43,9 @@ public class PlayerDataSavegame {
                 throw new SaveGameException("File is not a PlayerData-Savegame!");
             }
 
-            int playerVersion = ((PropertyInt)file.getProperty(KnownProperties.PLAYER_VERSION)).getValue();
-            if (playerVersion < 0) {
-                throw new SaveGameException("SaveGame: PlayerVersion must not be negative.");
+            float modVersion = ((PropertyFloat)file.getProperty(KnownProperties.MOD_VERSION)).getValue();
+            if (modVersion != PlayerDataSavegame.KNOWN__MOD_VERSION) {
+                throw new ModVersionMismatchException(PlayerDataSavegame.KNOWN__MOD_VERSION);
             }
 
             List<Player> playerData = new ArrayList<>();
@@ -109,7 +111,7 @@ public class PlayerDataSavegame {
                 playerData.add(player);
             }
 
-            this.playerVersion = playerVersion;
+            this.modVersion = modVersion;
             this.players = playerData;
         } catch (SaveGameException ex) {
             throw ex;
@@ -122,7 +124,7 @@ public class PlayerDataSavegame {
         try {
             JsonFactory jsonFactory = new JsonFactory();
 
-            int playerVersion = -1;
+            float modVersion = -1;
             List<Player> playerData = new ArrayList<>();
 
             try (JsonParser jsonParser = jsonFactory.createParser(path.toFile())) {
@@ -149,8 +151,8 @@ public class PlayerDataSavegame {
                     jsonParser.nextToken();
 
                     switch (fieldName) {
-                        case KnownPropertiesSimplified.PLAYER_VERSION:
-                            playerVersion = jsonParser.getIntValue();
+                        case KnownPropertiesSimplified.MOD_VERSION:
+                            modVersion = jsonParser.getFloatValue();
                             break;
                         case KnownPropertiesSimplified.PLAYER_DATA:
                             if (jsonParser.currentToken() == JsonToken.START_ARRAY) {
@@ -341,7 +343,7 @@ public class PlayerDataSavegame {
                 }
             }
 
-            this.playerVersion = playerVersion;
+            this.modVersion = modVersion;
             this.players = playerData;
         } catch (Throwable throwable) {
             throw new SaveGameException("Failed to load SaveGame from json", throwable);
@@ -349,7 +351,7 @@ public class PlayerDataSavegame {
     }
 
     public void unload() {
-        this.playerVersion = -1;
+        this.modVersion = -1;
         this.players = null;
     }
 
@@ -360,9 +362,9 @@ public class PlayerDataSavegame {
 
             List<Property<?>> fileProperties = new ArrayList<>();
 
-            // PlayerVersion
-            PropertyInt playerVersion = new PropertyInt(KnownProperties.PLAYER_VERSION, this.playerVersion);
-            fileProperties.add(playerVersion);
+            // ModVersion
+            PropertyFloat modVersion = new PropertyFloat(KnownProperties.MOD_VERSION, this.modVersion);
+            fileProperties.add(modVersion);
 
             // PlayerData
             ArkArrayStruct playerDataArray = new ArkArrayStruct();
@@ -458,8 +460,8 @@ public class PlayerDataSavegame {
                 // JsonFile
                 jsonGenerator.writeStartObject();
 
-                // PlayerVersion
-                jsonGenerator.writeNumberField(KnownPropertiesSimplified.PLAYER_VERSION, this.getPlayerVersion());
+                // ModVersion
+                jsonGenerator.writeNumberField(KnownPropertiesSimplified.MOD_VERSION, this.getModVersion());
 
                 // PlayerData
                 jsonGenerator.writeArrayFieldStart(KnownPropertiesSimplified.PLAYER_DATA);
@@ -536,12 +538,12 @@ public class PlayerDataSavegame {
         }
     }
 
-    public int getPlayerVersion() {
-        return this.playerVersion;
+    public float getModVersion() {
+        return this.modVersion;
     }
 
-    public void setPlayerVersion(int playerVersion) {
-        this.playerVersion = playerVersion;
+    public void setModVersion(float modVersion) {
+        this.modVersion = modVersion;
     }
 
     public List<Player> getPlayers() {

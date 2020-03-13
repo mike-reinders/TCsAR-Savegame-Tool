@@ -5,7 +5,7 @@ import qowyn.ark.types.ArkName;
 public class KnownProperties {
 
     public static final String CLASS_NAME = "className";
-    public static final String PLAYER_VERSION = "PlayerVersion";
+    public static final String MOD_VERSION = "ModVersion";
     public static final String PLAYER_DATA = "PlayerData";
 
     public static final String PLAYER_NAME = "PlayerName_14_78BA89BD408D8B0D2D9421813B7CBDDF";

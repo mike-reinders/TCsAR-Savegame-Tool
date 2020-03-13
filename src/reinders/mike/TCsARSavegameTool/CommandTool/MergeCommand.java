@@ -3,6 +3,7 @@ package reinders.mike.TCsARSavegameTool.CommandTool;
 import reinders.mike.TCsARSavegameTool.Command.Command;
 import reinders.mike.TCsARSavegameTool.Exception.MissingArgumentException;
 import reinders.mike.TCsARSavegameTool.Exception.MissingCommandException;
+import reinders.mike.TCsARSavegameTool.Exception.ModVersionMismatchException;
 import reinders.mike.TCsARSavegameTool.Player;
 import reinders.mike.TCsARSavegameTool.PlayerDataSavegame;
 import reinders.mike.TCsARSavegameTool.SavegameTool;
@@ -168,9 +169,6 @@ public class MergeCommand extends Command {
 
             this.merge(targetSavegame, sourceSavegame);
         }
-
-        // Increase Player Version by 1 to ensure the data is being synced with the API
-        targetSavegame.setPlayerVersion(targetSavegame.getPlayerVersion() + 1);
 
         Path targetFilePath = Paths.get(this.getParameters()[0]).toAbsolutePath();
 
@@ -417,10 +415,11 @@ public class MergeCommand extends Command {
         }
     }
 
-    public PlayerDataSavegame merge(PlayerDataSavegame targetSavegame, PlayerDataSavegame sourceSavegame) throws CloneNotSupportedException {
-        if (sourceSavegame.getPlayerVersion() > targetSavegame.getPlayerVersion()) {
-            targetSavegame.setPlayerVersion(sourceSavegame.getPlayerVersion());
+    public PlayerDataSavegame merge(PlayerDataSavegame targetSavegame, PlayerDataSavegame sourceSavegame) throws ModVersionMismatchException {
+        if (sourceSavegame.getModVersion() != targetSavegame.getModVersion()) {
+            throw new ModVersionMismatchException(targetSavegame.getModVersion());
         }
+        targetSavegame.setModVersion(sourceSavegame.getModVersion());
 
         System.out.println("Merging " + sourceSavegame.getPlayers().size() + " Players");
 
