@@ -20,7 +20,7 @@ import java.util.Map;
 public class PlayerDataSavegame {
 
     public static final String KNOWN__CLASS_NAME = "TCsAR_SavedPlayerData_C";
-    public static final Float KNOWN__MOD_VERSION = 1.12f;
+    public static final Float KNOWN__MOD_VERSION = 12.6f;
 
     private float modVersion = -1;
     private List<Player> players;
@@ -45,7 +45,7 @@ public class PlayerDataSavegame {
 
             float modVersion = ((PropertyFloat)file.getProperty(KnownProperties.MOD_VERSION)).getValue();
             if (modVersion != PlayerDataSavegame.KNOWN__MOD_VERSION) {
-                throw new ModVersionMismatchException(PlayerDataSavegame.KNOWN__MOD_VERSION);
+                throw new ModVersionMismatchException(PlayerDataSavegame.KNOWN__MOD_VERSION, modVersion);
             }
 
             List<Player> playerData = new ArrayList<>();

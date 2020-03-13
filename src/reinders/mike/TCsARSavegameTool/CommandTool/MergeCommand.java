@@ -417,7 +417,7 @@ public class MergeCommand extends Command {
 
     public PlayerDataSavegame merge(PlayerDataSavegame targetSavegame, PlayerDataSavegame sourceSavegame) throws ModVersionMismatchException {
         if (sourceSavegame.getModVersion() != targetSavegame.getModVersion()) {
-            throw new ModVersionMismatchException(targetSavegame.getModVersion());
+            throw new ModVersionMismatchException(targetSavegame.getModVersion(), sourceSavegame.getModVersion());
         }
         targetSavegame.setModVersion(sourceSavegame.getModVersion());
 
