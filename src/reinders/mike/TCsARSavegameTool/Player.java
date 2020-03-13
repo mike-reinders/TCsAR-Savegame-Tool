@@ -19,6 +19,7 @@ public final class Player {
     private boolean eligibleForBonus;
     private int bonusAmount;
     private boolean notify;
+    private int playerVersion;
     private List<String> customTags = new ArrayList<>();
     private List<String> purchasedPIDs = new ArrayList<>();
     private HashMap<String, Integer> purchaseLimits = new HashMap<>();
@@ -42,6 +43,7 @@ public final class Player {
         newPlayer.setEligibleForBonus(this.isEligibleForBonus());
         newPlayer.setBonusAmount(this.getBonusAmount());
         newPlayer.setNotify(this.isNotify());
+        newPlayer.setPlayerVersion(this.getPlayerVersion());
 
         newPlayer.getCustomTags().addAll(Arrays.asList(this.getCustomTags().toArray(new String[0])));
         newPlayer.getPurchasedPIDs().addAll(Arrays.asList(this.getPurchasedPIDs().toArray(new String[0])));
@@ -187,6 +189,14 @@ public final class Player {
         this.notify = notify;
 
         return this;
+    }
+
+    public int getPlayerVersion() {
+        return this.playerVersion;
+    }
+
+    public void setPlayerVersion(int playerVersion) {
+        this.playerVersion = playerVersion;
     }
 
     public List<String> getCustomTags() {

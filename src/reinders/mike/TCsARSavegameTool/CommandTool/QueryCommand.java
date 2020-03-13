@@ -152,6 +152,10 @@ public class QueryCommand extends Command {
         strBuilder.append((player.isNotify()? "true": "false"));
 
         strBuilder.append(System.lineSeparator());
+        strBuilder.append(StringC.pad(Pad.RIGHT, "PlayerVersion:", QueryCommand.PLAYER_DETAILS_LEFT_ROW_SIZE));
+        strBuilder.append(player.getPlayerVersion());
+
+        strBuilder.append(System.lineSeparator());
         strBuilder.append(StringC.pad(Pad.RIGHT, "Tags:", QueryCommand.PLAYER_DETAILS_LEFT_ROW_SIZE));
         int n = 0;
         for (String tag : player.getCustomTags()) {
@@ -215,35 +219,35 @@ public class QueryCommand extends Command {
                     strBuilder.append(System.lineSeparator());
                 }
                 strBuilder.append(System.lineSeparator());
-                strBuilder.append(" --");
-                strBuilder.append(StringC.pad(Pad.RIGHT, "Nr", '-', indexPad));
-                strBuilder.append("--");
-                strBuilder.append(StringC.pad(Pad.RIGHT, "Steam64ID", '-', 18));
-                strBuilder.append("--");
-                strBuilder.append(StringC.pad(Pad.RIGHT, "Name", '-', 20));
-                strBuilder.append("--");
-                strBuilder.append(StringC.pad(Pad.RIGHT, "ARc", '-', 10));
-                strBuilder.append("--");
-                strBuilder.append(StringC.pad(Pad.RIGHT, "Spent ARc", '-', 10));
-                strBuilder.append("--");
-                strBuilder.append(StringC.pad(Pad.RIGHT, "Total ARc", '-', 10));
-                strBuilder.append("--");
-                strBuilder.append(StringC.pad(Pad.RIGHT, "Time-Played", '-', 16));
-                strBuilder.append("--");
-                strBuilder.append(StringC.fill('-', 16));
+                strBuilder.append("| ");
+                strBuilder.append(StringC.pad(Pad.RIGHT, "Nr", ' ', indexPad + 2));
+                strBuilder.append(" | ");
+                strBuilder.append(StringC.pad(Pad.RIGHT, "Steam64ID", ' ', 18));
+                strBuilder.append(" | ");
+                strBuilder.append(StringC.pad(Pad.RIGHT, "Name", ' ', 20));
+                strBuilder.append(" | ");
+                strBuilder.append(StringC.pad(Pad.RIGHT, "ARc", ' ', 10));
+                strBuilder.append(" | ");
+                strBuilder.append(StringC.pad(Pad.RIGHT, "Spent ARc", ' ', 10));
+                strBuilder.append(" | ");
+                strBuilder.append(StringC.pad(Pad.RIGHT, "Total ARc", ' ', 10));
+                strBuilder.append(" | ");
+                strBuilder.append(StringC.pad(Pad.RIGHT, "Player Version", ' ', 16));
+                strBuilder.append(" | ");
+                strBuilder.append(StringC.pad(Pad.RIGHT, "Time-Played", ' ', 16));
             }
 
             strBuilder.append(System.lineSeparator());
-            strBuilder.append(" # ");
+            strBuilder.append("  # ");
             strBuilder.append(StringC.pad(Pad.RIGHT, String.valueOf(i), indexPad));
-            strBuilder.append("  ");
+            strBuilder.append("   ");
             strBuilder.append(StringC.pad(Pad.RIGHT, String.valueOf(player.getSteamID64()), 18));
-            strBuilder.append("  ");
+            strBuilder.append("   ");
             strBuilder.append(StringC.pad(Pad.RIGHT, player.getName(), 20));
-            strBuilder.append("  ");
+            strBuilder.append("   ");
             strBuilder.append(StringC.pad(Pad.RIGHT, String.valueOf(player.getPoints()), 10));
 
-            strBuilder.append("  ");
+            strBuilder.append("   ");
             int spentPoints = (player.getTotalEarned() - player.getPoints());
             if (spentPoints >= 0) {
                 strBuilder.append(StringC.pad(Pad.RIGHT, String.valueOf(spentPoints), 10));
@@ -251,13 +255,16 @@ public class QueryCommand extends Command {
                 strBuilder.append(StringC.pad(Pad.RIGHT, "n/a", 10));
             }
 
-            strBuilder.append("  ");
+            strBuilder.append("   ");
             strBuilder.append(StringC.pad(Pad.RIGHT, String.valueOf(player.getTotalEarned()), 10));
 
-            strBuilder.append("  ");
+            strBuilder.append("   ");
+            strBuilder.append(StringC.pad(Pad.RIGHT, String.valueOf(player.getPlayerVersion()), 16));
+
+            strBuilder.append("   ");
             strBuilder.append(StringC.pad(Pad.RIGHT, this.timeToString(player.getTotalPlayedTime()), 16));
 
-            strBuilder.append("  ");
+            strBuilder.append("   ");
             strBuilder.append(StringC.pad(Pad.RIGHT, "(" + player.getTotalPlayedTime() + "s)", 16));
 
             // reset Header Entry Counter for every 20 entries

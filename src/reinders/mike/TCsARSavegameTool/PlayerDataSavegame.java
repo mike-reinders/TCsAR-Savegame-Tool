@@ -66,6 +66,7 @@ public class PlayerDataSavegame {
                 player.setEligibleForBonus(((PropertyBool)playerPropertyList.getProperty(KnownProperties.ELIGIBLE_FOR_BONUS)).getValue());
                 player.setBonusAmount(((PropertyInt)playerPropertyList.getProperty(KnownProperties.BONUS_AMOUNT)).getValue()); // player specific bonus amount per timespan
                 player.setNotify(((PropertyBool)playerPropertyList.getProperty(KnownProperties.NOTIFY)).getValue());
+                player.setPlayerVersion(((PropertyInt)playerPropertyList.getProperty(KnownProperties.PLAYER_VERSION)).getValue());
 
                 // Query List Values
                 StructPropertyList packRequirements = (StructPropertyList)((PropertyStruct)playerPropertyList.getProperty(KnownProperties.PACK_REQUIREMENTS)).getValue();
@@ -199,6 +200,9 @@ public class PlayerDataSavegame {
                                                 break;
                                             case KnownPropertiesSimplified.NOTIFY:
                                                 player.setNotify(jsonParser.getBooleanValue());
+                                                break;
+                                            case KnownPropertiesSimplified.PLAYER_VERSION:
+                                                player.setPlayerVersion(jsonParser.getIntValue());
                                                 break;
                                             case KnownPropertiesSimplified.PACK_REQUIREMENTS:
                                                 if (jsonParser.currentToken() != JsonToken.START_OBJECT) {
@@ -394,6 +398,7 @@ public class PlayerDataSavegame {
                 playerProperties.add(new PropertyBool(KnownProperties.ELIGIBLE_FOR_BONUS, player.isEligibleForBonus()));
                 playerProperties.add(new PropertyInt(KnownProperties.BONUS_AMOUNT, player.getBonusAmount()));
                 playerProperties.add(new PropertyBool(KnownProperties.NOTIFY, player.isNotify()));
+                playerProperties.add(new PropertyInt(KnownProperties.PLAYER_VERSION, player.getPlayerVersion()));
 
                 // pack requirements
                 packRequirements = new ArrayList<>();
@@ -482,6 +487,7 @@ public class PlayerDataSavegame {
                     jsonGenerator.writeBooleanField(KnownPropertiesSimplified.ELIGIBLE_FOR_BONUS, player.isEligibleForBonus());
                     jsonGenerator.writeNumberField(KnownPropertiesSimplified.BONUS_AMOUNT, player.getBonusAmount());
                     jsonGenerator.writeBooleanField(KnownPropertiesSimplified.NOTIFY, player.isNotify());
+                    jsonGenerator.writeNumberField(KnownPropertiesSimplified.PLAYER_VERSION, player.getPlayerVersion());
 
                     // Pack Requirements
                     jsonGenerator.writeObjectFieldStart(KnownPropertiesSimplified.PACK_REQUIREMENTS);
