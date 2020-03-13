@@ -5,7 +5,7 @@ import reinders.mike.TCsARSavegameTool.Util.ThrowableC;
 
 public final class SavegameTool {
 
-    public static final String MERGE_TOOL_VERSION = "1.4";
+    public static final String MERGE_TOOL_VERSION = "1.5";
 
     private static reinders.mike.TCsARSavegameTool.Command.CommandManager commandManager = new CommandManager();
 
