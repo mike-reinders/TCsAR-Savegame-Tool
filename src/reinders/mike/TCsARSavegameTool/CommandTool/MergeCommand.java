@@ -170,6 +170,11 @@ public class MergeCommand extends Command {
             this.merge(targetSavegame, sourceSavegame);
         }
 
+        System.out.println("Updating Players API Version once for " + targetSavegame.getPlayers().size() + " players");
+        for (Player targetPlayer : targetSavegame.getPlayers()) {
+            targetPlayer.setPlayerVersion(targetPlayer.getPlayerVersion() + 1);
+        }
+
         Path targetFilePath = Paths.get(this.getParameters()[0]).toAbsolutePath();
 
         System.out.println("Saving Target File '" + targetFilePath.getFileName() + "'");
@@ -558,6 +563,11 @@ public class MergeCommand extends Command {
                     if (targetPlayer.getBonusAmount() < sourcePlayer.getBonusAmount()) {
                         targetPlayer.setBonusAmount(sourcePlayer.getBonusAmount());
                     }
+                }
+
+                // Player Version
+                if (targetPlayer.getPlayerVersion() < sourcePlayer.getPlayerVersion()) {
+                    targetPlayer.setPlayerVersion(sourcePlayer.getPlayerVersion());
                 }
 
                 // Tags
