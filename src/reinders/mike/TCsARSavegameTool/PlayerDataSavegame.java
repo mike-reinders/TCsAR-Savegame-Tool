@@ -51,6 +51,8 @@ public class PlayerDataSavegame {
             List<Player> playerData = new ArrayList<>();
             ArkArray<?> playerData_array = ((PropertyArray)file.getProperty(KnownProperties.PLAYER_DATA)).getValue();
 
+            PropertyInt playerVersion;
+
             for (Object obj : playerData_array) {
                 StructPropertyList playerPropertyList = (StructPropertyList)obj;
 
@@ -66,48 +68,55 @@ public class PlayerDataSavegame {
                 player.setEligibleForBonus(((PropertyBool)playerPropertyList.getProperty(KnownProperties.ELIGIBLE_FOR_BONUS)).getValue());
                 player.setBonusAmount(((PropertyInt)playerPropertyList.getProperty(KnownProperties.BONUS_AMOUNT)).getValue()); // player specific bonus amount per timespan
                 player.setNotify(((PropertyBool)playerPropertyList.getProperty(KnownProperties.NOTIFY)).getValue());
-                player.setPlayerVersion(((PropertyInt)playerPropertyList.getProperty(KnownProperties.PLAYER_VERSION)).getValue());
+
+                playerVersion = (PropertyInt)playerPropertyList.getProperty(KnownProperties.PLAYER_VERSION);
+                if (playerVersion != null) {
+                    player.setPlayerVersion(playerVersion.getValue());
+                }
 
                 // Query List Values
-                StructPropertyList packRequirements = (StructPropertyList)((PropertyStruct)playerPropertyList.getProperty(KnownProperties.PACK_REQUIREMENTS)).getValue();
-                ArkArray<?> customTags = ((PropertyArray)packRequirements.getProperty(KnownProperties.CUSTOM_TAGS)).getValue(); // List of String
-                ArkArray<?> purchasePIDs = ((PropertyArray)packRequirements.getProperty(KnownProperties.PURCHASED_PIDs)).getValue(); // List of String
-                ArkArray<?> purchaseLimits = ((PropertyArray)packRequirements.getProperty(KnownProperties.PURCHASE_LIMITS)).getValue(); // List of Array{ String:PID, Integer:Remaining }
-                ArkArray<?> purchaseCooldowns = ((PropertyArray)packRequirements.getProperty(KnownProperties.PURCHASE_COOLDOWNS)).getValue(); // List of Array{ String:PID, Float:UnlockTime }
+                PropertyStruct packRequirementsStruct = (PropertyStruct)playerPropertyList.getProperty(KnownProperties.PACK_REQUIREMENTS);
+                if (packRequirementsStruct != null) {
+                    StructPropertyList packRequirements = (StructPropertyList)packRequirementsStruct.getValue();
+                    ArkArray<?> customTags = ((PropertyArray)packRequirements.getProperty(KnownProperties.CUSTOM_TAGS)).getValue(); // List of String
+                    ArkArray<?> purchasePIDs = ((PropertyArray)packRequirements.getProperty(KnownProperties.PURCHASED_PIDs)).getValue(); // List of String
+                    ArkArray<?> purchaseLimits = ((PropertyArray)packRequirements.getProperty(KnownProperties.PURCHASE_LIMITS)).getValue(); // List of Array{ String:PID, Integer:Remaining }
+                    ArkArray<?> purchaseCooldowns = ((PropertyArray)packRequirements.getProperty(KnownProperties.PURCHASE_COOLDOWNS)).getValue(); // List of Array{ String:PID, Float:UnlockTime }
 
-                // Prepare Final Lists
-                List<String> customTagsList = new ArrayList<>();
-                List<String> purchasePIDsList = new ArrayList<>();
-                HashMap<String, Integer> purchaseLimitsList = new HashMap<>();
-                HashMap<String, Float> purchaseCooldownsList = new HashMap<>();
+                    // Prepare Final Lists
+                    List<String> customTagsList = new ArrayList<>();
+                    List<String> purchasePIDsList = new ArrayList<>();
+                    HashMap<String, Integer> purchaseLimitsList = new HashMap<>();
+                    HashMap<String, Float> purchaseCooldownsList = new HashMap<>();
 
-                // Add values to all lists
-                for(Object obj2 : customTags) {
-                    customTagsList.add((String)obj2);
-                }
-                for(Object obj2 : purchasePIDs) {
-                    purchasePIDsList.add((String)obj2);
-                }
-                for(Object obj2 : purchaseLimits) {
-                    StructPropertyList purchaseLimit = (StructPropertyList)obj2;
-                    purchaseLimitsList.put(
-                            ((PropertyStr)purchaseLimit.getProperty(KnownProperties.PURCHASE_LIMITS_PID)).getValue(),
-                            ((PropertyInt)purchaseLimit.getProperty(KnownProperties.PURCHASE_LIMITS_REMAINING)).getValue()
-                    );
-                }
-                for(Object obj2 : purchaseCooldowns) {
-                    StructPropertyList purchaseCooldown = (StructPropertyList)obj2;
-                    purchaseCooldownsList.put(
-                            ((PropertyStr)purchaseCooldown.getProperty(KnownProperties.PURCHASE_COOLDOWNS_PID)).getValue(),
-                            ((PropertyFloat)purchaseCooldown.getProperty(KnownProperties.PURCHASE_COOLDOWNS_UNLOCK_TIME)).getValue()
-                    );
-                }
+                    // Add values to all lists
+                    for(Object obj2 : customTags) {
+                        customTagsList.add((String)obj2);
+                    }
+                    for(Object obj2 : purchasePIDs) {
+                        purchasePIDsList.add((String)obj2);
+                    }
+                    for(Object obj2 : purchaseLimits) {
+                        StructPropertyList purchaseLimit = (StructPropertyList)obj2;
+                        purchaseLimitsList.put(
+                                ((PropertyStr)purchaseLimit.getProperty(KnownProperties.PURCHASE_LIMITS_PID)).getValue(),
+                                ((PropertyInt)purchaseLimit.getProperty(KnownProperties.PURCHASE_LIMITS_REMAINING)).getValue()
+                        );
+                    }
+                    for(Object obj2 : purchaseCooldowns) {
+                        StructPropertyList purchaseCooldown = (StructPropertyList)obj2;
+                        purchaseCooldownsList.put(
+                                ((PropertyStr)purchaseCooldown.getProperty(KnownProperties.PURCHASE_COOLDOWNS_PID)).getValue(),
+                                ((PropertyFloat)purchaseCooldown.getProperty(KnownProperties.PURCHASE_COOLDOWNS_UNLOCK_TIME)).getValue()
+                        );
+                    }
 
-                // Add Lists to Player Object
-                player.setCustomTags(customTagsList);
-                player.setPurchasedPIDs(purchasePIDsList);
-                player.setPurchaseLimits(purchaseLimitsList);
-                player.setPurchaseCooldowns(purchaseCooldownsList);
+                    // Add Lists to Player Object
+                    player.setCustomTags(customTagsList);
+                    player.setPurchasedPIDs(purchasePIDsList);
+                    player.setPurchaseLimits(purchaseLimitsList);
+                    player.setPurchaseCooldowns(purchaseCooldownsList);
+                }
 
                 playerData.add(player);
             }
