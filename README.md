@@ -19,6 +19,12 @@ This tool also supports merging multiple savegame files into one.
   
 6.) your Desktop now contains the File TCsAR_PlayerData.sav which contains all the data from the Savegames, `Savegame1.sav`, `Savegame2.sav` and `Savegame3.sav`
 
+### How to install Java JRE 8
+1.) Download the latest Java JRE 8 version from [here](https://www.oracle.com/java/technologies/javase-jre8-downloads.html)  
+2.) for Windows download `Windows x64 | .exe` (64 Bit) or `Windows x86 | .exe` (32 Bit) (requires an Oracle Account)  
+3.) execute the downloaded .exe file, eg. `jre-8u241-windows-x64.exe` and follow the installation.  
+4.) that's it.
+
 ## Features
 - Verify file format and data integrity
 - Query playerlist and all informations about one or multiple players at once
