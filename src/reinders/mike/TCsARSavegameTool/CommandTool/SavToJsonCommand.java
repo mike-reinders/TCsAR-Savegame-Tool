@@ -2,6 +2,7 @@ package reinders.mike.TCsARSavegameTool.CommandTool;
 
 import reinders.mike.TCsARSavegameTool.Command.Command;
 import reinders.mike.TCsARSavegameTool.Exception.MissingCommandException;
+import reinders.mike.TCsARSavegameTool.Exception.ModVersionMismatchException;
 import reinders.mike.TCsARSavegameTool.PlayerDataSavegame;
 import reinders.mike.TCsARSavegameTool.SavegameTool;
 
@@ -39,7 +40,14 @@ public class SavToJsonCommand extends Command {
         boolean pretty = this.isArgument("pretty");
 
         System.out.println("Loading source file '" + sourceSavegamePath.getFileName() + "'");
-        PlayerDataSavegame sourceSavegame = new PlayerDataSavegame(sourceSavegamePath);
+
+        PlayerDataSavegame sourceSavegame;
+        try {
+            sourceSavegame = new PlayerDataSavegame(sourceSavegamePath);
+        } catch (ModVersionMismatchException ex) {
+            System.out.println("Invalid Savegame Mod-Version: Expected version to be '" + ex.getExpectedVersion() + "', got '" + ex.getActualVersion() + "'");
+            return true;
+        }
 
         System.out.print("Saving Target File '" + targetSavegamePath.getFileName() + "'");
         if (pretty) {

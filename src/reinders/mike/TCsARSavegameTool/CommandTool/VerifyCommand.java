@@ -1,6 +1,7 @@
 package reinders.mike.TCsARSavegameTool.CommandTool;
 
 import reinders.mike.TCsARSavegameTool.Command.Command;
+import reinders.mike.TCsARSavegameTool.Exception.ModVersionMismatchException;
 import reinders.mike.TCsARSavegameTool.PlayerDataSavegame;
 import reinders.mike.TCsARSavegameTool.Util.ThrowableC;
 
@@ -36,6 +37,8 @@ public class VerifyCommand extends Command {
 
                 if (throwable instanceof IOException) {
                     System.out.println("Does the file exist? '" + path + "'");
+                } else if (throwable instanceof ModVersionMismatchException) {
+                    System.out.println("The mod-version seems to not match, expected '" + ((ModVersionMismatchException) throwable).getExpectedVersion() + "', got '" + ((ModVersionMismatchException) throwable).getActualVersion() + "'");
                 }
 
                 if (this.isArgument("debug")) {

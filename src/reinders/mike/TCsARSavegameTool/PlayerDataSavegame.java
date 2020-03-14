@@ -43,7 +43,12 @@ public class PlayerDataSavegame {
                 throw new SaveGameException("File is not a PlayerData-Savegame!");
             }
 
-            float modVersion = ((PropertyFloat)file.getProperty(KnownProperties.MOD_VERSION)).getValue();
+            PropertyFloat modVersionProperty = (PropertyFloat)file.getProperty(KnownProperties.MOD_VERSION);
+            if (modVersionProperty == null) {
+                throw new ModVersionMismatchException(PlayerDataSavegame.KNOWN__MOD_VERSION, 12.5f);
+            }
+
+            float modVersion = modVersionProperty.getValue();
             if (modVersion != PlayerDataSavegame.KNOWN__MOD_VERSION) {
                 throw new ModVersionMismatchException(PlayerDataSavegame.KNOWN__MOD_VERSION, modVersion);
             }

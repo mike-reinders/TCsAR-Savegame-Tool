@@ -167,7 +167,13 @@ public class MergeCommand extends Command {
         for (int i = 1; i < this.getParameters().length; i++) {
             sourceSavegamePath = Paths.get(this.getParameters()[i]).toAbsolutePath();
             System.out.println("Merging source file '" + sourceSavegamePath.getFileName() + "'");
-            sourceSavegame = new PlayerDataSavegame(sourceSavegamePath);
+
+            try {
+                sourceSavegame = new PlayerDataSavegame(sourceSavegamePath);
+            } catch (ModVersionMismatchException ex) {
+                System.out.println("Invalid Savegame Mod-Version: Expected version to be '" + ex.getExpectedVersion() + "', got '" + ex.getActualVersion() + "'");
+                return true;
+            }
 
             this.merge(targetSavegame, sourceSavegame);
         }

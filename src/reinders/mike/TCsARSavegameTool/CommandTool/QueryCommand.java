@@ -2,6 +2,7 @@ package reinders.mike.TCsARSavegameTool.CommandTool;
 
 import reinders.mike.TCsARSavegameTool.Command.Command;
 import reinders.mike.TCsARSavegameTool.Exception.MissingCommandException;
+import reinders.mike.TCsARSavegameTool.Exception.ModVersionMismatchException;
 import reinders.mike.TCsARSavegameTool.SavegameTool;
 import reinders.mike.TCsARSavegameTool.Player;
 import reinders.mike.TCsARSavegameTool.PlayerDataSavegame;
@@ -9,6 +10,7 @@ import reinders.mike.TCsARSavegameTool.Util.Pad;
 import reinders.mike.TCsARSavegameTool.Util.SteamIDC;
 import reinders.mike.TCsARSavegameTool.Util.StringC;
 
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
 
@@ -40,7 +42,16 @@ public class QueryCommand extends Command {
             return true;
         }
 
-        PlayerDataSavegame playerDataFile = new PlayerDataSavegame(Paths.get(this.getParameters()[0]));
+        Path playerDataFilePath = Paths.get(this.getParameters()[0]);
+        PlayerDataSavegame playerDataFile;
+        System.out.println("Loading savegame '" + playerDataFilePath.getFileName() + "'");
+
+        try {
+            playerDataFile = new PlayerDataSavegame(playerDataFilePath);
+        } catch (ModVersionMismatchException ex) {
+            System.out.println("Invalid Savegame Mod-Version: Expected version to be '" + ex.getExpectedVersion() + "', got '" + ex.getActualVersion() + "'");
+            return true;
+        }
 
         StringBuilder strBuilder = new StringBuilder();
 
