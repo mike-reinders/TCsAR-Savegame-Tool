@@ -67,7 +67,7 @@ public class PlayerDataSavegame {
             }
 
             float modVersion = modVersionProperty.getValue();
-            if (PlayerDataSavegame.matchModVersion(modVersion)) {
+            if (!PlayerDataSavegame.matchModVersion(modVersion)) {
                 throw new ModVersionMismatchException(PlayerDataSavegame.latestModVersion(), modVersion);
             }
 
