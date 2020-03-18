@@ -20,18 +20,36 @@ import java.util.Map;
 public class PlayerDataSavegame {
 
     public static final String KNOWN__CLASS_NAME = "TCsAR_SavedPlayerData_C";
-    public static final Float KNOWN__MOD_VERSION = 12.6f;
+    public static final Float[] KNOWN__MOD_VERSIONS = new Float[] { 12.6f, 12.7f };
 
-    private float modVersion = -1;
+    private Float modVersion = null;
     private List<Player> players;
 
     public PlayerDataSavegame() {
-        this.modVersion = PlayerDataSavegame.KNOWN__MOD_VERSION;
+        this.modVersion = PlayerDataSavegame.latestModVersion();
         this.players = new ArrayList<>();
     }
 
     public PlayerDataSavegame(Path path) throws SaveGameException {
         this.load(path);
+    }
+
+    private static Float latestModVersion() {
+        if (PlayerDataSavegame.KNOWN__MOD_VERSIONS.length > 1) {
+            return PlayerDataSavegame.KNOWN__MOD_VERSIONS[PlayerDataSavegame.KNOWN__MOD_VERSIONS.length - 1];
+        } else {
+            return null;
+        }
+    }
+
+    private static boolean matchModVersion(float modVersion) {
+        for (float f : PlayerDataSavegame.KNOWN__MOD_VERSIONS) {
+            if (f == modVersion) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public void load(Path path) throws SaveGameException {
@@ -45,12 +63,12 @@ public class PlayerDataSavegame {
 
             PropertyFloat modVersionProperty = (PropertyFloat)file.getProperty(KnownProperties.MOD_VERSION);
             if (modVersionProperty == null) {
-                throw new ModVersionMismatchException(PlayerDataSavegame.KNOWN__MOD_VERSION, 12.5f);
+                throw new ModVersionMismatchException(PlayerDataSavegame.latestModVersion(), 12.5f);
             }
 
             float modVersion = modVersionProperty.getValue();
-            if (modVersion != PlayerDataSavegame.KNOWN__MOD_VERSION) {
-                throw new ModVersionMismatchException(PlayerDataSavegame.KNOWN__MOD_VERSION, modVersion);
+            if (PlayerDataSavegame.matchModVersion(modVersion)) {
+                throw new ModVersionMismatchException(PlayerDataSavegame.latestModVersion(), modVersion);
             }
 
             List<Player> playerData = new ArrayList<>();
@@ -369,7 +387,7 @@ public class PlayerDataSavegame {
     }
 
     public void unload() {
-        this.modVersion = -1;
+        this.modVersion = null;
         this.players = null;
     }
 
