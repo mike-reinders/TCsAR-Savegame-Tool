@@ -2,21 +2,21 @@ package reinders.mike.TCsARSavegameTool.Exception;
 
 public class ModVersionMismatchException extends SaveGameException {
 
-    private float expectedVersion;
+    private Float expectedVersion;
 
-    private float actualVersion;
+    private Float actualVersion;
 
-    public ModVersionMismatchException(float expectedVersion, float version) {
+    public ModVersionMismatchException(Float expectedVersion, Float version) {
         super("SaveGame: Mod-Version mismatches expected version '" + expectedVersion + "', got '" + version + "'");
         this.expectedVersion = expectedVersion;
         this.actualVersion = version;
     }
 
-    public float getExpectedVersion() {
+    public Float getExpectedVersion() {
         return this.expectedVersion;
     }
 
-    public float getActualVersion() {
+    public Float getActualVersion() {
         return this.actualVersion;
     }
 
