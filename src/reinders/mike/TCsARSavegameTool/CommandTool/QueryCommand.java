@@ -80,7 +80,7 @@ public class QueryCommand extends Command {
                 }
             }
         } else {
-            SavegameTool.getCommandManager().dispatch(new String[] {"help", this.getName()});
+            SavegameTool.getCommandManager().dispatch(CommandManager.HELP_COMMAND, new String[] {this.getName()});
         }
 
         System.out.print(strBuilder.toString());
