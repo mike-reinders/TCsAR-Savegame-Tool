@@ -5,7 +5,7 @@ import reinders.mike.TCsARSavegameTool.Util.ThrowableC;
 
 public final class SavegameTool {
 
-    public static final String MERGE_TOOL_VERSION = "1.5.2";
+    public static final String MERGE_TOOL_VERSION = "1.6";
 
     private static reinders.mike.TCsARSavegameTool.Command.CommandManager commandManager = new CommandManager();
 
@@ -17,7 +17,7 @@ public final class SavegameTool {
         try {
             System.out.println("TCsAR Savegame Tool v" + SavegameTool.MERGE_TOOL_VERSION);
             if (args.length == 0 || !SavegameTool.commandManager.dispatch(args)) {
-                SavegameTool.commandManager.dispatch(new String[] {"help"});
+                SavegameTool.commandManager.dispatch(CommandManager.HELP_COMMAND);
             }
         } catch (Throwable throwable) {
             System.out.println(ThrowableC.toString(throwable));

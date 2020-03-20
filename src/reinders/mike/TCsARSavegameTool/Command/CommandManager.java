@@ -11,7 +11,7 @@ public class CommandManager {
 
     private static Pattern ArgumentPattern = Pattern.compile("--(?:([^\\-][^=]*)(?:=([^=]*))?)?");
 
-    private List<Command> commands = new ArrayList<>();
+    private LinkedList<Command> commands = new LinkedList<>();
 
     public void register(@NotNull Command command) {
         if (command == null) {
@@ -23,7 +23,7 @@ public class CommandManager {
         }
         command.setCommandManager(this);
 
-        this.commands.add(command);
+        this.commands.addFirst(command);
     }
 
     public boolean unregister(@NotNull Command command) {
@@ -39,14 +39,49 @@ public class CommandManager {
         return this.commands.toArray(new Command[0]);
     }
 
-    public Command[] find(String name) {
+    public Command match(String name) {
+        name = name.trim();
+
+        for (Command command : this.commands) {
+            if (command.getName() == null || command.getName().trim().equals(name)) {
+                return command;
+            }
+
+            if (command.getAlias() != null) {
+                for (String alias : command.getAlias()) {
+                    if (alias.trim().equals(name)) {
+                        return command;
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
+    public Command find(String name) {
         return this.find(name, true);
     }
 
-    public Command[] find(String name, boolean exactMatches) {
-        List<Command> returnCommands = new ArrayList<>();
+    public Command find(String name, boolean exactMatch) {
         for (Command command : this.commands) {
-            if (command.getName() == name || (exactMatches? command.getName().equals(name): command.getName().contains(name))) {
+            if (exactMatch? command.getName().equals(name): command.getName().contains(name)) {
+                return command;
+            }
+        }
+
+        return null;
+    }
+
+    public Command[] search(String name) {
+        return this.search(name, true);
+    }
+
+    public Command[] search(String name, boolean exactMatches) {
+        List<Command> returnCommands = new ArrayList<>();
+
+        for (Command command : this.commands) {
+            if (exactMatches? command.getName().equals(name): command.getName().contains(name)) {
                 returnCommands.add(command);
             }
         }
@@ -55,13 +90,26 @@ public class CommandManager {
     }
 
     public boolean dispatch(String[] args) throws Throwable {
-        String commandName = args.length > 0? args[0].trim(): null;
-        if (commandName == null || commandName.length() == 0) {
-            throw new MissingCommandException("A command must be given in order to execute it");
+        Command command = null;
+
+        if (args.length > 0) {
+            command = this.match(args[0].trim());
         }
 
-        // Parse Arguments
+        if (command == null) {
+            return false;
+        }
+
+        this.dispatch(command, Arrays.copyOfRange(args, 1, args.length));
+        return true;
+    }
+
+    public void dispatch(@NotNull Command command, String[] args) throws Throwable {
         HashMap<String, List<String>> arguments = new HashMap<>();
+        HashMap<String, String[]> argumentsArray = new HashMap<>();
+        String[] parameters;
+
+        // Parse Arguments
         int index = 1;
         while (index < args.length) {
             Matcher matcher = CommandManager.ArgumentPattern.matcher(args[index].trim());
@@ -93,60 +141,67 @@ public class CommandManager {
         }
 
         // Finalize Arguments
-        HashMap<String, String[]> argumentsArray = new HashMap<>();
-
         for (Map.Entry<String, List<String>> arg : arguments.entrySet()) {
             argumentsArray.put(arg.getKey(), arg.getValue().toArray(new String[0]));
         }
 
         // Parse Parameters
-        String[] parameters = Arrays.copyOfRange(args, index, args.length);
+        if (args.length > index) {
+            parameters = Arrays.copyOfRange(args, index, args.length);
+        } else {
+            parameters = new String[0];
+        }
 
         // Finally dispatch the command
-        return this.dispatch(commandName, argumentsArray, parameters);
+        this.dispatch(command, argumentsArray, parameters);
     }
 
-    public boolean dispatch(@NotNull String name, @NotNull HashMap<String, String[]> arguments, @NotNull String[] parameters) throws Throwable {
-        if (name == null || (name = name.trim()).length() == 0) {
+    public void dispatch(@NotNull String name) throws Throwable {
+        this.dispatch(name, null, null);
+    }
+
+    public void dispatch(@NotNull String name, HashMap<String, String[]> arguments) throws Throwable {
+        this.dispatch(name, arguments, null);
+    }
+
+    public boolean dispatch(@NotNull String name, HashMap<String, String[]> arguments, String[] parameters) throws Throwable {
+        Command command = null;
+
+        if (name != null) {
+            command = this.match(name);
+
+            if (command == null) {
+                return false;
+            }
+        }
+
+        this.dispatch(command, arguments, parameters);
+        return true;
+    }
+
+    public void dispatch(@NotNull Command command) throws Throwable {
+        this.dispatch(command, null, null);
+    }
+
+    public void dispatch(@NotNull Command command, HashMap<String, String[]> arguments) throws Throwable {
+        this.dispatch(command, arguments, null);
+    }
+
+    public void dispatch(@NotNull Command command, HashMap<String, String[]> arguments, String[] parameters) throws Throwable {
+        if (command == null) {
             throw new MissingCommandException("A command must be given in order to execute it");
         }
 
-        Command command;
-        for (int i = (this.commands.size() - 1); i >= 0; i--) {
-            command = this.commands.get(i);
-            if (this.matchesCommandName(command, name)) {
-                command.setCommandName(name);
-                command.setArguments(arguments);
-                command.setParameters(parameters);
-                try {
-                    if (command.execute()) {
-                        return true;
-                    }
-                } finally {
-                    command.setCommandName(null);
-                    command.setArguments(null);
-                    command.setParameters(null);
-                }
-            }
+        command.setCommandName(null);
+        command.setArguments(arguments == null? new HashMap<>(): arguments);
+        command.setParameters(parameters == null? new String[0]: parameters);
+        try {
+            command.execute();
+        } finally {
+            command.setCommandName(null);
+            command.setArguments(null);
+            command.setParameters(null);
         }
-
-        return false;
-    }
-
-    private boolean matchesCommandName(@NotNull Command command, String name) {
-        if (command.getName() == null || command.getName().trim().equals(name)) {
-            return true;
-        }
-
-        if (command.getAlias() != null) {
-            for (String alias : command.getAlias()) {
-                if (alias.trim().equals(name)) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
     }
 
 }

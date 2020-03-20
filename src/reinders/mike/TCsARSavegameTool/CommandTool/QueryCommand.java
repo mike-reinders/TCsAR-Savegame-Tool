@@ -36,9 +36,7 @@ public class QueryCommand extends Command {
     @Override
     public boolean execute() throws Throwable {
         if (this.getParameters().length < 1) {
-            try {
-                SavegameTool.getCommandManager().dispatch(new String[] {"help", this.getName()});
-            } catch (MissingCommandException ignore) {}
+            SavegameTool.getCommandManager().dispatch(CommandManager.HELP_COMMAND, new String[] {this.getName()});
             return true;
         }
 

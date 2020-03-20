@@ -3,6 +3,7 @@ package reinders.mike.TCsARSavegameTool.CommandTool;
 import reinders.mike.TCsARSavegameTool.Command.Command;
 import reinders.mike.TCsARSavegameTool.Exception.ModVersionMismatchException;
 import reinders.mike.TCsARSavegameTool.PlayerDataSavegame;
+import reinders.mike.TCsARSavegameTool.SavegameTool;
 import reinders.mike.TCsARSavegameTool.Util.ThrowableC;
 
 import java.io.IOException;
@@ -26,7 +27,12 @@ public class VerifyCommand extends Command {
     }
 
     @Override
-    public boolean execute() {
+    public boolean execute() throws Throwable {
+        if (this.getParameters().length < 1) {
+            SavegameTool.getCommandManager().dispatch(CommandManager.HELP_COMMAND, new String[] {this.getName()});
+            return true;
+        }
+
         for (String filePath : this.getParameters()) {
             Path path = Paths.get(filePath).toAbsolutePath();
             try {

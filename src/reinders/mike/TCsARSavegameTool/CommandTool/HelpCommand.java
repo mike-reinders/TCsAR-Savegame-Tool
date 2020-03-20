@@ -57,7 +57,7 @@ public class HelpCommand extends Command {
                 }
             }
         } else {
-            Command[] commands = this.getCommandManager().find(queriedCommand);
+            Command[] commands = this.getCommandManager().search(queriedCommand);
 
             if (commands.length > 0) {
                 strBuilder.append("Commands:");
