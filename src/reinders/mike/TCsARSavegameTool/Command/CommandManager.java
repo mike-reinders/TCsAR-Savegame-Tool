@@ -156,23 +156,22 @@ public class CommandManager {
         this.dispatch(command, argumentsArray, parameters);
     }
 
-    public void dispatch(@NotNull String name) throws Throwable {
-        this.dispatch(name, null, null);
+    public boolean dispatch(@NotNull String name) throws Throwable {
+        return this.dispatch(name, null, null);
     }
 
-    public void dispatch(@NotNull String name, HashMap<String, String[]> arguments) throws Throwable {
-        this.dispatch(name, arguments, null);
+    public boolean dispatch(@NotNull String name, HashMap<String, String[]> arguments) throws Throwable {
+        return this.dispatch(name, arguments, null);
     }
 
     public boolean dispatch(@NotNull String name, HashMap<String, String[]> arguments, String[] parameters) throws Throwable {
-        Command command = null;
+        if (name == null) {
+            return false;
+        }
 
-        if (name != null) {
-            command = this.match(name);
-
-            if (command == null) {
-                return false;
-            }
+        Command command = this.match(name);
+        if (command == null) {
+            return false;
         }
 
         this.dispatch(command, arguments, parameters);
