@@ -18,7 +18,7 @@ public class SavToJsonCommand extends Command {
 
     @Override
     public String getUsage() {
-        return "[--pretty] [source file] [target file]";
+        return "[--pretty] [--ignore-version] [source file] [target file]";
     }
 
     @Override
@@ -41,7 +41,7 @@ public class SavToJsonCommand extends Command {
 
         PlayerDataSavegame sourceSavegame;
         try {
-            sourceSavegame = new PlayerDataSavegame(sourceSavegamePath);
+            sourceSavegame = new PlayerDataSavegame(sourceSavegamePath, this.isArgument("ignore-version"));
         } catch (ModVersionMismatchException ex) {
             System.out.println("Invalid Savegame Mod-Version: Expected version to be '" + ex.getExpectedVersion() + "', got '" + ex.getActualVersion() + "'");
             return true;

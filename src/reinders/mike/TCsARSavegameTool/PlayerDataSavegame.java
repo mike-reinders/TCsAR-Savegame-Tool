@@ -34,6 +34,10 @@ public class PlayerDataSavegame {
         this.load(path);
     }
 
+    public PlayerDataSavegame(Path path, boolean ignoreVersion) throws SaveGameException {
+        this.load(path, ignoreVersion);
+    }
+
     private static Float latestModVersion() {
         if (PlayerDataSavegame.KNOWN__MOD_VERSIONS.length > 1) {
             return PlayerDataSavegame.KNOWN__MOD_VERSIONS[PlayerDataSavegame.KNOWN__MOD_VERSIONS.length - 1];
@@ -42,7 +46,11 @@ public class PlayerDataSavegame {
         }
     }
 
-    private static boolean matchModVersion(float modVersion) {
+    private static boolean matchModVersion(Float modVersion) {
+        if (modVersion == null) {
+            return false;
+        }
+
         for (float f : PlayerDataSavegame.KNOWN__MOD_VERSIONS) {
             if (f == modVersion) {
                 return true;
@@ -53,6 +61,10 @@ public class PlayerDataSavegame {
     }
 
     public void load(Path path) throws SaveGameException {
+        this.load(path, false);
+    }
+
+    public void load(Path path, boolean ignoreVersion) throws SaveGameException {
         try {
             ArkSavFile file = new ArkSavFile(path);
 
@@ -62,13 +74,14 @@ public class PlayerDataSavegame {
             }
 
             PropertyFloat modVersionProperty = (PropertyFloat)file.getProperty(KnownProperties.MOD_VERSION);
-            if (modVersionProperty == null) {
-                throw new ModVersionMismatchException(PlayerDataSavegame.latestModVersion(), 12.5f);
+
+            Float modVersion = null;
+            if (modVersionProperty != null) {
+                modVersion = modVersionProperty.getValue();
             }
 
-            float modVersion = modVersionProperty.getValue();
-            if (!PlayerDataSavegame.matchModVersion(modVersion)) {
-                throw new ModVersionMismatchException(PlayerDataSavegame.latestModVersion(), modVersion);
+            if (!ignoreVersion && !PlayerDataSavegame.matchModVersion(modVersion)) {
+                throw new ModVersionMismatchException(PlayerDataSavegame.latestModVersion(), modVersion == null? 12.5f: modVersion);
             }
 
             List<Player> playerData = new ArrayList<>();
@@ -154,10 +167,14 @@ public class PlayerDataSavegame {
     }
 
     public void loadJson(Path path) throws SaveGameException {
+        this.loadJson(path, false);
+    }
+
+    public void loadJson(Path path, boolean ignoreVersion) throws SaveGameException {
         try {
             JsonFactory jsonFactory = new JsonFactory();
 
-            float modVersion = -1;
+            Float modVersion = null;
             List<Player> playerData = new ArrayList<>();
 
             try (JsonParser jsonParser = jsonFactory.createParser(path.toFile())) {
@@ -377,6 +394,10 @@ public class PlayerDataSavegame {
                             break;
                     }
                 }
+            }
+
+            if (!ignoreVersion && !PlayerDataSavegame.matchModVersion(modVersion)) {
+                throw new ModVersionMismatchException(PlayerDataSavegame.latestModVersion(), modVersion == null? 12.5f: modVersion);
             }
 
             this.modVersion = modVersion;

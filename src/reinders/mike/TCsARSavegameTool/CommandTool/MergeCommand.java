@@ -110,7 +110,7 @@ public class MergeCommand extends Command {
 
     @Override
     public String getUsage() {
-        return "[...parameters] [target file] [source file] [source file] [... additional source files]" + System.lineSeparator()
+        return "[...parameters] [--ignore-version] [target file] [source file] [source file] [... additional source files]" + System.lineSeparator()
                 + System.lineSeparator()
                 + "Parameters always start with -- (double hyphen) and are shown with [] (brackets) for documentation purpose only." + System.lineSeparator()
                 + "A single parameter looks like this: --income-reset" + System.lineSeparator()
@@ -167,7 +167,7 @@ public class MergeCommand extends Command {
             System.out.println("Merging source file '" + sourceSavegamePath.getFileName() + "'");
 
             try {
-                sourceSavegame = new PlayerDataSavegame(sourceSavegamePath);
+                sourceSavegame = new PlayerDataSavegame(sourceSavegamePath, this.isArgument("ignore-version"));
             } catch (ModVersionMismatchException ex) {
                 System.out.println("Invalid Savegame Mod-Version: Expected version to be '" + ex.getExpectedVersion() + "', got '" + ex.getActualVersion() + "'");
                 return true;

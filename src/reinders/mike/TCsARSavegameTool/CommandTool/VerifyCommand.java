@@ -23,7 +23,7 @@ public class VerifyCommand extends Command {
     }
 
     public String getUsage() {
-        return "[optional:--debug] [file] [... additional files]";
+        return "[optional:--debug] [--exact-version] [file] [... additional files]";
     }
 
     @Override
@@ -36,7 +36,7 @@ public class VerifyCommand extends Command {
         for (String filePath : this.getParameters()) {
             Path path = Paths.get(filePath).toAbsolutePath();
             try {
-                new PlayerDataSavegame(path);
+                new PlayerDataSavegame(path, !this.isArgument("exact-version"));
                 System.out.println("File '" + path.getFileName() + "' has been verified.");
             } catch (Throwable throwable) {
                 System.out.println("Failed to verify file '" + path.getFileName() + "'");

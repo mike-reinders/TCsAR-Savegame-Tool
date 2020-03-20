@@ -25,7 +25,7 @@ public class QueryCommand extends Command {
 
     @Override
     public String getUsage() {
-        return " [--players / [--player=steam64ID]*] [file]";
+        return "[--ignore-version] [--players / [--player=steam64ID]*] [file]";
     }
 
     @Override
@@ -45,7 +45,7 @@ public class QueryCommand extends Command {
         System.out.println("Loading savegame '" + playerDataFilePath.getFileName() + "'");
 
         try {
-            playerDataFile = new PlayerDataSavegame(playerDataFilePath);
+            playerDataFile = new PlayerDataSavegame(playerDataFilePath, this.isArgument("ignore-version"));
         } catch (ModVersionMismatchException ex) {
             System.out.println("Invalid Savegame Mod-Version: Expected version to be '" + ex.getExpectedVersion() + "', got '" + ex.getActualVersion() + "'");
             return true;
