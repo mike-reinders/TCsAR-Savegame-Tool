@@ -110,7 +110,7 @@ public class CommandManager {
         String[] parameters;
 
         // Parse Arguments
-        int index = 1;
+        int index = 0;
         while (index < args.length) {
             Matcher matcher = CommandManager.ArgumentPattern.matcher(args[index].trim());
 
