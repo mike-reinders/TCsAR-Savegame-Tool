@@ -20,7 +20,7 @@ import java.util.Map;
 public class PlayerDataSavegame {
 
     public static final String KNOWN__CLASS_NAME = "TCsAR_SavedPlayerData_C";
-    public static final Float[] KNOWN__MOD_VERSIONS = new Float[] { 12.6f, 12.7f };
+    public static final Float[] KNOWN__MOD_VERSIONS = new Float[] { 12.6f, 12.7f, 12.8f };
 
     private Float modVersion = null;
     private List<Player> players;
