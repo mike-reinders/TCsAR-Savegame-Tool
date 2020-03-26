@@ -1,6 +1,6 @@
 package reinders.mike.TCsARSavegameTool;
 
-public class KnownPropertiesSimplified {
+public class PlayerKnownPropertiesSimplified {
 
     public static final String CLASS_NAME = "className";
     public static final String MOD_VERSION = "ModVersion";

@@ -2,7 +2,7 @@ package reinders.mike.TCsARSavegameTool;
 
 import qowyn.ark.types.ArkName;
 
-public class KnownProperties {
+public class PlayerKnownProperties {
 
     public static final String CLASS_NAME = "className";
     public static final String MOD_VERSION = "ModVersion";

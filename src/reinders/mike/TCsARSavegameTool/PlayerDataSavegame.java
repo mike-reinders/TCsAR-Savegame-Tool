@@ -2,7 +2,6 @@ package reinders.mike.TCsARSavegameTool;
 
 import com.fasterxml.jackson.core.*;
 import qowyn.ark.ArkSavFile;
-import qowyn.ark.arrays.ArkArray;
 import qowyn.ark.arrays.ArkArrayString;
 import qowyn.ark.arrays.ArkArrayStruct;
 import qowyn.ark.properties.*;
@@ -23,7 +22,7 @@ public class PlayerDataSavegame {
     public static final Float[] KNOWN__MOD_VERSIONS = new Float[] { 12.6f, 12.7f, 12.8f };
 
     private Float modVersion = null;
-    private List<Player> players;
+    private List<Player> players = null;
 
     public PlayerDataSavegame() {
         this.modVersion = PlayerDataSavegame.latestModVersion();
@@ -68,7 +67,7 @@ public class PlayerDataSavegame {
         try {
             ArkSavFile file = new ArkSavFile(path);
 
-            String className = (String)ObjectA.getPrivateField(file, KnownProperties.CLASS_NAME);
+            String className = (String)ObjectA.getPrivateField(file, PlayerKnownProperties.CLASS_NAME);
             if (className == null || !className.equals(PlayerDataSavegame.KNOWN__CLASS_NAME)) {
                 throw new SaveGameException("File is not a PlayerData-Savegame!");
             }
@@ -80,7 +79,7 @@ public class PlayerDataSavegame {
             // Cache-References
             Property<?> prop;
 
-            if ((prop = file.getProperty(KnownProperties.MOD_VERSION)) != null) {
+            if ((prop = file.getProperty(PlayerKnownProperties.MOD_VERSION)) != null) {
                 modVersion = ((PropertyFloat)prop).getValue();
             }
 
@@ -88,68 +87,68 @@ public class PlayerDataSavegame {
                 throw new ModVersionMismatchException(PlayerDataSavegame.latestModVersion(), modVersion == null? 12.5f: modVersion);
             }
 
-            if ((prop = file.getProperty(KnownProperties.PLAYER_DATA)) != null) {
+            if ((prop = file.getProperty(PlayerKnownProperties.PLAYER_DATA)) != null) {
                 playerData = new ArrayList<>();
                 for (Object obj : ((PropertyArray)prop).getValue()) {
                     StructPropertyList playerPropertyList = (StructPropertyList)obj;
 
                     Player player = new Player();
 
-                    if ((prop = playerPropertyList.getProperty(KnownProperties.PLAYER_NAME)) != null) {
+                    if ((prop = playerPropertyList.getProperty(PlayerKnownProperties.PLAYER_NAME)) != null) {
                         player.setName(((PropertyStr)prop).getValue());
                     }
 
-                    if ((prop = playerPropertyList.getProperty(KnownProperties.STEAM_ID_64)) != null) {
+                    if ((prop = playerPropertyList.getProperty(PlayerKnownProperties.STEAM_ID_64)) != null) {
                         player.setSteamID64(Long.parseLong(((PropertyStr)prop).getValue()));
                     }
 
-                    if ((prop = playerPropertyList.getProperty(KnownProperties.POINTS)) != null) {
+                    if ((prop = playerPropertyList.getProperty(PlayerKnownProperties.POINTS)) != null) {
                         player.setPoints(((PropertyInt)prop).getValue());
                     }
 
-                    if ((prop = playerPropertyList.getProperty(KnownProperties.TOTAL_EARNED)) != null) {
+                    if ((prop = playerPropertyList.getProperty(PlayerKnownProperties.TOTAL_EARNED)) != null) {
                         player.setTotalEarned(((PropertyInt)prop).getValue());
                     }
 
                     // player specific bonus amount per timespan
-                    if ((prop = playerPropertyList.getProperty(KnownProperties.INCOME)) != null) {
+                    if ((prop = playerPropertyList.getProperty(PlayerKnownProperties.INCOME)) != null) {
                         player.setIncome(((PropertyInt)prop).getValue());
                     }
 
                     // time played (used to payout income when target amount is reached; then it resets to 0)
-                    if ((prop = playerPropertyList.getProperty(KnownProperties.INCOME_FRACTION)) != null) {
+                    if ((prop = playerPropertyList.getProperty(PlayerKnownProperties.INCOME_FRACTION)) != null) {
                         player.setIncomeFraction(((PropertyFloat)prop).getValue());
                     }
 
                     // float: in seconds
-                    if ((prop = playerPropertyList.getProperty(KnownProperties.TOTAL_PLAYED_TIME)) != null) {
+                    if ((prop = playerPropertyList.getProperty(PlayerKnownProperties.TOTAL_PLAYED_TIME)) != null) {
                         player.setTotalPlayedTime(((PropertyFloat)prop).getValue());
                     }
 
                     // time played (used to payout bonus when target amount is reached; then it resets to 0)
-                    if ((prop = playerPropertyList.getProperty(KnownProperties.INCOME_FRACTION)) != null) {
+                    if ((prop = playerPropertyList.getProperty(PlayerKnownProperties.INCOME_FRACTION)) != null) {
                         player.setTimeFraction(((PropertyFloat)prop).getValue());
                     }
 
-                    if ((prop = playerPropertyList.getProperty(KnownProperties.ELIGIBLE_FOR_BONUS)) != null) {
+                    if ((prop = playerPropertyList.getProperty(PlayerKnownProperties.ELIGIBLE_FOR_BONUS)) != null) {
                         player.setEligibleForBonus(((PropertyBool)prop).getValue());
                     }
 
                     // player specific bonus amount per timespan
-                    if ((prop = playerPropertyList.getProperty(KnownProperties.BONUS_AMOUNT)) != null) {
+                    if ((prop = playerPropertyList.getProperty(PlayerKnownProperties.BONUS_AMOUNT)) != null) {
                         player.setBonusAmount(((PropertyInt)prop).getValue());
                     }
 
-                    if ((prop = playerPropertyList.getProperty(KnownProperties.NOTIFY)) != null) {
+                    if ((prop = playerPropertyList.getProperty(PlayerKnownProperties.NOTIFY)) != null) {
                         player.setNotify(((PropertyBool)prop).getValue());
                     }
 
-                    if ((prop = playerPropertyList.getProperty(KnownProperties.PLAYER_VERSION)) != null) {
+                    if ((prop = playerPropertyList.getProperty(PlayerKnownProperties.PLAYER_VERSION)) != null) {
                         player.setPlayerVersion(((PropertyInt)prop).getValue());
                     }
 
                     // Query List Values
-                    if ((prop = playerPropertyList.getProperty(KnownProperties.PACK_REQUIREMENTS)) != null) {
+                    if ((prop = playerPropertyList.getProperty(PlayerKnownProperties.PACK_REQUIREMENTS)) != null) {
                         StructPropertyList packRequirements = (StructPropertyList)(((PropertyStruct)prop).getValue());
 
                         // Final Lists
@@ -158,7 +157,7 @@ public class PlayerDataSavegame {
                         HashMap<String, Integer> purchaseLimitsList = null;
                         HashMap<String, Float> purchaseCooldownsList = null;
 
-                        if ((prop = packRequirements.getProperty(KnownProperties.CUSTOM_TAGS)) != null) {
+                        if ((prop = packRequirements.getProperty(PlayerKnownProperties.CUSTOM_TAGS)) != null) {
                             customTagsList = new ArrayList<>();
 
                             for(Object obj2 : ((PropertyArray)prop).getValue()) {
@@ -166,7 +165,7 @@ public class PlayerDataSavegame {
                             }
                         }
 
-                        if ((prop = packRequirements.getProperty(KnownProperties.PURCHASED_PIDs)) != null) {
+                        if ((prop = packRequirements.getProperty(PlayerKnownProperties.PURCHASED_PIDs)) != null) {
                             purchasePIDsList = new ArrayList<>();
 
                             for(Object obj2 : ((PropertyArray)prop).getValue()) {
@@ -174,24 +173,24 @@ public class PlayerDataSavegame {
                             }
                         }
 
-                        if ((prop = packRequirements.getProperty(KnownProperties.PURCHASE_LIMITS)) != null) {
+                        if ((prop = packRequirements.getProperty(PlayerKnownProperties.PURCHASE_LIMITS)) != null) {
                             purchaseLimitsList = new HashMap<>();
 
                             for (Object obj2 : ((PropertyArray)prop).getValue()) {
                                 purchaseLimitsList.put(
-                                        ((PropertyStr) ((StructPropertyList)obj2).getProperty(KnownProperties.PURCHASE_LIMITS_PID)).getValue(),
-                                        ((PropertyInt) ((StructPropertyList)obj2).getProperty(KnownProperties.PURCHASE_LIMITS_REMAINING)).getValue()
+                                        ((PropertyStr) ((StructPropertyList)obj2).getProperty(PlayerKnownProperties.PURCHASE_LIMITS_PID)).getValue(),
+                                        ((PropertyInt) ((StructPropertyList)obj2).getProperty(PlayerKnownProperties.PURCHASE_LIMITS_REMAINING)).getValue()
                                 );
                             }
                         }
 
-                        if ((prop = packRequirements.getProperty(KnownProperties.PURCHASE_COOLDOWNS)) != null) {
+                        if ((prop = packRequirements.getProperty(PlayerKnownProperties.PURCHASE_COOLDOWNS)) != null) {
                             purchaseCooldownsList = new HashMap<>();
 
                             for (Object obj2 : ((PropertyArray)prop).getValue()) {
                                 purchaseCooldownsList.put(
-                                        ((PropertyStr) ((StructPropertyList) obj2).getProperty(KnownProperties.PURCHASE_COOLDOWNS_PID)).getValue(),
-                                        ((PropertyFloat) ((StructPropertyList) obj2).getProperty(KnownProperties.PURCHASE_COOLDOWNS_UNLOCK_TIME)).getValue()
+                                        ((PropertyStr) ((StructPropertyList) obj2).getProperty(PlayerKnownProperties.PURCHASE_COOLDOWNS_PID)).getValue(),
+                                        ((PropertyFloat) ((StructPropertyList) obj2).getProperty(PlayerKnownProperties.PURCHASE_COOLDOWNS_UNLOCK_TIME)).getValue()
                                 );
                             }
                         }
@@ -251,10 +250,10 @@ public class PlayerDataSavegame {
                     jsonParser.nextToken();
 
                     switch (fieldName) {
-                        case KnownPropertiesSimplified.MOD_VERSION:
+                        case PlayerKnownPropertiesSimplified.MOD_VERSION:
                             modVersion = jsonParser.getFloatValue();
                             break;
-                        case KnownPropertiesSimplified.PLAYER_DATA:
+                        case PlayerKnownPropertiesSimplified.PLAYER_DATA:
                             if (jsonParser.currentToken() == JsonToken.START_ARRAY) {
                                 while (jsonParser.nextToken() != JsonToken.END_ARRAY) {
                                     if (jsonParser.currentToken() != JsonToken.START_OBJECT) {
@@ -267,43 +266,43 @@ public class PlayerDataSavegame {
                                         jsonParser.nextToken();
 
                                         switch (fieldName2) {
-                                            case KnownPropertiesSimplified.PLAYER_NAME:
+                                            case PlayerKnownPropertiesSimplified.PLAYER_NAME:
                                                 player.setName(jsonParser.getText());
                                                 break;
-                                            case KnownPropertiesSimplified.STEAM_ID_64:
+                                            case PlayerKnownPropertiesSimplified.STEAM_ID_64:
                                                 player.setSteamID64(jsonParser.getLongValue());
                                                 break;
-                                            case KnownPropertiesSimplified.POINTS:
+                                            case PlayerKnownPropertiesSimplified.POINTS:
                                                 player.setPoints(jsonParser.getIntValue());
                                                 break;
-                                            case KnownPropertiesSimplified.TOTAL_EARNED:
+                                            case PlayerKnownPropertiesSimplified.TOTAL_EARNED:
                                                 player.setTotalEarned(jsonParser.getIntValue());
                                                 break;
-                                            case KnownPropertiesSimplified.INCOME:
+                                            case PlayerKnownPropertiesSimplified.INCOME:
                                                 player.setIncome(jsonParser.getIntValue());
                                                 break;
-                                            case KnownPropertiesSimplified.INCOME_FRACTION:
+                                            case PlayerKnownPropertiesSimplified.INCOME_FRACTION:
                                                 player.setIncomeFraction(jsonParser.getFloatValue());
                                                 break;
-                                            case KnownPropertiesSimplified.TOTAL_PLAYED_TIME:
+                                            case PlayerKnownPropertiesSimplified.TOTAL_PLAYED_TIME:
                                                 player.setTotalPlayedTime(jsonParser.getFloatValue());
                                                 break;
-                                            case KnownPropertiesSimplified.TIME_FRACTION:
+                                            case PlayerKnownPropertiesSimplified.TIME_FRACTION:
                                                 player.setTimeFraction(jsonParser.getFloatValue());
                                                 break;
-                                            case KnownPropertiesSimplified.ELIGIBLE_FOR_BONUS:
+                                            case PlayerKnownPropertiesSimplified.ELIGIBLE_FOR_BONUS:
                                                 player.setEligibleForBonus(jsonParser.getBooleanValue());
                                                 break;
-                                            case KnownPropertiesSimplified.BONUS_AMOUNT:
+                                            case PlayerKnownPropertiesSimplified.BONUS_AMOUNT:
                                                 player.setBonusAmount(jsonParser.getIntValue());
                                                 break;
-                                            case KnownPropertiesSimplified.NOTIFY:
+                                            case PlayerKnownPropertiesSimplified.NOTIFY:
                                                 player.setNotify(jsonParser.getBooleanValue());
                                                 break;
-                                            case KnownPropertiesSimplified.PLAYER_VERSION:
+                                            case PlayerKnownPropertiesSimplified.PLAYER_VERSION:
                                                 player.setPlayerVersion(jsonParser.getIntValue());
                                                 break;
-                                            case KnownPropertiesSimplified.PACK_REQUIREMENTS:
+                                            case PlayerKnownPropertiesSimplified.PACK_REQUIREMENTS:
                                                 if (jsonParser.currentToken() != JsonToken.START_OBJECT) {
                                                     throw new SaveGameException("Invalid Savegame Format: Expected Json Object, got '" + jsonParser.currentToken().toString() + "'");
                                                 }
@@ -313,7 +312,7 @@ public class PlayerDataSavegame {
                                                     jsonParser.nextToken();
 
                                                     switch (fieldName3) {
-                                                        case KnownPropertiesSimplified.CUSTOM_TAGS:
+                                                        case PlayerKnownPropertiesSimplified.CUSTOM_TAGS:
                                                             if (jsonParser.getCurrentToken() == JsonToken.START_ARRAY) {
                                                                 customTags = new ArrayList<>();
 
@@ -326,7 +325,7 @@ public class PlayerDataSavegame {
                                                                 throw new SaveGameException("Invalid Savegame Format: Expected Json Array, got '" + jsonParser.currentToken().toString() + "'");
                                                             }
                                                             break;
-                                                        case KnownPropertiesSimplified.PURCHASED_PIDs:
+                                                        case PlayerKnownPropertiesSimplified.PURCHASED_PIDs:
                                                             if (jsonParser.getCurrentToken() == JsonToken.START_ARRAY) {
                                                                 purchasedPIDs = new ArrayList<>();
 
@@ -339,7 +338,7 @@ public class PlayerDataSavegame {
                                                                 throw new SaveGameException("Invalid Savegame Format: Expected Json Array, got '" + jsonParser.currentToken().toString() + "'");
                                                             }
                                                             break;
-                                                        case KnownPropertiesSimplified.PURCHASE_LIMITS:
+                                                        case PlayerKnownPropertiesSimplified.PURCHASE_LIMITS:
                                                             if (jsonParser.getCurrentToken() == JsonToken.START_ARRAY) {
                                                                 purchaseLimits = new HashMap<>();
 
@@ -353,10 +352,10 @@ public class PlayerDataSavegame {
                                                                             jsonParser.nextToken();
 
                                                                             switch (fieldName4) {
-                                                                                case KnownPropertiesSimplified.PURCHASE_LIMITS_PID:
+                                                                                case PlayerKnownPropertiesSimplified.PURCHASE_LIMITS_PID:
                                                                                     limitPID = jsonParser.getText();
                                                                                     break;
-                                                                                case KnownPropertiesSimplified.PURCHASE_LIMITS_REMAINING:
+                                                                                case PlayerKnownPropertiesSimplified.PURCHASE_LIMITS_REMAINING:
                                                                                     limitRemaining = jsonParser.getIntValue();
                                                                                     break;
                                                                                 default:
@@ -380,7 +379,7 @@ public class PlayerDataSavegame {
                                                                 throw new SaveGameException("Invalid Savegame Format: Expected Json Array, got '" + jsonParser.currentToken().toString() + "'");
                                                             }
                                                             break;
-                                                        case KnownPropertiesSimplified.PURCHASE_COOLDOWNS:
+                                                        case PlayerKnownPropertiesSimplified.PURCHASE_COOLDOWNS:
                                                             if (jsonParser.getCurrentToken() == JsonToken.START_ARRAY) {
                                                                 purchaseCooldowns = new HashMap<>();
 
@@ -394,10 +393,10 @@ public class PlayerDataSavegame {
                                                                             jsonParser.nextToken();
 
                                                                             switch (fieldName4) {
-                                                                                case KnownPropertiesSimplified.PURCHASE_LIMITS_PID:
+                                                                                case PlayerKnownPropertiesSimplified.PURCHASE_LIMITS_PID:
                                                                                     cooldownPID = jsonParser.getText();
                                                                                     break;
-                                                                                case KnownPropertiesSimplified.PURCHASE_LIMITS_REMAINING:
+                                                                                case PlayerKnownPropertiesSimplified.PURCHASE_LIMITS_REMAINING:
                                                                                     cooldownUnlockTime = jsonParser.getFloatValue();
                                                                                     break;
                                                                                 default:
@@ -465,17 +464,17 @@ public class PlayerDataSavegame {
     public void save(Path path) throws SaveGameException {
         try {
             ArkSavFile file = new ArkSavFile();
-            ObjectA.setPrivateField(file, KnownProperties.CLASS_NAME, PlayerDataSavegame.KNOWN__CLASS_NAME);
+            ObjectA.setPrivateField(file, PlayerKnownProperties.CLASS_NAME, PlayerDataSavegame.KNOWN__CLASS_NAME);
 
             List<Property<?>> fileProperties = new ArrayList<>();
 
             // ModVersion
-            PropertyFloat modVersion = new PropertyFloat(KnownProperties.MOD_VERSION, this.modVersion);
+            PropertyFloat modVersion = new PropertyFloat(PlayerKnownProperties.MOD_VERSION, this.modVersion);
             fileProperties.add(modVersion);
 
             // PlayerData
             ArkArrayStruct playerDataArray = new ArkArrayStruct();
-            PropertyArray playerData = new PropertyArray(KnownProperties.PLAYER_DATA, playerDataArray);
+            PropertyArray playerData = new PropertyArray(PlayerKnownProperties.PLAYER_DATA, playerDataArray);
 
             // Pack PlayerData
             List<Property<?>> playerProperties;
@@ -490,18 +489,18 @@ public class PlayerDataSavegame {
                 playerProperties = new ArrayList<>();
 
                 // add simple properties
-                playerProperties.add(new PropertyStr(KnownProperties.PLAYER_NAME, player.getName()));
-                playerProperties.add(new PropertyStr(KnownProperties.STEAM_ID_64, String.valueOf(player.getSteamID64())));
-                playerProperties.add(new PropertyInt(KnownProperties.POINTS, player.getPoints()));
-                playerProperties.add(new PropertyInt(KnownProperties.TOTAL_EARNED, player.getTotalEarned()));
-                playerProperties.add(new PropertyInt(KnownProperties.INCOME, player.getIncome()));
-                playerProperties.add(new PropertyFloat(KnownProperties.INCOME_FRACTION, player.getIncomeFraction()));
-                playerProperties.add(new PropertyFloat(KnownProperties.TOTAL_PLAYED_TIME, player.getTotalPlayedTime()));
-                playerProperties.add(new PropertyFloat(KnownProperties.TIME_FRACTION, player.getTimeFraction()));
-                playerProperties.add(new PropertyBool(KnownProperties.ELIGIBLE_FOR_BONUS, player.isEligibleForBonus()));
-                playerProperties.add(new PropertyInt(KnownProperties.BONUS_AMOUNT, player.getBonusAmount()));
-                playerProperties.add(new PropertyBool(KnownProperties.NOTIFY, player.isNotify()));
-                playerProperties.add(new PropertyInt(KnownProperties.PLAYER_VERSION, player.getPlayerVersion()));
+                playerProperties.add(new PropertyStr(PlayerKnownProperties.PLAYER_NAME, player.getName()));
+                playerProperties.add(new PropertyStr(PlayerKnownProperties.STEAM_ID_64, String.valueOf(player.getSteamID64())));
+                playerProperties.add(new PropertyInt(PlayerKnownProperties.POINTS, player.getPoints()));
+                playerProperties.add(new PropertyInt(PlayerKnownProperties.TOTAL_EARNED, player.getTotalEarned()));
+                playerProperties.add(new PropertyInt(PlayerKnownProperties.INCOME, player.getIncome()));
+                playerProperties.add(new PropertyFloat(PlayerKnownProperties.INCOME_FRACTION, player.getIncomeFraction()));
+                playerProperties.add(new PropertyFloat(PlayerKnownProperties.TOTAL_PLAYED_TIME, player.getTotalPlayedTime()));
+                playerProperties.add(new PropertyFloat(PlayerKnownProperties.TIME_FRACTION, player.getTimeFraction()));
+                playerProperties.add(new PropertyBool(PlayerKnownProperties.ELIGIBLE_FOR_BONUS, player.isEligibleForBonus()));
+                playerProperties.add(new PropertyInt(PlayerKnownProperties.BONUS_AMOUNT, player.getBonusAmount()));
+                playerProperties.add(new PropertyBool(PlayerKnownProperties.NOTIFY, player.isNotify()));
+                playerProperties.add(new PropertyInt(PlayerKnownProperties.PLAYER_VERSION, player.getPlayerVersion()));
 
                 // pack requirements
                 packRequirements = new ArrayList<>();
@@ -509,35 +508,35 @@ public class PlayerDataSavegame {
                 // Tags
                 packCustomTagsArray = new ArkArrayString();
                 packCustomTagsArray.addAll(player.getCustomTags());
-                packRequirements.add(new PropertyArray(KnownProperties.CUSTOM_TAGS, packCustomTagsArray));
+                packRequirements.add(new PropertyArray(PlayerKnownProperties.CUSTOM_TAGS, packCustomTagsArray));
 
                 // Purchased PIDs
                 packPurchasedPIDsArray = new ArkArrayString();
                 packPurchasedPIDsArray.addAll(player.getPurchasedPIDs());
-                packRequirements.add(new PropertyArray(KnownProperties.PURCHASED_PIDs, packPurchasedPIDsArray));
+                packRequirements.add(new PropertyArray(PlayerKnownProperties.PURCHASED_PIDs, packPurchasedPIDsArray));
 
                 // Purchase Limits
                 packPurchasedLimits = new ArkArrayStruct();
                 for (Map.Entry<String, Integer> entry : player.getPurchaseLimits().entrySet()) {
                     packPurchasedLimitsList = new ArrayList<>();
-                    packPurchasedLimitsList.add(new PropertyStr(KnownProperties.PURCHASE_LIMITS_PID, entry.getKey()));
-                    packPurchasedLimitsList.add(new PropertyInt(KnownProperties.PURCHASE_LIMITS_REMAINING, entry.getValue()));
+                    packPurchasedLimitsList.add(new PropertyStr(PlayerKnownProperties.PURCHASE_LIMITS_PID, entry.getKey()));
+                    packPurchasedLimitsList.add(new PropertyInt(PlayerKnownProperties.PURCHASE_LIMITS_REMAINING, entry.getValue()));
                     packPurchasedLimits.add(new StructPropertyList(packPurchasedLimitsList));
                 }
-                packRequirements.add(new PropertyArray(KnownProperties.PURCHASE_LIMITS, packPurchasedLimits));
+                packRequirements.add(new PropertyArray(PlayerKnownProperties.PURCHASE_LIMITS, packPurchasedLimits));
 
                 // Purchase Cooldowns
                 packPurchaseCooldowns = new ArkArrayStruct();
                 for (Map.Entry<String, Float> entry : player.getPurchaseCooldowns().entrySet()) {
                     packPurchaseCooldownsList = new ArrayList<>();
-                    packPurchaseCooldownsList.add(new PropertyStr(KnownProperties.PURCHASE_COOLDOWNS_PID, entry.getKey()));
-                    packPurchaseCooldownsList.add(new PropertyFloat(KnownProperties.PURCHASE_COOLDOWNS_UNLOCK_TIME, entry.getValue()));
+                    packPurchaseCooldownsList.add(new PropertyStr(PlayerKnownProperties.PURCHASE_COOLDOWNS_PID, entry.getKey()));
+                    packPurchaseCooldownsList.add(new PropertyFloat(PlayerKnownProperties.PURCHASE_COOLDOWNS_UNLOCK_TIME, entry.getValue()));
                     packPurchaseCooldowns.add(new StructPropertyList(packPurchaseCooldownsList));
                 }
-                packRequirements.add(new PropertyArray(KnownProperties.PURCHASE_COOLDOWNS, packPurchaseCooldowns));
+                packRequirements.add(new PropertyArray(PlayerKnownProperties.PURCHASE_COOLDOWNS, packPurchaseCooldowns));
 
                 // finally add pack requirements
-                playerProperties.add(new PropertyStruct(KnownProperties.PACK_REQUIREMENTS, new StructPropertyList(packRequirements), KnownProperties.PACK_REQUIREMENTS_STRUCT_TYPE));
+                playerProperties.add(new PropertyStruct(PlayerKnownProperties.PACK_REQUIREMENTS, new StructPropertyList(packRequirements), PlayerKnownProperties.PACK_REQUIREMENTS_STRUCT_TYPE));
 
                 // add player
                 playerDataArray.add(new StructPropertyList(playerProperties));
@@ -569,62 +568,62 @@ public class PlayerDataSavegame {
                 jsonGenerator.writeStartObject();
 
                 // ModVersion
-                jsonGenerator.writeNumberField(KnownPropertiesSimplified.MOD_VERSION, this.getModVersion());
+                jsonGenerator.writeNumberField(PlayerKnownPropertiesSimplified.MOD_VERSION, this.getModVersion());
 
                 // PlayerData
-                jsonGenerator.writeArrayFieldStart(KnownPropertiesSimplified.PLAYER_DATA);
+                jsonGenerator.writeArrayFieldStart(PlayerKnownPropertiesSimplified.PLAYER_DATA);
 
                 // Write all Players
                 for (Player player : this.getPlayers()) {
                     // Player
                     jsonGenerator.writeStartObject();
 
-                    jsonGenerator.writeStringField(KnownPropertiesSimplified.PLAYER_NAME, player.getName());
-                    jsonGenerator.writeNumberField(KnownPropertiesSimplified.STEAM_ID_64, player.getSteamID64());
-                    jsonGenerator.writeNumberField(KnownPropertiesSimplified.POINTS, player.getPoints());
-                    jsonGenerator.writeNumberField(KnownPropertiesSimplified.TOTAL_EARNED, player.getTotalEarned());
-                    jsonGenerator.writeNumberField(KnownPropertiesSimplified.INCOME, player.getIncome());
-                    jsonGenerator.writeNumberField(KnownPropertiesSimplified.INCOME_FRACTION, player.getIncomeFraction());
-                    jsonGenerator.writeNumberField(KnownPropertiesSimplified.TOTAL_PLAYED_TIME, player.getTotalPlayedTime());
-                    jsonGenerator.writeNumberField(KnownPropertiesSimplified.TIME_FRACTION, player.getTimeFraction());
-                    jsonGenerator.writeBooleanField(KnownPropertiesSimplified.ELIGIBLE_FOR_BONUS, player.isEligibleForBonus());
-                    jsonGenerator.writeNumberField(KnownPropertiesSimplified.BONUS_AMOUNT, player.getBonusAmount());
-                    jsonGenerator.writeBooleanField(KnownPropertiesSimplified.NOTIFY, player.isNotify());
-                    jsonGenerator.writeNumberField(KnownPropertiesSimplified.PLAYER_VERSION, player.getPlayerVersion());
+                    jsonGenerator.writeStringField(PlayerKnownPropertiesSimplified.PLAYER_NAME, player.getName());
+                    jsonGenerator.writeNumberField(PlayerKnownPropertiesSimplified.STEAM_ID_64, player.getSteamID64());
+                    jsonGenerator.writeNumberField(PlayerKnownPropertiesSimplified.POINTS, player.getPoints());
+                    jsonGenerator.writeNumberField(PlayerKnownPropertiesSimplified.TOTAL_EARNED, player.getTotalEarned());
+                    jsonGenerator.writeNumberField(PlayerKnownPropertiesSimplified.INCOME, player.getIncome());
+                    jsonGenerator.writeNumberField(PlayerKnownPropertiesSimplified.INCOME_FRACTION, player.getIncomeFraction());
+                    jsonGenerator.writeNumberField(PlayerKnownPropertiesSimplified.TOTAL_PLAYED_TIME, player.getTotalPlayedTime());
+                    jsonGenerator.writeNumberField(PlayerKnownPropertiesSimplified.TIME_FRACTION, player.getTimeFraction());
+                    jsonGenerator.writeBooleanField(PlayerKnownPropertiesSimplified.ELIGIBLE_FOR_BONUS, player.isEligibleForBonus());
+                    jsonGenerator.writeNumberField(PlayerKnownPropertiesSimplified.BONUS_AMOUNT, player.getBonusAmount());
+                    jsonGenerator.writeBooleanField(PlayerKnownPropertiesSimplified.NOTIFY, player.isNotify());
+                    jsonGenerator.writeNumberField(PlayerKnownPropertiesSimplified.PLAYER_VERSION, player.getPlayerVersion());
 
                     // Pack Requirements
-                    jsonGenerator.writeObjectFieldStart(KnownPropertiesSimplified.PACK_REQUIREMENTS);
+                    jsonGenerator.writeObjectFieldStart(PlayerKnownPropertiesSimplified.PACK_REQUIREMENTS);
 
                     // Custom Tags
-                    jsonGenerator.writeArrayFieldStart(KnownPropertiesSimplified.CUSTOM_TAGS);
+                    jsonGenerator.writeArrayFieldStart(PlayerKnownPropertiesSimplified.CUSTOM_TAGS);
                     for (String tag : player.getCustomTags()) {
                         jsonGenerator.writeString(tag);
                     }
                     jsonGenerator.writeEndArray();
 
                     // Purchased PIDs
-                    jsonGenerator.writeArrayFieldStart(KnownPropertiesSimplified.PURCHASED_PIDs);
+                    jsonGenerator.writeArrayFieldStart(PlayerKnownPropertiesSimplified.PURCHASED_PIDs);
                     for (String pid : player.getPurchasedPIDs()) {
                         jsonGenerator.writeString(pid);
                     }
                     jsonGenerator.writeEndArray();
 
                     // Purchase Limits
-                    jsonGenerator.writeArrayFieldStart(KnownPropertiesSimplified.PURCHASE_LIMITS);
+                    jsonGenerator.writeArrayFieldStart(PlayerKnownPropertiesSimplified.PURCHASE_LIMITS);
                     for (Map.Entry<String, Integer> limit : player.getPurchaseLimits().entrySet()) {
                         jsonGenerator.writeStartObject();
-                        jsonGenerator.writeStringField(KnownPropertiesSimplified.PURCHASE_LIMITS_PID, limit.getKey());
-                        jsonGenerator.writeNumberField(KnownPropertiesSimplified.PURCHASE_LIMITS_REMAINING, limit.getValue());
+                        jsonGenerator.writeStringField(PlayerKnownPropertiesSimplified.PURCHASE_LIMITS_PID, limit.getKey());
+                        jsonGenerator.writeNumberField(PlayerKnownPropertiesSimplified.PURCHASE_LIMITS_REMAINING, limit.getValue());
                         jsonGenerator.writeEndObject();
                     }
                     jsonGenerator.writeEndArray();
 
                     // Purchase Cooldowns
-                    jsonGenerator.writeArrayFieldStart(KnownPropertiesSimplified.PURCHASE_COOLDOWNS);
+                    jsonGenerator.writeArrayFieldStart(PlayerKnownPropertiesSimplified.PURCHASE_COOLDOWNS);
                     for (Map.Entry<String, Float> cooldown : player.getPurchaseCooldowns().entrySet()) {
                         jsonGenerator.writeStartObject();
-                        jsonGenerator.writeStringField(KnownPropertiesSimplified.PURCHASE_COOLDOWNS_PID, cooldown.getKey());
-                        jsonGenerator.writeNumberField(KnownPropertiesSimplified.PURCHASE_COOLDOWNS_UNLOCK_TIME, cooldown.getValue());
+                        jsonGenerator.writeStringField(PlayerKnownPropertiesSimplified.PURCHASE_COOLDOWNS_PID, cooldown.getKey());
+                        jsonGenerator.writeNumberField(PlayerKnownPropertiesSimplified.PURCHASE_COOLDOWNS_UNLOCK_TIME, cooldown.getValue());
                         jsonGenerator.writeEndObject();
                     }
                     jsonGenerator.writeEndArray();
