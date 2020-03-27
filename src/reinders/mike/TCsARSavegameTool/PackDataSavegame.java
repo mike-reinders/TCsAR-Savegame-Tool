@@ -76,7 +76,7 @@ public class PackDataSavegame {
             // Cache-References
             Property<?> prop;
 
-            if ((prop = file.getProperty(PlayerKnownProperties.MOD_VERSION)) != null) {
+            if ((prop = file.getProperty(PackKnownProperties.MOD_VERSION)) != null) {
                 modVersion = ((PropertyFloat)prop).getValue();
             }
 
@@ -85,11 +85,11 @@ public class PackDataSavegame {
             }
 
 
-            if ((prop = file.getProperty(PlayerKnownProperties.PLAYER_DATA)) != null) {
+            if ((prop = file.getProperty(PackKnownProperties.PACK_DATA)) != null) {
                 packData = new ArrayList<>();
 
                 for (Object obj : ((PropertyArray)prop).getValue()) {
-                    StructPropertyList playerPropertyList = (StructPropertyList)obj;
+                    StructPropertyList packPropertyList = (StructPropertyList)obj;
 
                     Pack pack = new Pack();
 
