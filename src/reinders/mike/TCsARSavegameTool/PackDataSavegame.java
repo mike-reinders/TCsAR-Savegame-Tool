@@ -162,7 +162,7 @@ public class PackDataSavegame {
                                 item.setQualityName(((PropertyStr)prop).getValue());
                             }
 
-                            if ((prop = packPropertyList.getProperty(PackKnownProperties.ITEM_QUALITY_COLOUR)) != null) {
+                            if ((prop = itemProperties.getProperty(PackKnownProperties.ITEM_QUALITY_COLOUR)) != null) {
                                 colorStruct = (StructLinearColor)((PropertyStruct)prop).getValue();
                                 item.setQualityColour(new Color(colorStruct.getR(), colorStruct.getG(), colorStruct.getB(), colorStruct.getA()));
                             }
