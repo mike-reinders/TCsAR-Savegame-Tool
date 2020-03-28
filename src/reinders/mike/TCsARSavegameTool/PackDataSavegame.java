@@ -241,7 +241,7 @@ public class PackDataSavegame {
                             }
 
                             if ((prop = dinoProperties.getProperty(PackKnownProperties.DINO_WILD_LEVEL)) != null && ((PropertyStr)prop).getValue() != null) {
-                                dino.setTamedLevel(Integer.parseInt(((PropertyStr)prop).getValue()));
+                                dino.setWildLevel(Integer.parseInt(((PropertyStr)prop).getValue()));
                             }
 
                             if ((prop = dinoProperties.getProperty(PackKnownProperties.DINO_TAMED_LEVEL)) != null && ((PropertyStr)prop).getValue() != null) {
@@ -427,8 +427,8 @@ public class PackDataSavegame {
                     dinoProperties.add(new PropertyStr(PackKnownProperties.DINO_NAME, dino.getName()));
                     dinoProperties.add(new PropertyByte(PackKnownProperties.DINO_TYPE, dino.getType()));
                     dinoProperties.add(new PropertyObject(PackKnownProperties.DINO_CLASS, new ObjectReference(ArkName.from(dino.getDinoClass()))));
-                    dinoProperties.add(new PropertyStr(PackKnownProperties.DINO_WILD_LEVEL, String.valueOf(dino.getWildLevel())));
-                    dinoProperties.add(new PropertyStr(PackKnownProperties.DINO_TAMED_LEVEL, String.valueOf(dino.getTamedLevel())));
+                    dinoProperties.add(new PropertyStr(PackKnownProperties.DINO_WILD_LEVEL, dino.getWildLevel()==null? null: String.valueOf(dino.getWildLevel())));
+                    dinoProperties.add(new PropertyStr(PackKnownProperties.DINO_TAMED_LEVEL, dino.getTamedLevel()==null? null: String.valueOf(dino.getTamedLevel())));
                     dinoProperties.add(new PropertyObject(PackKnownProperties.DINO_ENTRY, new ObjectReference(ArkName.from(dino.getEntry()))));
                     dinoProperties.add(new PropertyInt(PackKnownProperties.DINO_QUANTITY, dino.getQuantity()));
                     dinoProperties.add(new PropertyBool(PackKnownProperties.DINO_IS_MULTIPLE_CHOICE, dino.isMultipleChoice()));
