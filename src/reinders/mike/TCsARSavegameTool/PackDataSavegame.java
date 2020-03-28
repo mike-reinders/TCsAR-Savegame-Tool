@@ -4,6 +4,7 @@ import qowyn.ark.ArkSavFile;
 import qowyn.ark.arrays.ArkArrayString;
 import qowyn.ark.arrays.ArkArrayStruct;
 import qowyn.ark.properties.*;
+import qowyn.ark.structs.Struct;
 import qowyn.ark.structs.StructColor;
 import qowyn.ark.structs.StructLinearColor;
 import qowyn.ark.structs.StructPropertyList;
@@ -93,10 +94,15 @@ public class PackDataSavegame {
             if ((prop = file.getProperty(PackKnownProperties.PACK_DATA)) != null) {
                 packData = new ArrayList<>();
 
+                StructLinearColor colorStruct;
                 for (Object obj : ((PropertyArray)prop).getValue()) {
                     StructPropertyList packPropertyList = (StructPropertyList)obj;
 
                     Pack pack = new Pack();
+
+                    if ((prop = packPropertyList.getProperty(PackKnownProperties.NAME)) != null) {
+                        pack.setName(((PropertyStr)prop).getValue());
+                    }
 
                     if ((prop = packPropertyList.getProperty(PackKnownProperties.PID)) != null) {
                         pack.setPid(((PropertyStr)prop).getValue());
@@ -119,7 +125,8 @@ public class PackDataSavegame {
                     }
 
                     if ((prop = packPropertyList.getProperty(PackKnownProperties.COLOUR)) != null) {
-                        pack.setColor(new Color(((StructLinearColor)prop).getR(), ((StructLinearColor)prop).getG(), ((StructLinearColor)prop).getB(), ((StructColor)prop).getA()));
+                        colorStruct = (StructLinearColor)((PropertyStruct)prop).getValue();
+                        pack.setColor(new Color(colorStruct.getR(), colorStruct.getG(), colorStruct.getB(), colorStruct.getA()));
                     }
 
                     if ((prop = packPropertyList.getProperty(PackKnownProperties.ITEMS)) != null) {
@@ -155,8 +162,9 @@ public class PackDataSavegame {
                                 item.setQualityName(((PropertyStr)prop).getValue());
                             }
 
-                            if ((prop = itemProperties.getProperty(PackKnownProperties.ITEM_QUALITY_COLOUR)) != null) {
-                                item.setQualityColour(new Color(((StructLinearColor)prop).getR(), ((StructLinearColor)prop).getG(), ((StructLinearColor)prop).getB(), ((StructColor)prop).getA()));
+                            if ((prop = packPropertyList.getProperty(PackKnownProperties.ITEM_QUALITY_COLOUR)) != null) {
+                                colorStruct = (StructLinearColor)((PropertyStruct)prop).getValue();
+                                item.setQualityColour(new Color(colorStruct.getR(), colorStruct.getG(), colorStruct.getB(), colorStruct.getA()));
                             }
 
                             if ((prop = itemProperties.getProperty(PackKnownProperties.ITEM_QUALITY)) != null) {
@@ -168,7 +176,7 @@ public class PackDataSavegame {
                             }
 
                             if ((prop = itemProperties.getProperty(PackKnownProperties.ITEM_RATING)) != null) {
-                                item.setQuantity(((PropertyInt)prop).getValue());
+                                item.setItemRating(((PropertyFloat)prop).getValue());
                             }
 
                             if ((prop = itemProperties.getProperty(PackKnownProperties.ITEM_STAT_DATA)) != null) {
@@ -232,12 +240,12 @@ public class PackDataSavegame {
                                 dino.setDinoClassShort(((PropertyObject)prop).getValue().isPath());
                             }
 
-                            if ((prop = dinoProperties.getProperty(PackKnownProperties.DINO_WILD_LEVEL)) != null) {
-                                dino.setWildLevel(((PropertyInt)prop).getValue());
+                            if ((prop = dinoProperties.getProperty(PackKnownProperties.DINO_WILD_LEVEL)) != null && ((PropertyStr)prop).getValue() != null) {
+                                dino.setTamedLevel(Integer.parseInt(((PropertyStr)prop).getValue()));
                             }
 
-                            if ((prop = dinoProperties.getProperty(PackKnownProperties.DINO_TAMED_LEVEL)) != null) {
-                                dino.setTamedLevel(((PropertyStr)prop).getValue());
+                            if ((prop = dinoProperties.getProperty(PackKnownProperties.DINO_TAMED_LEVEL)) != null && ((PropertyStr)prop).getValue() != null) {
+                                dino.setTamedLevel(Integer.parseInt(((PropertyStr)prop).getValue()));
                             }
 
                             if ((prop = dinoProperties.getProperty(PackKnownProperties.DINO_ENTRY)) != null) {
@@ -275,7 +283,7 @@ public class PackDataSavegame {
                         StructPropertyList packRequirements = (StructPropertyList)(((PropertyStruct)prop).getValue());
 
                         if ((prop = packRequirements.getProperty(PackKnownProperties.REQUIREMENTS_ADMIN_ONLY)) != null) {
-                            pack.setName(((PropertyStr)prop).getValue());
+                            pack.setRequirementIsAdminOnly(((PropertyBool)prop).getValue());
                         }
 
                         if ((prop = packRequirements.getProperty(PackKnownProperties.REQUIREMENTS_IS_PREREQUISITE)) != null) {
@@ -358,17 +366,16 @@ public class PackDataSavegame {
                 packProperties = new ArrayList<>();
 
                 // add simple properties
-                packProperties.add(new PropertyStr(PackKnownProperties.PID, pack.getPid()));
-                packProperties.add(new PropertyStr(PackKnownProperties.POSITION, pack.getPid()));
-                packProperties.add(new PropertyStr(PackKnownProperties.COST, pack.getPid()));
-                packProperties.add(new PropertyStr(PackKnownProperties.DESCRIPTION, pack.getPid()));
-                packProperties.add(new PropertyStr(PackKnownProperties.CATEGORY, pack.getPid()));
-                packProperties.add(new PropertyInt(PackKnownProperties.PACK_VERSION, pack.getPackVersion()));
+                packProperties.add(new PropertyStr(PackKnownProperties.NAME, pack.getName()));
+                packProperties.add(new PropertyInt(PackKnownProperties.POSITION, pack.getPosition()));
+                packProperties.add(new PropertyInt(PackKnownProperties.COST, pack.getCost()));
+                packProperties.add(new PropertyStr(PackKnownProperties.DESCRIPTION, pack.getDescription()));
+                packProperties.add(new PropertyStr(PackKnownProperties.CATEGORY, pack.getCategory()));
 
                 // pack color
                 packProperties.add(new PropertyStruct(
                         PackKnownProperties.COLOUR,
-                        (pack.getColor() == null? null: new StructLinearColor(pack.getColor().R, pack.getColor().G, pack.getColor().B, pack.getColor().A)),
+                        (pack.getColor() == null? new StructLinearColor(): new StructLinearColor(pack.getColor().R, pack.getColor().G, pack.getColor().B, pack.getColor().A)),
                         PackKnownProperties.COLOUR_STRUCT_TYPE
                 ));
 
@@ -381,17 +388,18 @@ public class PackDataSavegame {
                     itemProperties.add(new PropertyObject(PackKnownProperties.ITEM_CLASS, new ObjectReference(ArkName.from(item.getItemClass()))));
                     itemProperties.add(new PropertyBool(PackKnownProperties.ITEM_IS_BLUEPRINT, item.isBlueprint()));
                     itemProperties.add(new PropertyStr(PackKnownProperties.ITEM_QUALITY_NAME, item.getQualityName()));
-                    itemProperties.add(new PropertyByte(PackKnownProperties.ITEM_QUALITY, item.getQuality()));
-                    itemProperties.add(new PropertyInt(PackKnownProperties.ITEM_QUANTITY, item.getQuantity()));
-                    itemProperties.add(new PropertyFloat(PackKnownProperties.ITEM_RATING, item.getItemRating()));
-                    itemProperties.add(new PropertyBool(PackKnownProperties.ITEM_IS_MULTIPLE_CHOICE, item.isMultipleChoice()));
 
                     // item color
                     itemProperties.add(new PropertyStruct(
                             PackKnownProperties.ITEM_QUALITY_COLOUR,
-                            (item.getQualityColour() == null? null: new StructLinearColor(item.getQualityColour().R, item.getQualityColour().G, item.getQualityColour().B, item.getQualityColour().A)),
+                            (item.getQualityColour() == null? new StructLinearColor(): new StructLinearColor(item.getQualityColour().R, item.getQualityColour().G, item.getQualityColour().B, item.getQualityColour().A)),
                             PackKnownProperties.ITEM_QUALITY_COLOUR_STRUCT_TYPE
                     ));
+
+                    // item
+                    itemProperties.add(new PropertyByte(PackKnownProperties.ITEM_QUALITY, item.getQuality()));
+                    itemProperties.add(new PropertyInt(PackKnownProperties.ITEM_QUANTITY, item.getQuantity()));
+                    itemProperties.add(new PropertyFloat(PackKnownProperties.ITEM_RATING, item.getItemRating()));
 
                     // item stats
                     itemStats = new ArkArrayStruct();
@@ -405,6 +413,9 @@ public class PackDataSavegame {
                     }
                     itemProperties.add(new PropertyArray(PackKnownProperties.ITEM_STAT_DATA, itemStats));
 
+                    // item
+                    itemProperties.add(new PropertyBool(PackKnownProperties.ITEM_IS_MULTIPLE_CHOICE, item.isMultipleChoice()));
+
                     items.add(new StructPropertyList(itemProperties));
                 }
                 packProperties.add(new PropertyArray(PackKnownProperties.ITEMS, items));
@@ -416,8 +427,8 @@ public class PackDataSavegame {
                     dinoProperties.add(new PropertyStr(PackKnownProperties.DINO_NAME, dino.getName()));
                     dinoProperties.add(new PropertyByte(PackKnownProperties.DINO_TYPE, dino.getType()));
                     dinoProperties.add(new PropertyObject(PackKnownProperties.DINO_CLASS, new ObjectReference(ArkName.from(dino.getDinoClass()))));
-                    dinoProperties.add(new PropertyInt(PackKnownProperties.DINO_WILD_LEVEL, dino.getWildLevel()));
-                    dinoProperties.add(new PropertyStr(PackKnownProperties.DINO_TAMED_LEVEL, dino.getTamedLevel()));
+                    dinoProperties.add(new PropertyStr(PackKnownProperties.DINO_WILD_LEVEL, String.valueOf(dino.getWildLevel())));
+                    dinoProperties.add(new PropertyStr(PackKnownProperties.DINO_TAMED_LEVEL, String.valueOf(dino.getTamedLevel())));
                     dinoProperties.add(new PropertyObject(PackKnownProperties.DINO_ENTRY, new ObjectReference(ArkName.from(dino.getEntry()))));
                     dinoProperties.add(new PropertyInt(PackKnownProperties.DINO_QUANTITY, dino.getQuantity()));
                     dinoProperties.add(new PropertyBool(PackKnownProperties.DINO_IS_MULTIPLE_CHOICE, dino.isMultipleChoice()));
@@ -428,6 +439,9 @@ public class PackDataSavegame {
                     dinos.add(new StructPropertyList(dinoProperties));
                 }
                 packProperties.add(new PropertyArray(PackKnownProperties.DINOS, dinos));
+
+                // pack
+                packProperties.add(new PropertyStr(PackKnownProperties.PID, pack.getPid()));
 
                 // requirements
                 requirementProperties = new ArrayList<>();
@@ -445,6 +459,9 @@ public class PackDataSavegame {
 
                 // add requirements property
                 packProperties.add(new PropertyStruct(PackKnownProperties.REQUIREMENTS, new StructPropertyList(requirementProperties), PackKnownProperties.PACK_REQUIREMENTS_STRUCT_TYPE));
+
+                // pack
+                packProperties.add(new PropertyInt(PackKnownProperties.PACK_VERSION, pack.getPackVersion()));
 
                 // add pack
                 packDataArray.add(new StructPropertyList(packProperties));

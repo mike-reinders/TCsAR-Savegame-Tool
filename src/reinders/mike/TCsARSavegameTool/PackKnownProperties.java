@@ -10,6 +10,7 @@ public class PackKnownProperties {
     public static final String PACK_DATA = "PackData";
 
     /** PACK **/
+    public static final String NAME = "Name_7_AF05C86C49A42A1C5DF68DB01E830604";
     public static final String PID = "PID_17_0DBB0B3F4B979711DC4FE0B013DE2465";
     public static final String POSITION = "Position_14_1829B70540B48DD03A8540901A812A09";
     public static final String COST = "Cost_13_E1F9E12F44B32B03DDCC2A95EECF3B48";
@@ -60,7 +61,7 @@ public class PackKnownProperties {
 
     /** PACK **/
     public static final String REQUIREMENTS = "Requirements_52_25F3CEE245340E434627EF913CFAEE2C";
-    public static final ArkName PACK_REQUIREMENTS_STRUCT_TYPE = ArkName.constantPlain("TCsAR_PlayerPackRequirements_Struct");
+    public static final ArkName PACK_REQUIREMENTS_STRUCT_TYPE = ArkName.constantPlain("TCsAR_PackRequirements_Struct");
 
     /** PACK - REQUIREMENTS **/
     public static final String REQUIREMENTS_ADMIN_ONLY = "AdminOnly_22_D220F2064E2B70BD6CCD4699068442EF";

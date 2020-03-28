@@ -7,7 +7,7 @@ public class PackDino {
     private String dinoClass;
     private boolean dinoClassShort;
     private int wildLevel;
-    private String tamedLevel;
+    private int tamedLevel;
     private String entry;
     private boolean entryShort;
     private int quantity;
@@ -56,11 +56,11 @@ public class PackDino {
         this.wildLevel = wildLevel;
     }
 
-    public String getTamedLevel() {
+    public int getTamedLevel() {
         return tamedLevel;
     }
 
-    public void setTamedLevel(String tamedLevel) {
+    public void setTamedLevel(int tamedLevel) {
         this.tamedLevel = tamedLevel;
     }
 
