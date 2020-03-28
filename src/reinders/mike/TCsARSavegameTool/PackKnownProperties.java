@@ -16,6 +16,7 @@ public class PackKnownProperties {
     public static final String DESCRIPTION = "Desc_43_33004ECB4E8BF9365088BDAAF0949C9A";
     public static final String CATEGORY = "Category_42_F756B72C485769725316DE93A1702785";
     public static final String COLOUR = "Colour_55_76F586A2459955AEBC3BB3BED20EE563";
+    public static final ArkName COLOUR_STRUCT_TYPE = ArkName.constantPlain("LinearColor");
 
     public static final String ITEMS = "Items_4_281D3F6A4CE0A0650265BCAEE4A0C320";
 
@@ -26,6 +27,7 @@ public class PackKnownProperties {
     public static final String ITEM_IS_BLUEPRINT = "IsBlueprint_10_888691DB4776F085504261979EAC8E76";
     public static final String ITEM_QUALITY_NAME = "QualityName_31_0EBB39634D320255FDA2C98DD3A8F903";
     public static final String ITEM_QUALITY_COLOUR = "QualityColour_34_16FBB90D479214334CF4F5AE3C3CA21D";
+    public static final ArkName ITEM_QUALITY_COLOUR_STRUCT_TYPE = ArkName.constantPlain("LinearColor");
     public static final String ITEM_QUALITY = "Quality_13_7581441341CC65F1C9740C8CB63308D3";
     public static final String ITEM_QUANTITY = "Quantity_20_73A94EC54381B41CEF6BA5BC968A2DF0";
     public static final String ITEM_RATING = "ItemRating_37_39F0119148FC8FDC70BABEAAC4D5F79D";
