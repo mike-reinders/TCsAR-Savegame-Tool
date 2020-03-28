@@ -141,8 +141,12 @@ public class PackDataSavegame {
                                 item.setName(((PropertyStr)prop).getValue());
                             }
 
-                            if ((prop = itemProperties.getProperty(PackKnownProperties.ITEM_TYPE)) != null) {
-                                item.setType(((PropertyByte)prop).getValue().getByteValue());
+                            if ((prop = itemProperties.getProperty(PackKnownProperties.ITEM_TYPE)) != null && ((PropertyByte)prop).getValue().isFromEnum()) {
+                                if (((PropertyByte)prop).getValue().getNameValue().toString().startsWith(PackKnownProperties.ITEM_TYPE_VALUE_STARTS_WITH)) {
+                                    try {
+                                        item.setType(Byte.parseByte(((PropertyByte)prop).getValue().getNameValue().toString().substring(PackKnownProperties.ITEM_TYPE_VALUE_STARTS_WITH.length())));
+                                    } catch (NumberFormatException ignored) {}
+                                }
                             }
 
                             if ((prop = itemProperties.getProperty(PackKnownProperties.ITEM_CLASS)) != null) {
@@ -231,8 +235,12 @@ public class PackDataSavegame {
                                 dino.setName(((PropertyStr)prop).getValue());
                             }
 
-                            if ((prop = dinoProperties.getProperty(PackKnownProperties.DINO_TYPE)) != null) {
-                                dino.setType(((PropertyByte)prop).getValue().getByteValue());
+                            if ((prop = dinoProperties.getProperty(PackKnownProperties.DINO_TYPE)) != null && ((PropertyByte)prop).getValue().isFromEnum()) {
+                                if (((PropertyByte)prop).getValue().getNameValue().toString().startsWith(PackKnownProperties.DINO_TYPE_VALUE_STARTS_WITH)) {
+                                    try {
+                                        dino.setType(Byte.parseByte(((PropertyByte)prop).getValue().getNameValue().toString().substring(PackKnownProperties.DINO_TYPE_VALUE_STARTS_WITH.length())));
+                                    } catch (NumberFormatException ignored) {}
+                                }
                             }
 
                             if ((prop = dinoProperties.getProperty(PackKnownProperties.DINO_CLASS)) != null) {
@@ -265,8 +273,12 @@ public class PackDataSavegame {
                                 dino.setGenderChoice(((PropertyBool)prop).getValue());
                             }
 
-                            if ((prop = dinoProperties.getProperty(PackKnownProperties.DINO_GENDER)) != null) {
-                                dino.setGender(((PropertyByte)prop).getValue().getByteValue());
+                            if ((prop = dinoProperties.getProperty(PackKnownProperties.DINO_GENDER)) != null && ((PropertyByte)prop).getValue().isFromEnum()) {
+                                if (((PropertyByte)prop).getValue().getNameValue().toString().startsWith(PackKnownProperties.DINO_GENDER_VALUE_STARTS_WITH)) {
+                                    try {
+                                        dino.setGender(Byte.parseByte(((PropertyByte)prop).getValue().getNameValue().toString().substring(PackKnownProperties.DINO_GENDER_VALUE_STARTS_WITH.length())));
+                                    } catch (NumberFormatException ignored) {}
+                                }
                             }
 
                             if ((prop = dinoProperties.getProperty(PackKnownProperties.DINO_IS_NEUTERED)) != null) {
@@ -385,7 +397,7 @@ public class PackDataSavegame {
                 for (PackItem item : pack.getItems()) {
                     itemProperties = new ArrayList<>();
                     itemProperties.add(new PropertyStr(PackKnownProperties.ITEM_NAME, item.getName()));
-                    itemProperties.add(new PropertyByte(PackKnownProperties.ITEM_TYPE, item.getType()));
+                    itemProperties.add(new PropertyByte(PackKnownProperties.ITEM_TYPE, 0, ArkName.from(PackKnownProperties.ITEM_TYPE_VALUE_STARTS_WITH + item.getType()), PackKnownProperties.ITEM_TYPE_ENUM_TYPE));
 
                     objRef = new ObjectReference(ArkName.from(item.getItemClass()));
                     objRef.setObjectType(item.isItemClassShort()? ObjectReference.TYPE_PATH_NO_TYPE: ObjectReference.TYPE_PATH);
@@ -430,7 +442,7 @@ public class PackDataSavegame {
                 for (PackDino dino : pack.getDinos()) {
                     dinoProperties = new ArrayList<>();
                     dinoProperties.add(new PropertyStr(PackKnownProperties.DINO_NAME, dino.getName()));
-                    dinoProperties.add(new PropertyByte(PackKnownProperties.DINO_TYPE, dino.getType()));
+                    dinoProperties.add(new PropertyByte(PackKnownProperties.DINO_TYPE, 0, ArkName.from(PackKnownProperties.DINO_TYPE_VALUE_STARTS_WITH + dino.getType()), PackKnownProperties.DINO_TYPE_ENUM_TYPE));
 
                     objRef = new ObjectReference(ArkName.from(dino.getDinoClass()));
                     objRef.setObjectType(dino.isDinoClassShort()? ObjectReference.TYPE_PATH_NO_TYPE: ObjectReference.TYPE_PATH);
@@ -446,7 +458,7 @@ public class PackDataSavegame {
                     dinoProperties.add(new PropertyInt(PackKnownProperties.DINO_QUANTITY, dino.getQuantity()));
                     dinoProperties.add(new PropertyBool(PackKnownProperties.DINO_IS_MULTIPLE_CHOICE, dino.isMultipleChoice()));
                     dinoProperties.add(new PropertyBool(PackKnownProperties.DINO_IS_GENDER_CHOICE, dino.isGenderChoice()));
-                    dinoProperties.add(new PropertyByte(PackKnownProperties.DINO_GENDER, dino.getGender()));
+                    dinoProperties.add(new PropertyByte(PackKnownProperties.DINO_GENDER, 0, ArkName.from(PackKnownProperties.DINO_GENDER_VALUE_STARTS_WITH + dino.getGender()), PackKnownProperties.DINO_GENDER_ENUM_TYPE));
                     dinoProperties.add(new PropertyBool(PackKnownProperties.DINO_IS_NEUTERED, dino.isNeutered()));
 
                     dinos.add(new StructPropertyList(dinoProperties));

@@ -24,6 +24,8 @@ public class PackKnownProperties {
     /** ITEM **/
     public static final String ITEM_NAME = "Name_2_356CB04B41D9CDC8ED731D88EDE832BB";
     public static final String ITEM_TYPE = "Type_38_5A581D9542F5287A4A50AB99E6A1741E";
+    public static final ArkName ITEM_TYPE_ENUM_TYPE = ArkName.from("TCsAR_ItemType_Enum");
+    public static final String ITEM_TYPE_VALUE_STARTS_WITH = "TCsAR_ItemType_Enum::NewEnumerator";
     public static final String ITEM_CLASS = "ItemClass_47_2C2B87174DA8E1103B0D49ADBB76793D";
     public static final String ITEM_IS_BLUEPRINT = "IsBlueprint_10_888691DB4776F085504261979EAC8E76";
     public static final String ITEM_QUALITY_NAME = "QualityName_31_0EBB39634D320255FDA2C98DD3A8F903";
@@ -49,6 +51,8 @@ public class PackKnownProperties {
     /** PACK - DINO **/
     public static final String DINO_NAME = "Name_2_178A066547A4A0453F46A5B713F46F29";
     public static final String DINO_TYPE = "Type_5_BB5BCC3E4070DB046EBC229647D6E600";
+    public static final ArkName DINO_TYPE_ENUM_TYPE = ArkName.from("TCsAR_DinoType_Enum");
+    public static final String DINO_TYPE_VALUE_STARTS_WITH = "TCsAR_DinoType_Enum::NewEnumerator";
     public static final String DINO_CLASS = "DinoClass_8_A82061784101704308B06A9EBD9A0187";
     public static final String DINO_WILD_LEVEL = "WildLevel_29_36D660474F07E7F64979E7B77E76E856";
     public static final String DINO_TAMED_LEVEL = "TamedLevel_28_1CBB049B49B62E0C8C5ADABCD71318ED";
@@ -57,6 +61,8 @@ public class PackKnownProperties {
     public static final String DINO_IS_MULTIPLE_CHOICE = "IsMultipleChoice_18_E2EB616D4007E73B12BE74BB989F4E52";
     public static final String DINO_IS_GENDER_CHOICE = "IsGenderChoice_32_B6300CE44CDE8BF8CE8588B6D61CCA83";
     public static final String DINO_GENDER = "Gender_30_69D1F87D46A42A7B4CAB3B84BAF88E5A";
+    public static final ArkName DINO_GENDER_ENUM_TYPE = ArkName.from("TCsAR_DinoGender_Enum");
+    public static final String DINO_GENDER_VALUE_STARTS_WITH = "TCsAR_DinoGender_Enum::NewEnumerator";
     public static final String DINO_IS_NEUTERED = "IsNeutered_25_D9886BDD46E3AABAA566A29E1A54C30F";
 
     /** PACK **/
