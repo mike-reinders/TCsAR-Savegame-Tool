@@ -15,6 +15,7 @@ public class Pack {
     private List<PackDino> packDinos;
     private boolean requirement_isAdminOnly;
     private boolean requirement_isPrerequisite;
+    private String requirement_prerequisitePid;
     private int requirement_levelRestriction;
     private int requirement_purchaseLimit;
     private float requirement_purchaseCooldown;
@@ -107,6 +108,14 @@ public class Pack {
 
     public void setRequirementIsPrerequisite(boolean requirementIsPrerequisite) {
         this.requirement_isPrerequisite = requirementIsPrerequisite;
+    }
+
+    public String getRequirementPrerequisitePid() {
+        return requirement_prerequisitePid;
+    }
+
+    public void setRequirementPrerequisitePid(String requirementPrerequisitePid) {
+        this.requirement_prerequisitePid = requirementPrerequisitePid;
     }
 
     public int getRequirementLevelRestriction() {

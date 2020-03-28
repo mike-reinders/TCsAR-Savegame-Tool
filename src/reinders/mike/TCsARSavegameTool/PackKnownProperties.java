@@ -28,7 +28,7 @@ public class PackKnownProperties {
     public static final String ITEM_QUALITY_COLOUR = "QualityColour_34_16FBB90D479214334CF4F5AE3C3CA21D";
     public static final String ITEM_QUALITY = "Quality_13_7581441341CC65F1C9740C8CB63308D3";
     public static final String ITEM_QUANTITY = "Quantity_20_73A94EC54381B41CEF6BA5BC968A2DF0";
-    public static final String ITEM_ITEM_RATING = "ItemRating_37_39F0119148FC8FDC70BABEAAC4D5F79D";
+    public static final String ITEM_RATING = "ItemRating_37_39F0119148FC8FDC70BABEAAC4D5F79D";
     public static final String ITEM_STAT_DATA = "StatData_25_148E582249E43A8BD5525AB17DDC0660";
 
     /** ITEM - STAT **/
