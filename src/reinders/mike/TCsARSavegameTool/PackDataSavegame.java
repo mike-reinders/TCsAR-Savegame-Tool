@@ -386,7 +386,7 @@ public class PackDataSavegame {
                     pack.setCategory("Default Category");
                     pack.setPosition(legacyFormatReader.readPackPosition());
                     pack.setCost(legacyFormatReader.readPackCost());
-                    pack.setPid(legacyFormatReader.readPackPID());
+                    pack.setPid(legacyFormatReader.readPackPIDNew());
 
                     tags = new ArrayList<>();
                     Collections.addAll(tags, legacyFormatReader.readTags());

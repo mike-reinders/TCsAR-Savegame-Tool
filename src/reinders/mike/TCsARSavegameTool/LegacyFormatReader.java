@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.BufferUnderflowException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
+import java.util.Calendar;
 
 public class LegacyFormatReader {
 
@@ -225,6 +226,23 @@ public class LegacyFormatReader {
 
     public String readPackPID() {
         return this.readProperty();
+    }
+
+    public String readPackPIDNew() {
+        // <PID>Y<Year>D<DayOfYear>T<TimeOfDayInMilliseconds>
+
+        String pid = this.readPackPID();
+
+        if (pid.startsWith("PID")) {
+            pid = pid.substring(3);
+        }
+
+        try {
+            pid = String.valueOf(Integer.MAX_VALUE - Integer.parseInt(pid));
+        } catch (NumberFormatException ignored) {}
+
+        Calendar calendar = Calendar.getInstance();
+        return pid + "Y" + calendar.get(Calendar.YEAR) + "D" + calendar.get(Calendar.DAY_OF_YEAR) + "T" + ((((((calendar.get(Calendar.HOUR_OF_DAY) * 60) + calendar.get(Calendar.MINUTE)) * 60) + calendar.get(Calendar.SECOND)) * 1000) + calendar.get(Calendar.MILLISECOND));
     }
 
     public String[] readTags() {
