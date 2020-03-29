@@ -81,8 +81,6 @@ public class QueryPacksCommand extends Command {
                     i++;
                 }
             }
-        } else {
-            SavegameTool.getCommandManager().dispatch(CommandManager.HELP_COMMAND, new String[] {this.getName()});
         }
 
         System.out.print(strBuilder.toString());
