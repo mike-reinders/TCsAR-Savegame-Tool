@@ -241,6 +241,12 @@ public class QueryPacksCommand extends Command {
                 strBuilder.append(" | ");
                 strBuilder.append(StringC.pad(Pad.RIGHT, "Name", ' ', 30));
                 strBuilder.append(" | ");
+                strBuilder.append(StringC.pad(Pad.RIGHT, "Type", ' ', 6));
+                strBuilder.append(" | ");
+                strBuilder.append(StringC.pad(Pad.RIGHT, "Quantity", ' ', 10));
+                strBuilder.append(" | ");
+                strBuilder.append(StringC.pad(Pad.RIGHT, "Quality", ' ', 58));
+                strBuilder.append(" | ");
                 strBuilder.append("Class");
             }
 
@@ -249,6 +255,16 @@ public class QueryPacksCommand extends Command {
             strBuilder.append(StringC.pad(Pad.RIGHT, String.valueOf(i), indexPad));
             strBuilder.append("   ");
             strBuilder.append(StringC.pad(Pad.RIGHT, item.getName(), 30));
+            strBuilder.append("   ");
+            strBuilder.append(StringC.pad(Pad.RIGHT, "::" + String.valueOf(item.getType()), 6));
+            strBuilder.append("   ");
+            strBuilder.append(StringC.pad(Pad.RIGHT, String.valueOf(item.getQuantity()), 10));
+            strBuilder.append("   ");
+            strBuilder.append(StringC.pad(Pad.RIGHT, item.getQualityName(), 16));
+            strBuilder.append("   ");
+            strBuilder.append(StringC.pad(Pad.RIGHT, String.valueOf(item.getQuality()), 8));
+            strBuilder.append("   ");
+            strBuilder.append(StringC.pad(Pad.RIGHT, item.getQualityColour()==null? "null": (item.getQualityColour().R + " " + item.getQualityColour().G + " " + item.getQualityColour().B + " " + item.getQualityColour().A), 28));
             strBuilder.append("   ");
             strBuilder.append(item.getItemClass());
 
@@ -265,6 +281,7 @@ public class QueryPacksCommand extends Command {
         StringBuilder strBuilder = new StringBuilder();
 
         int indexPad = String.valueOf(dinoCollection.size()).length();
+        int entryPad = (4+indexPad +3+30 +3+8 +3+8 +3+8 +3+10 +3+10 +3+10 +3+12 +3+12 +3);
 
         int i = 0;
         int iH = 0;
@@ -283,11 +300,23 @@ public class QueryPacksCommand extends Command {
                 strBuilder.append(" | ");
                 strBuilder.append(StringC.pad(Pad.RIGHT, "Name", ' ', 30));
                 strBuilder.append(" | ");
+                strBuilder.append(StringC.pad(Pad.RIGHT, "Type", ' ', 8));
+                strBuilder.append(" | ");
+                strBuilder.append(StringC.pad(Pad.RIGHT, "Gender", ' ', 8));
+                strBuilder.append(" | ");
+                strBuilder.append(StringC.pad(Pad.RIGHT, "Quantity", ' ', 8));
+                strBuilder.append(" | ");
+                strBuilder.append(StringC.pad(Pad.RIGHT, "Multiple", ' ', 10));
+                strBuilder.append(" | ");
+                strBuilder.append(StringC.pad(Pad.RIGHT, "Gender C.", ' ', 10));
+                strBuilder.append(" | ");
+                strBuilder.append(StringC.pad(Pad.RIGHT, "Neutered", ' ', 10));
+                strBuilder.append(" | ");
                 strBuilder.append(StringC.pad(Pad.RIGHT, "Wild Level", ' ', 12));
                 strBuilder.append(" | ");
                 strBuilder.append(StringC.pad(Pad.RIGHT, "Tamed Level", ' ', 12));
                 strBuilder.append(" | ");
-                strBuilder.append("Class");
+                strBuilder.append("Class / Entry");
             }
 
             strBuilder.append(System.lineSeparator());
@@ -296,11 +325,26 @@ public class QueryPacksCommand extends Command {
             strBuilder.append("   ");
             strBuilder.append(StringC.pad(Pad.RIGHT, dino.getName(), 30));
             strBuilder.append("   ");
+            strBuilder.append(StringC.pad(Pad.RIGHT, "::" + String.valueOf(dino.getType()), 8));
+            strBuilder.append("   ");
+            strBuilder.append(StringC.pad(Pad.RIGHT, "&" + String.valueOf(dino.getGender()), 8));
+            strBuilder.append("   ");
+            strBuilder.append(StringC.pad(Pad.RIGHT, String.valueOf(dino.getQuantity()), 8));
+            strBuilder.append("   ");
+            strBuilder.append(StringC.pad(Pad.RIGHT, String.valueOf(dino.isMultipleChoice()), 10));
+            strBuilder.append("   ");
+            strBuilder.append(StringC.pad(Pad.RIGHT, String.valueOf(dino.isGenderChoice()), 10));
+            strBuilder.append("   ");
+            strBuilder.append(StringC.pad(Pad.RIGHT, String.valueOf(dino.isNeutered()), 10));
+            strBuilder.append("   ");
             strBuilder.append(StringC.pad(Pad.RIGHT, dino.getWildLevel()==null? "null": ((dino.getWildLevelMin()==null? "": (dino.getWildLevelMin() + "-")) + dino.getWildLevel()), 12));
             strBuilder.append("   ");
             strBuilder.append(StringC.pad(Pad.RIGHT, dino.getTamedLevel()==null? "null": ((dino.getTamedLevelMin()==null? "": (dino.getTamedLevelMin() + "-")) + dino.getTamedLevel()), 12));
             strBuilder.append("   ");
             strBuilder.append(dino.getDinoClass());
+            strBuilder.append(System.lineSeparator());
+            strBuilder.append(StringC.fill(entryPad));
+            strBuilder.append(dino.getEntry());
 
             // reset Header Entry Counter for every 20 entries
             if (iH == 20) {
