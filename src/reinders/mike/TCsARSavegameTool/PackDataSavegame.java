@@ -4,8 +4,6 @@ import qowyn.ark.ArkSavFile;
 import qowyn.ark.arrays.ArkArrayString;
 import qowyn.ark.arrays.ArkArrayStruct;
 import qowyn.ark.properties.*;
-import qowyn.ark.structs.Struct;
-import qowyn.ark.structs.StructColor;
 import qowyn.ark.structs.StructLinearColor;
 import qowyn.ark.structs.StructPropertyList;
 import qowyn.ark.types.ArkName;
@@ -14,10 +12,11 @@ import reinders.mike.TCsARSavegameTool.Exception.ModVersionMismatchException;
 import reinders.mike.TCsARSavegameTool.Exception.SaveGameException;
 import reinders.mike.TCsARSavegameTool.Util.ObjectA;
 
+import java.nio.BufferUnderflowException;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 public class PackDataSavegame {
 
@@ -359,6 +358,120 @@ public class PackDataSavegame {
             throw ex;
         } catch (Throwable throwable) {
             throw new SaveGameException("Failed to load SaveGame", throwable);
+        }
+    }
+
+    public void loadLegacy(Path path) {
+        try {
+            LegacyFormatReader legacyFormatReader = new LegacyFormatReader(path);
+
+            // Result Variables
+            List<Pack> packs = new ArrayList<>();
+
+            // Cache Variables
+            Pack pack;
+            List<String> tags;
+            List<PackItem> packItems;
+            PackItem packItem;
+            List<PackDino> packDinos;
+            PackDino packDino;
+            float[] color;
+            int[] wildLevels;
+
+            try {
+                while (!legacyFormatReader.isLimitReached()) {
+                    pack = new Pack();
+
+                    pack.setName(legacyFormatReader.readPackName());
+                    pack.setPosition(legacyFormatReader.readPackPosition());
+                    pack.setCost(legacyFormatReader.readPackCost());
+                    pack.setPid(legacyFormatReader.readPackPID());
+
+                    tags = new ArrayList<>();
+                    Collections.addAll(tags, legacyFormatReader.readTags());
+                    pack.setTags(tags);
+
+                    pack.setRequirementPurchaseLimit(legacyFormatReader.readPackPurchaseLimit());
+                    pack.setRequirementIsAdminOnly(legacyFormatReader.readPackIsAdminOnly());
+
+                    packItems = new ArrayList<>();
+                    while (legacyFormatReader.getNextItemType() == LegacyFormatReader.ITEM_TYPE_ITEM) {
+                        packItem = new PackItem();
+
+                        packItem.setName(legacyFormatReader.readItemName());
+                        packItem.setType(legacyFormatReader.readItemType());
+                        packItem.setItemClass(legacyFormatReader.readItemClass());
+                        packItem.setItemClassShort(true);
+                        packItem.setBlueprint(legacyFormatReader.readItemIsBlueprint());
+                        packItem.setQualityName(legacyFormatReader.readItemQualityName());
+
+                        color = legacyFormatReader.readItemQualityColour();
+                        packItem.setQualityColour(new Color(color[0], color[1], color[2], color[3]));
+
+                        packItem.setQuality(legacyFormatReader.readItemQuality());
+                        packItem.setQuantity(legacyFormatReader.readItemQuantity());
+                        packItem.setItemRating(legacyFormatReader.readItemRating());
+                        packItem.setMultipleChoice(legacyFormatReader.readItemIsMultipleChoice());
+
+                        legacyFormatReader.readItemDisplayedStat();
+                        legacyFormatReader.readItemDisplayedStat();
+                        legacyFormatReader.readItemDisplayedStat();
+                        legacyFormatReader.readItemDisplayedStat();
+                        legacyFormatReader.readItemDisplayedStat();
+                        legacyFormatReader.readItemDisplayedStat();
+                        legacyFormatReader.readItemDisplayedStat();
+                        legacyFormatReader.readItemDisplayedStat();
+
+                        legacyFormatReader.readItemDelimiter();
+
+                        packItems.add(packItem);
+                    }
+                    pack.setItems(packItems);
+
+                    packDinos = new ArrayList<>();
+                    while (legacyFormatReader.getNextItemType() == LegacyFormatReader.ITEM_TYPE_DINO) {
+                        packDino = new PackDino();
+
+                        packDino.setName(legacyFormatReader.readDinoName());
+                        packDino.setType(legacyFormatReader.readDinoType());
+                        packDino.setDinoClass(legacyFormatReader.readDinoClass());
+                        packDino.setDinoClassShort(true);
+
+                        wildLevels = legacyFormatReader.readDinoWildLevel();
+                        if (wildLevels.length == 2) {
+                            packDino.setWildLevelMin(wildLevels[0]);
+                            packDino.setWildLevel(wildLevels[1]);
+                        } else {
+                            packDino.setWildLevel(wildLevels[0]);
+                        }
+
+                        packDino.setEntry(legacyFormatReader.readDinoEntry());
+                        packDino.setEntryShort(true);
+                        packDino.setQuantity(legacyFormatReader.readDinoQuantity());
+                        packDino.setMultipleChoice(legacyFormatReader.readDinoIsMultipleChoice());
+
+                        //legacyFormatReader.readDinoDelimiter();
+
+                        packDinos.add(packDino);
+                    }
+                    pack.setDinos(packDinos);
+
+                    legacyFormatReader.readPackDelimiter();
+
+                    if (legacyFormatReader.getNextItemType() == LegacyFormatReader.ITEM_TYPE_NONE) {
+                        throw new BufferUnderflowException();
+                    }
+                }
+            } catch (Throwable throwable) {
+                throw new SaveGameException("Failed to load Legacy-SaveGame: Invalid Format (Position: " + legacyFormatReader.getPosition() + ")", throwable);
+            }
+
+            this.modVersion = PackDataSavegame.latestModVersion();
+            this.packs = packs;
+        } catch (SaveGameException ex) {
+            throw ex;
+        } catch (Throwable throwable) {
+            throw new SaveGameException("Failed to load Legacy-SaveGame", throwable);
         }
     }
 
