@@ -63,7 +63,7 @@ public class PlayerDataSavegame {
         this.load(path, false);
     }
 
-    public void load(Path path, boolean ignoreVersion) throws SaveGameException {
+    public void load(Path path, boolean ignoreVersion) {
         try {
             ArkSavFile file = new ArkSavFile(path);
 
@@ -215,11 +215,11 @@ public class PlayerDataSavegame {
         }
     }
 
-    public void loadJson(Path path) throws SaveGameException {
+    public void loadJson(Path path) {
         this.loadJson(path, false);
     }
 
-    public void loadJson(Path path, boolean ignoreVersion) throws SaveGameException {
+    public void loadJson(Path path, boolean ignoreVersion) {
         try {
             JsonFactory jsonFactory = new JsonFactory();
 
@@ -461,7 +461,7 @@ public class PlayerDataSavegame {
         this.players = null;
     }
 
-    public void save(Path path) throws SaveGameException {
+    public void save(Path path) {
         try {
             ArkSavFile file = new ArkSavFile();
             ObjectA.setPrivateField(file, PlayerKnownProperties.CLASS_NAME, PlayerDataSavegame.KNOWN__CLASS_NAME);
@@ -552,11 +552,11 @@ public class PlayerDataSavegame {
         }
     }
 
-    public void saveJson(Path path) throws SaveGameException {
+    public void saveJson(Path path) {
         this.saveJson(path, false);
     }
 
-    public void saveJson(Path path, boolean pretty) throws SaveGameException {
+    public void saveJson(Path path, boolean pretty) {
         try {
             JsonFactory jsonFactory = new JsonFactory();
             try (JsonGenerator jsonGenerator = jsonFactory.createGenerator(path.toFile(), JsonEncoding.UTF8)) {

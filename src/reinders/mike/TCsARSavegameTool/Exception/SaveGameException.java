@@ -1,6 +1,6 @@
 package reinders.mike.TCsARSavegameTool.Exception;
 
-public class SaveGameException extends ToolException {
+public class SaveGameException extends RuntimeException implements ToolException {
 
     public SaveGameException() {
         super();

@@ -32,11 +32,11 @@ public class PackDataSavegame {
         this.packs = new ArrayList<>();
     }
 
-    public PackDataSavegame(Path path) throws SaveGameException {
+    public PackDataSavegame(Path path) {
         this.load(path);
     }
 
-    public PackDataSavegame(Path path, boolean ignoreVersion) throws SaveGameException {
+    public PackDataSavegame(Path path, boolean ignoreVersion) {
         this.load(path, ignoreVersion);
     }
 
@@ -62,11 +62,11 @@ public class PackDataSavegame {
         return false;
     }
 
-    public void load(Path path) throws SaveGameException {
+    public void load(Path path) {
         this.load(path, false);
     }
 
-    public void load(Path path, boolean ignoreVersion) throws SaveGameException {
+    public void load(Path path, boolean ignoreVersion) {
         try {
             ArkSavFile file = new ArkSavFile(path);
 

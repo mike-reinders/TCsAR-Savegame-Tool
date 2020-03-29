@@ -1,6 +1,6 @@
 package reinders.mike.TCsARSavegameTool.Exception;
 
-public class MissingArgumentException extends ToolException {
+public class MissingArgumentException extends Exception implements ToolException {
 
     public MissingArgumentException() {
         super();
