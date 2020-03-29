@@ -6,7 +6,9 @@ public class PackDino {
     private byte type;
     private String dinoClass;
     private boolean dinoClassShort;
+    private Integer wildLevelMin;
     private Integer wildLevel;
+    private Integer tamedLevelMin;
     private Integer tamedLevel;
     private String entry;
     private boolean entryShort;
@@ -48,12 +50,28 @@ public class PackDino {
         this.dinoClassShort = dinoClassShort;
     }
 
+    public Integer getWildLevelMin() {
+        return wildLevelMin;
+    }
+
+    public void setWildLevelMin(Integer wildLevelMin) {
+        this.wildLevelMin = wildLevelMin;
+    }
+
     public Integer getWildLevel() {
         return wildLevel;
     }
 
     public void setWildLevel(Integer wildLevel) {
         this.wildLevel = wildLevel;
+    }
+
+    public Integer getTamedLevelMin() {
+        return tamedLevelMin;
+    }
+
+    public void setTamedLevelMin(Integer tamedLevelMin) {
+        this.tamedLevelMin = tamedLevelMin;
     }
 
     public Integer getTamedLevel() {

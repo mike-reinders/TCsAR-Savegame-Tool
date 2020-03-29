@@ -249,11 +249,29 @@ public class PackDataSavegame {
                             }
 
                             if ((prop = dinoProperties.getProperty(PackKnownProperties.DINO_WILD_LEVEL)) != null && ((PropertyStr)prop).getValue() != null) {
-                                dino.setWildLevel(Integer.parseInt(((PropertyStr)prop).getValue()));
+                                String[] wildLevels = ((PropertyStr)prop).getValue().split("-");
+
+                                if (wildLevels.length > 2) {
+                                    throw new SaveGameException("Invalid Savegame: Dino Wild Level");
+                                } else if (wildLevels.length == 2) {
+                                    dino.setWildLevelMin(Integer.parseInt(wildLevels[0]));
+                                    dino.setWildLevel(Integer.parseInt(wildLevels[1]));
+                                } else {
+                                    dino.setWildLevel(Integer.parseInt(wildLevels[0]));
+                                }
                             }
 
                             if ((prop = dinoProperties.getProperty(PackKnownProperties.DINO_TAMED_LEVEL)) != null && ((PropertyStr)prop).getValue() != null) {
-                                dino.setTamedLevel(Integer.parseInt(((PropertyStr)prop).getValue()));
+                                String[] tamedLevels = ((PropertyStr)prop).getValue().split("-");
+
+                                if (tamedLevels.length > 2) {
+                                    throw new SaveGameException("Invalid Savegame: Dino Tamed Level");
+                                } else if (tamedLevels.length == 2) {
+                                    dino.setTamedLevelMin(Integer.parseInt(tamedLevels[0]));
+                                    dino.setTamedLevel(Integer.parseInt(tamedLevels[1]));
+                                } else {
+                                    dino.setTamedLevel(Integer.parseInt(tamedLevels[0]));
+                                }
                             }
 
                             if ((prop = dinoProperties.getProperty(PackKnownProperties.DINO_ENTRY)) != null) {
@@ -448,8 +466,26 @@ public class PackDataSavegame {
                     objRef.setObjectType(dino.isDinoClassShort()? ObjectReference.TYPE_PATH_NO_TYPE: ObjectReference.TYPE_PATH);
                     dinoProperties.add(new PropertyObject(PackKnownProperties.DINO_CLASS, objRef));
 
-                    dinoProperties.add(new PropertyStr(PackKnownProperties.DINO_WILD_LEVEL, dino.getWildLevel()==null? null: String.valueOf(dino.getWildLevel())));
-                    dinoProperties.add(new PropertyStr(PackKnownProperties.DINO_TAMED_LEVEL, dino.getTamedLevel()==null? null: String.valueOf(dino.getTamedLevel())));
+                    dinoProperties.add(new PropertyStr(
+                            PackKnownProperties.DINO_WILD_LEVEL,
+                            dino.getWildLevel()==null?
+                                    null:
+                                    (dino.getWildLevelMin()==null?
+                                            "":
+                                            (dino.getWildLevelMin() + "-")
+                                    )
+                                    + dino.getWildLevel()
+                    ));
+                    dinoProperties.add(new PropertyStr(
+                            PackKnownProperties.DINO_TAMED_LEVEL,
+                            dino.getTamedLevel()==null?
+                                    null:
+                                    (dino.getTamedLevelMin()==null?
+                                            "":
+                                            (dino.getTamedLevelMin() + "-")
+                                    )
+                                    + dino.getTamedLevel()
+                    ));
 
                     objRef = new ObjectReference(ArkName.from(dino.getEntry()));
                     objRef.setObjectType(dino.isEntryShort()? ObjectReference.TYPE_PATH_NO_TYPE: ObjectReference.TYPE_PATH);

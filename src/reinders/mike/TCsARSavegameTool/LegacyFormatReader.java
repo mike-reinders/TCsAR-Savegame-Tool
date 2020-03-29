@@ -252,8 +252,19 @@ public class LegacyFormatReader {
         return this.unifyClass(this.readDinoProperty());
     }
 
-    public int readDinoWildLevel() {
-        return Integer.parseInt(this.readDinoProperty());
+    public int[] readDinoWildLevel() {
+        String[] parts = this.readDinoProperty().split("-");
+
+        if (parts.length > 2) {
+            throw new SaveGameException("Invalid Legacy-Format: Dino Wild Level at position " + this.position);
+        }
+
+        int[] levels = new int[parts.length];
+        for (int i = 0; i < parts.length; i++) {
+            levels[i] = Integer.parseInt(parts[i]);
+        }
+
+        return levels;
     }
 
     public String readDinoEntry() {
