@@ -11,6 +11,7 @@ public class CommandManager extends reinders.mike.TCsARSavegameTool.Command.Comm
     public static final Command JSON_TO_SAV_COMMAND = new JsonToSavCommand();
     public static final Command DEBUG_COMMAND = new DebugCommand();
     public static final Command HELP_COMMAND = new HelpCommand();
+    public static final Command LEGACY_PACKS_TO_SAV_COMMAND = new LegacyPacksToSavCommand();
 
     public CommandManager() {
         this.register(CommandManager.MERGE_COMMAND);
@@ -18,6 +19,7 @@ public class CommandManager extends reinders.mike.TCsARSavegameTool.Command.Comm
         this.register(CommandManager.QUERY_COMMAND);
         this.register(CommandManager.SAV_TO_JSON_COMMAND);
         this.register(CommandManager.JSON_TO_SAV_COMMAND);
+        this.register(CommandManager.LEGACY_PACKS_TO_SAV_COMMAND);
         this.register(CommandManager.DEBUG_COMMAND);
         this.register(CommandManager.HELP_COMMAND);
     }
