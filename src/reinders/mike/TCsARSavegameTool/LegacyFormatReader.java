@@ -72,7 +72,7 @@ public class LegacyFormatReader {
     }
 
     protected String unifyClass(String clazz) {
-        clazz = clazz.replace("~*", "") // "Blueprint'/Game/
+        clazz = clazz.replace("~*", "/Game/")
                 .replace("~0", "PrimalEarth/CoreBlueprints/Weapons/")
                 .replace("~1", "PrimalEarth/CoreBlueprints/Items/")
                 .replace("~2", "PrimalEarth/CoreBlueprints/Resources/PrimalItemResource")
