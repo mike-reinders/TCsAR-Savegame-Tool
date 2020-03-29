@@ -22,7 +22,7 @@ public class QueryPacksCommand extends Command {
 
     @Override
     public String getUsage() {
-        return "[--ignore-version / --legacy] [--packs / [--pack=PID]*] [file]";
+        return "[--ignore-version / --legacy] [--packs / [[--pack=PID]* [--dinos] [--items]]] [file]";
     }
 
     @Override
@@ -206,6 +206,110 @@ public class QueryPacksCommand extends Command {
         strBuilder.append(StringC.pad(Pad.RIGHT, "Dinos:", QueryPacksCommand.PACK_DETAILS_LEFT_ROW_SIZE));
         strBuilder.append(pack.getDinos()==null? "null": (pack.getDinos().size() + " Dinos"));
 
+        if (pack.getItems() != null && this.isArgument("items")) {
+            strBuilder.append(System.lineSeparator());
+            strBuilder.append(System.lineSeparator());
+            strBuilder.append(this.itemsToStringList(pack.getItems()));
+        }
+
+        if (pack.getDinos() != null && this.isArgument("dinos")) {
+            strBuilder.append(System.lineSeparator());
+            strBuilder.append(System.lineSeparator());
+            strBuilder.append(this.dinosToStringList(pack.getDinos()));
+        }
+
+        return strBuilder.toString();
+    }
+
+    public String itemsToStringList(Collection<PackItem> itemCollection) {
+        StringBuilder strBuilder = new StringBuilder();
+
+        int indexPad = String.valueOf(itemCollection.size()).length();
+
+        int i = 0;
+        int iH = 0;
+        for (PackItem item : itemCollection) {
+            i++;
+            iH++;
+
+            // Add Headers every 20 entries
+            if (iH == 1) {
+                if (i != 1) {
+                    strBuilder.append(System.lineSeparator());
+                }
+                strBuilder.append(System.lineSeparator());
+                strBuilder.append("| ");
+                strBuilder.append(StringC.pad(Pad.RIGHT, "Nr", ' ', indexPad + 2));
+                strBuilder.append(" | ");
+                strBuilder.append(StringC.pad(Pad.RIGHT, "Name", ' ', 30));
+                strBuilder.append(" | ");
+                strBuilder.append("Class");
+            }
+
+            strBuilder.append(System.lineSeparator());
+            strBuilder.append("  # ");
+            strBuilder.append(StringC.pad(Pad.RIGHT, String.valueOf(i), indexPad));
+            strBuilder.append("   ");
+            strBuilder.append(StringC.pad(Pad.RIGHT, item.getName(), 30));
+            strBuilder.append("   ");
+            strBuilder.append(item.getItemClass());
+
+            // reset Header Entry Counter for every 20 entries
+            if (iH == 20) {
+                iH = 0;
+            }
+        }
+
+        return strBuilder.toString();
+    }
+
+    public String dinosToStringList(Collection<PackDino> dinoCollection) {
+        StringBuilder strBuilder = new StringBuilder();
+
+        int indexPad = String.valueOf(dinoCollection.size()).length();
+
+        int i = 0;
+        int iH = 0;
+        for (PackDino dino : dinoCollection) {
+            i++;
+            iH++;
+
+            // Add Headers every 20 entries
+            if (iH == 1) {
+                if (i != 1) {
+                    strBuilder.append(System.lineSeparator());
+                }
+                strBuilder.append(System.lineSeparator());
+                strBuilder.append("| ");
+                strBuilder.append(StringC.pad(Pad.RIGHT, "Nr", ' ', indexPad + 2));
+                strBuilder.append(" | ");
+                strBuilder.append(StringC.pad(Pad.RIGHT, "Name", ' ', 30));
+                strBuilder.append(" | ");
+                strBuilder.append(StringC.pad(Pad.RIGHT, "Wild Level", ' ', 12));
+                strBuilder.append(" | ");
+                strBuilder.append(StringC.pad(Pad.RIGHT, "Tamed Level", ' ', 12));
+                strBuilder.append(" | ");
+                strBuilder.append("Class");
+            }
+
+            strBuilder.append(System.lineSeparator());
+            strBuilder.append("  # ");
+            strBuilder.append(StringC.pad(Pad.RIGHT, String.valueOf(i), indexPad));
+            strBuilder.append("   ");
+            strBuilder.append(StringC.pad(Pad.RIGHT, dino.getName(), 30));
+            strBuilder.append("   ");
+            strBuilder.append(StringC.pad(Pad.RIGHT, dino.getWildLevel()==null? "null": ((dino.getWildLevelMin()==null? "": (dino.getWildLevelMin() + "-")) + dino.getWildLevel()), 12));
+            strBuilder.append("   ");
+            strBuilder.append(StringC.pad(Pad.RIGHT, dino.getTamedLevel()==null? "null": ((dino.getTamedLevelMin()==null? "": (dino.getTamedLevelMin() + "-")) + dino.getTamedLevel()), 12));
+            strBuilder.append("   ");
+            strBuilder.append(dino.getDinoClass());
+
+            // reset Header Entry Counter for every 20 entries
+            if (iH == 20) {
+                iH = 0;
+            }
+        }
+
         return strBuilder.toString();
     }
 
@@ -244,13 +348,17 @@ public class QueryPacksCommand extends Command {
                 strBuilder.append(StringC.pad(Pad.RIGHT, "Limit", ' ', 8));
                 strBuilder.append(" | ");
                 strBuilder.append(StringC.pad(Pad.RIGHT, "Cooldown", ' ', 12));
+                strBuilder.append(" | ");
+                strBuilder.append(StringC.pad(Pad.RIGHT, "Items", ' ', 8));
+                strBuilder.append(" | ");
+                strBuilder.append(StringC.pad(Pad.RIGHT, "Dinos", ' ', 8));
             }
 
             strBuilder.append(System.lineSeparator());
             strBuilder.append("  # ");
             strBuilder.append(StringC.pad(Pad.RIGHT, String.valueOf(i), indexPad));
             strBuilder.append("   ");
-            strBuilder.append(StringC.pad(Pad.RIGHT, String.valueOf(pack.getPid()), 30));
+            strBuilder.append(StringC.pad(Pad.RIGHT, pack.getPid(), 30));
             strBuilder.append("   ");
             strBuilder.append(StringC.pad(Pad.RIGHT, pack.getName(), 30));
             strBuilder.append("   ");
@@ -265,6 +373,10 @@ public class QueryPacksCommand extends Command {
             strBuilder.append(StringC.pad(Pad.RIGHT, String.valueOf(pack.getRequirementPurchaseLimit()), 8));
             strBuilder.append("   ");
             strBuilder.append(StringC.pad(Pad.RIGHT, TimeC.TimeToString(pack.getRequirementPurchaseCooldown()), 12));
+            strBuilder.append("   ");
+            strBuilder.append(StringC.pad(Pad.RIGHT, (pack.getItems()==null? "null": String.valueOf(pack.getItems().size())), 8));
+            strBuilder.append("   ");
+            strBuilder.append(StringC.pad(Pad.RIGHT, (pack.getDinos()==null? "null": String.valueOf(pack.getDinos().size())), 8));
 
             // reset Header Entry Counter for every 20 entries
             if (iH == 20) {
