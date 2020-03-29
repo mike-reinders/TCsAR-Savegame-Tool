@@ -1,5 +1,7 @@
 package reinders.mike.TCsARSavegameTool;
 
+import reinders.mike.TCsARSavegameTool.Exception.SaveGameException;
+
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.BufferUnderflowException;
@@ -89,7 +91,11 @@ public class LegacyFormatReader {
         return clazz;
     }
 
-    protected boolean isLimitReached() {
+    public int getPosition() {
+        return this.position;
+    }
+
+    public boolean isLimitReached() {
         return this.position > this.limit;
     }
 
@@ -103,7 +109,7 @@ public class LegacyFormatReader {
 
             if (chr == until) {
                 this.position += (endIndex - beginIndex);
-                return this.buffer.substring(beginIndex, endIndex);
+                return this.buffer.substring(beginIndex, endIndex - 1);
             }
         }
 
@@ -122,20 +128,47 @@ public class LegacyFormatReader {
         return this.read(LegacyFormatReader.DELIMITER_PACK_DINO_PROPERTY);
     }
 
-    public void skipPackDelimiter() {
+    public char readDelimiter(char delimiter) {
+        if (this.isLimitReached()
+                || this.buffer.charAt(this.position) != delimiter
+        ) {
+            throw new SaveGameException("Invalid Legacy-Format: Delimiter '" + delimiter + "' (0x" + String.format("%02x", (int)delimiter) + ") expected at position " + this.position);
+        }
+
+        this.position++;
+        return delimiter;
+    }
+
+    public void skipDelimiter(char delimiter) {
         if (!this.isLimitReached()
-            && this.buffer.charAt(this.position) == LegacyFormatReader.DELIMITER_PACK
+                && this.buffer.charAt(this.position) == delimiter
         ) {
             this.position++;
         }
     }
 
+    public char readPackDelimiter() {
+        return this.readDelimiter(LegacyFormatReader.DELIMITER_PACK);
+    }
+
+    public void skipPackDelimiter() {
+        this.skipDelimiter(LegacyFormatReader.DELIMITER_PACK);
+    }
+
+    public char readItemDelimiter() {
+        return this.readDelimiter(LegacyFormatReader.DELIMITER_PACK_ITEM);
+    }
+
     public void skipItemDelimiter() {
-        if (!this.isLimitReached()
-                && this.buffer.charAt(this.position) == LegacyFormatReader.DELIMITER_PACK_ITEM
-        ) {
-            this.position++;
-        }
+        this.skipDelimiter(LegacyFormatReader.DELIMITER_PACK_ITEM);
+    }
+
+    public char readDinoDelimiter() {
+        return this.readDelimiter(LegacyFormatReader.DELIMITER_PACK_DINO);
+    }
+
+    public void skipDinoDelimiter() {
+        this.skipDelimiter(LegacyFormatReader.DELIMITER_PACK_DINO);
     }
 
     public int getNextItemType() {
@@ -169,7 +202,7 @@ public class LegacyFormatReader {
         return Integer.parseInt(this.readProperty());
     }
 
-    public String readPID() {
+    public String readPackPID() {
         return this.readProperty();
     }
 
@@ -177,11 +210,11 @@ public class LegacyFormatReader {
         return this.readProperty().split(String.valueOf(LegacyFormatReader.DELIMITER_PACK_ITEM_TAG));
     }
 
-    public int readPurchaseLimit() {
+    public int readPackPurchaseLimit() {
         return Integer.parseInt(this.readProperty());
     }
 
-    public boolean readAdminOnly() {
+    public boolean readPackIsAdminOnly() {
         return Integer.parseInt(this.readProperty()) == 1;
     }
 
@@ -190,7 +223,7 @@ public class LegacyFormatReader {
     }
 
     public byte readItemType() {
-        return (byte)Integer.parseInt(this.readProperty());
+        return (byte)Integer.parseInt(this.readItemProperty());
     }
 
     public String readItemClass() {
@@ -236,8 +269,8 @@ public class LegacyFormatReader {
         return Integer.parseInt(this.readItemProperty()) == 1;
     }
 
-    public int readItemDisplayedStat() {
-        return Integer.parseInt(this.read(DELIMITER_PACK_ITEM_STAT));
+    public float readItemDisplayedStat() {
+        return Float.parseFloat(this.read(DELIMITER_PACK_ITEM_STAT));
     }
 
     public String readDinoName() {
