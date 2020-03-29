@@ -239,13 +239,17 @@ public class QueryPacksCommand extends Command {
                 strBuilder.append("| ");
                 strBuilder.append(StringC.pad(Pad.RIGHT, "Nr", ' ', indexPad + 2));
                 strBuilder.append(" | ");
-                strBuilder.append(StringC.pad(Pad.RIGHT, "Name", ' ', 30));
+                strBuilder.append(StringC.pad(Pad.RIGHT, "Name", ' ', 40));
                 strBuilder.append(" | ");
                 strBuilder.append(StringC.pad(Pad.RIGHT, "Type", ' ', 6));
                 strBuilder.append(" | ");
                 strBuilder.append(StringC.pad(Pad.RIGHT, "Quantity", ' ', 10));
                 strBuilder.append(" | ");
-                strBuilder.append(StringC.pad(Pad.RIGHT, "Quality", ' ', 58));
+                strBuilder.append(StringC.pad(Pad.RIGHT, "Multiple", ' ', 10));
+                strBuilder.append(" | ");
+                strBuilder.append(StringC.pad(Pad.RIGHT, "Quality Name / Value / Color", ' ', 58));
+                strBuilder.append(" | ");
+                strBuilder.append(StringC.pad(Pad.RIGHT, "Blueprint", ' ', 10));
                 strBuilder.append(" | ");
                 strBuilder.append("Class");
             }
@@ -254,17 +258,21 @@ public class QueryPacksCommand extends Command {
             strBuilder.append("  # ");
             strBuilder.append(StringC.pad(Pad.RIGHT, String.valueOf(i), indexPad));
             strBuilder.append("   ");
-            strBuilder.append(StringC.pad(Pad.RIGHT, item.getName(), 30));
+            strBuilder.append(StringC.pad(Pad.RIGHT, item.getName(), 40));
             strBuilder.append("   ");
             strBuilder.append(StringC.pad(Pad.RIGHT, "::" + String.valueOf(item.getType()), 6));
             strBuilder.append("   ");
             strBuilder.append(StringC.pad(Pad.RIGHT, String.valueOf(item.getQuantity()), 10));
+            strBuilder.append("   ");
+            strBuilder.append(StringC.pad(Pad.RIGHT, String.valueOf(item.isMultipleChoice()), 10));
             strBuilder.append("   ");
             strBuilder.append(StringC.pad(Pad.RIGHT, item.getQualityName(), 16));
             strBuilder.append("   ");
             strBuilder.append(StringC.pad(Pad.RIGHT, String.valueOf(item.getQuality()), 8));
             strBuilder.append("   ");
             strBuilder.append(StringC.pad(Pad.RIGHT, item.getQualityColour()==null? "null": (item.getQualityColour().R + " " + item.getQualityColour().G + " " + item.getQualityColour().B + " " + item.getQualityColour().A), 28));
+            strBuilder.append("   ");
+            strBuilder.append(StringC.pad(Pad.RIGHT, String.valueOf(item.isBlueprint()), 10));
             strBuilder.append("   ");
             strBuilder.append(item.getItemClass());
 
@@ -375,7 +383,7 @@ public class QueryPacksCommand extends Command {
                 strBuilder.append("| ");
                 strBuilder.append(StringC.pad(Pad.RIGHT, "Nr", ' ', indexPad + 2));
                 strBuilder.append(" | ");
-                strBuilder.append(StringC.pad(Pad.RIGHT, "PID", ' ', 30));
+                strBuilder.append(StringC.pad(Pad.RIGHT, "PID", ' ', 40));
                 strBuilder.append(" | ");
                 strBuilder.append(StringC.pad(Pad.RIGHT, "Name", ' ', 30));
                 strBuilder.append(" | ");
@@ -400,7 +408,7 @@ public class QueryPacksCommand extends Command {
             strBuilder.append("  # ");
             strBuilder.append(StringC.pad(Pad.RIGHT, String.valueOf(i), indexPad));
             strBuilder.append("   ");
-            strBuilder.append(StringC.pad(Pad.RIGHT, pack.getPid(), 30));
+            strBuilder.append(StringC.pad(Pad.RIGHT, pack.getPid(), 40));
             strBuilder.append("   ");
             strBuilder.append(StringC.pad(Pad.RIGHT, pack.getName(), 30));
             strBuilder.append("   ");
