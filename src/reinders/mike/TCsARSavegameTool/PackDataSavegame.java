@@ -674,4 +674,55 @@ public class PackDataSavegame {
         this.modVersion = modVersion;
     }
 
+    public List<Pack> getPacks() {
+        return this.packs;
+    }
+
+    public Pack getPack(String PID) {
+        for (Pack pack : this.packs) {
+            if (pack.getPid().equals(PID)) {
+                return pack;
+            }
+        }
+
+        return null;
+    }
+
+    public boolean hasPack(String PID) {
+        for (Pack pack : this.packs) {
+            if (pack.getPid().equals(PID)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public Pack getPackByName(String name) {
+        return this.getPackByName(name, false);
+    }
+
+    public Pack getPackByName(String name, boolean ignoreCase) {
+        for (Pack pack : this.packs) {
+            if ((ignoreCase? pack.getName().equalsIgnoreCase(name): pack.getName().equals(name))) {
+                return pack;
+            }
+        }
+
+        return null;
+    }
+
+    public Pack putPack(Pack pack) {
+        Pack pck;
+        for (int i = 0; i < this.packs.size(); i++) {
+            pck = this.packs.get(i);
+            if (pck.getPid().equals(pack.getPid())) {
+                this.packs.set(i, pack);
+                return pck;
+            }
+        }
+
+        return null;
+    }
+
 }
