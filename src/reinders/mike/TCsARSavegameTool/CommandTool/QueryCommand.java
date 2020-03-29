@@ -1,7 +1,6 @@
 package reinders.mike.TCsARSavegameTool.CommandTool;
 
 import reinders.mike.TCsARSavegameTool.Command.Command;
-import reinders.mike.TCsARSavegameTool.Exception.MissingCommandException;
 import reinders.mike.TCsARSavegameTool.Exception.ModVersionMismatchException;
 import reinders.mike.TCsARSavegameTool.SavegameTool;
 import reinders.mike.TCsARSavegameTool.Player;
@@ -9,6 +8,7 @@ import reinders.mike.TCsARSavegameTool.PlayerDataSavegame;
 import reinders.mike.TCsARSavegameTool.Util.Pad;
 import reinders.mike.TCsARSavegameTool.Util.SteamIDC;
 import reinders.mike.TCsARSavegameTool.Util.StringC;
+import reinders.mike.TCsARSavegameTool.Util.TimeC;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -113,7 +113,7 @@ public class QueryCommand extends Command {
 
         strBuilder.append(System.lineSeparator());
         strBuilder.append(StringC.pad(Pad.RIGHT, "Time Played:", QueryCommand.PLAYER_DETAILS_LEFT_ROW_SIZE));
-        strBuilder.append(this.timeToString(player.getTotalPlayedTime()));
+        strBuilder.append(TimeC.TimeToString(player.getTotalPlayedTime()));
 
         strBuilder.append(System.lineSeparator());
         strBuilder.append(StringC.pad(Pad.RIGHT, "ARc:", QueryCommand.PLAYER_DETAILS_LEFT_ROW_SIZE));
@@ -142,7 +142,7 @@ public class QueryCommand extends Command {
 
         strBuilder.append(System.lineSeparator());
         strBuilder.append(StringC.pad(Pad.RIGHT, "Income Fraction:", QueryCommand.PLAYER_DETAILS_LEFT_ROW_SIZE));
-        strBuilder.append(this.timeToString(player.getIncomeFraction()));
+        strBuilder.append(TimeC.TimeToString(player.getIncomeFraction()));
 
         strBuilder.append(System.lineSeparator());
         strBuilder.append(StringC.pad(Pad.RIGHT, "Eligible for Bonus:", QueryCommand.PLAYER_DETAILS_LEFT_ROW_SIZE));
@@ -150,11 +150,11 @@ public class QueryCommand extends Command {
 
         strBuilder.append(System.lineSeparator());
         strBuilder.append(StringC.pad(Pad.RIGHT, "Bonus:", QueryCommand.PLAYER_DETAILS_LEFT_ROW_SIZE));
-        strBuilder.append(this.timeToString(player.getBonusAmount()));
+        strBuilder.append(TimeC.TimeToString(player.getBonusAmount()));
 
         strBuilder.append(System.lineSeparator());
         strBuilder.append(StringC.pad(Pad.RIGHT, "Bonus Fraction:", QueryCommand.PLAYER_DETAILS_LEFT_ROW_SIZE));
-        strBuilder.append(this.timeToString(player.getBonusAmount()));
+        strBuilder.append(TimeC.TimeToString(player.getBonusAmount()));
 
         strBuilder.append(System.lineSeparator());
         strBuilder.append(StringC.pad(Pad.RIGHT, "Notify:", QueryCommand.PLAYER_DETAILS_LEFT_ROW_SIZE));
@@ -271,7 +271,7 @@ public class QueryCommand extends Command {
             strBuilder.append(StringC.pad(Pad.RIGHT, String.valueOf(player.getPlayerVersion()), 16));
 
             strBuilder.append("   ");
-            strBuilder.append(StringC.pad(Pad.RIGHT, this.timeToString(player.getTotalPlayedTime()), 16));
+            strBuilder.append(StringC.pad(Pad.RIGHT, TimeC.TimeToString(player.getTotalPlayedTime()), 16));
 
             strBuilder.append("   ");
             strBuilder.append(StringC.pad(Pad.RIGHT, "(" + player.getTotalPlayedTime() + "s)", 16));
@@ -280,43 +280,6 @@ public class QueryCommand extends Command {
             if (iH == 20) {
                 iH = 0;
             }
-        }
-
-        return strBuilder.toString();
-    }
-
-    public String timeToString(float time) {
-        StringBuilder strBuilder = new StringBuilder();
-
-        int days = (int)(time / (60 * 60 * 24));
-        int hours = (int)((time = (time - (days * (60 * 60 * 24)))) / (60 * 60));
-        int minutes = (int)((time = (time - (hours * (60 * 60)))) / 60);
-        int seconds = (int)(time = (time - (minutes * 60)));
-
-        if (days > 0) {
-            strBuilder.append(days);
-            strBuilder.append("d");
-        }
-        if (hours > 0) {
-            if (strBuilder.length() != 0) {
-                strBuilder.append(" ");
-            }
-            strBuilder.append(hours);
-            strBuilder.append("h");
-        }
-        if (minutes > 0) {
-            if (strBuilder.length() != 0) {
-                strBuilder.append(" ");
-            }
-            strBuilder.append(minutes);
-            strBuilder.append("m");
-        }
-        if (seconds > 0 || strBuilder.length() == 0) {
-            if (strBuilder.length() != 0) {
-                strBuilder.append(" ");
-            }
-            strBuilder.append(seconds);
-            strBuilder.append("s");
         }
 
         return strBuilder.toString();
