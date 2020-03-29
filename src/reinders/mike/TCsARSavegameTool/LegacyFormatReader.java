@@ -178,16 +178,29 @@ public class LegacyFormatReader {
             return LegacyFormatReader.ITEM_TYPE_PACK_END;
         }
 
-        int ITEM_PROPERTY_POS = this.buffer.indexOf(String.valueOf(LegacyFormatReader.DELIMITER_PACK_ITEM_PROPERTY), this.position);
-        int DINO_PROPERTY_POS = this.buffer.indexOf(String.valueOf(LegacyFormatReader.DELIMITER_PACK_DINO_PROPERTY), this.position);
+        int ITEM_PROPERTY_DELIMITERS = 0;
+        int DINO_PROPERTY_DELIMITERS = 0;
 
-        if (ITEM_PROPERTY_POS < DINO_PROPERTY_POS) {
-            return LegacyFormatReader.ITEM_TYPE_ITEM;
-        } else if (DINO_PROPERTY_POS < ITEM_PROPERTY_POS) {
-            return LegacyFormatReader.ITEM_TYPE_DINO;
-        } else {
-            return LegacyFormatReader.ITEM_TYPE_NONE;
+        char chr;
+        for (int i = this.position; i < this.buffer.length(); i++) {
+            chr = this.buffer.charAt(i);
+
+            if (chr == LegacyFormatReader.DELIMITER_PACK_ITEM_PROPERTY) {
+                ITEM_PROPERTY_DELIMITERS++;
+
+                if (ITEM_PROPERTY_DELIMITERS >= 10) {
+                    return LegacyFormatReader.ITEM_TYPE_ITEM;
+                }
+            } else if (chr == LegacyFormatReader.DELIMITER_PACK_DINO_PROPERTY) {
+                DINO_PROPERTY_DELIMITERS++;
+
+                if (DINO_PROPERTY_DELIMITERS >= 6) {
+                    return LegacyFormatReader.ITEM_TYPE_DINO;
+                }
+            }
         }
+
+        return LegacyFormatReader.ITEM_TYPE_NONE;
     }
 
     public String readPackName() {
