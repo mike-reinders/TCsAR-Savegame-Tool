@@ -81,8 +81,12 @@ public class LegacyFormatReader {
                 .replace("~5", "Aberration/CoreBlueprints/Resources/PrimalItemResource")
                 .replace("~6", "Aberration/CoreBlueprints/Dinoentry");
 
+        if (clazz.startsWith("\"Blueprint'")) {
+            clazz = clazz.substring("\"Blueprint'".length());
+        }
+
         if (clazz.endsWith("'\"")) {
-            clazz = clazz.substring(0, clazz.length() - 3);
+            clazz = clazz.substring(0, clazz.length() - 2);
         } else {
             String[] split = clazz.split("/");
             clazz = clazz + "." + split[split.length - 1];
