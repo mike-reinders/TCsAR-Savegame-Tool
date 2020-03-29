@@ -92,6 +92,10 @@ public class LegacyFormatReader {
             clazz = clazz + "." + split[split.length - 1];
         }
 
+        if (clazz.length() == 0) {
+            return null;
+        }
+
         return clazz;
     }
 

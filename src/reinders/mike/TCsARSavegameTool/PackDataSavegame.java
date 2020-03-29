@@ -533,9 +533,11 @@ public class PackDataSavegame {
                         itemProperties.add(new PropertyStr(PackKnownProperties.ITEM_NAME, item.getName()));
                         itemProperties.add(new PropertyByte(PackKnownProperties.ITEM_TYPE, 0, ArkName.from(PackKnownProperties.ITEM_TYPE_VALUE_STARTS_WITH + item.getType()), PackKnownProperties.ITEM_TYPE_ENUM_TYPE));
 
-                        objRef = new ObjectReference(ArkName.from(item.getItemClass()));
-                        objRef.setObjectType(item.isItemClassShort()? ObjectReference.TYPE_PATH_NO_TYPE: ObjectReference.TYPE_PATH);
-                        itemProperties.add(new PropertyObject(PackKnownProperties.ITEM_CLASS, objRef));
+                        if (item.getItemClass() != null) {
+                            objRef = new ObjectReference(ArkName.from(item.getItemClass()));
+                            objRef.setObjectType(item.isItemClassShort()? ObjectReference.TYPE_PATH_NO_TYPE: ObjectReference.TYPE_PATH);
+                            itemProperties.add(new PropertyObject(PackKnownProperties.ITEM_CLASS, objRef));
+                        }
 
                         itemProperties.add(new PropertyBool(PackKnownProperties.ITEM_IS_BLUEPRINT, item.isBlueprint()));
                         itemProperties.add(new PropertyStr(PackKnownProperties.ITEM_QUALITY_NAME, item.getQualityName()));
@@ -582,9 +584,11 @@ public class PackDataSavegame {
                         dinoProperties.add(new PropertyStr(PackKnownProperties.DINO_NAME, dino.getName()));
                         dinoProperties.add(new PropertyByte(PackKnownProperties.DINO_TYPE, 0, ArkName.from(PackKnownProperties.DINO_TYPE_VALUE_STARTS_WITH + dino.getType()), PackKnownProperties.DINO_TYPE_ENUM_TYPE));
 
-                        objRef = new ObjectReference(ArkName.from(dino.getDinoClass()));
-                        objRef.setObjectType(dino.isDinoClassShort()? ObjectReference.TYPE_PATH_NO_TYPE: ObjectReference.TYPE_PATH);
-                        dinoProperties.add(new PropertyObject(PackKnownProperties.DINO_CLASS, objRef));
+                        if (dino.getDinoClass() != null) {
+                            objRef = new ObjectReference(ArkName.from(dino.getDinoClass()));
+                            objRef.setObjectType(dino.isDinoClassShort()? ObjectReference.TYPE_PATH_NO_TYPE: ObjectReference.TYPE_PATH);
+                            dinoProperties.add(new PropertyObject(PackKnownProperties.DINO_CLASS, objRef));
+                        }
 
                         dinoProperties.add(new PropertyStr(
                                 PackKnownProperties.DINO_WILD_LEVEL,
@@ -607,9 +611,11 @@ public class PackDataSavegame {
                                                 + dino.getTamedLevel()
                         ));
 
-                        objRef = new ObjectReference(ArkName.from(dino.getEntry()));
-                        objRef.setObjectType(dino.isEntryShort()? ObjectReference.TYPE_PATH_NO_TYPE: ObjectReference.TYPE_PATH);
-                        dinoProperties.add(new PropertyObject(PackKnownProperties.DINO_ENTRY, objRef));
+                        if (dino.getEntry() != null) {
+                            objRef = new ObjectReference(ArkName.from(dino.getEntry()));
+                            objRef.setObjectType(dino.isEntryShort()? ObjectReference.TYPE_PATH_NO_TYPE: ObjectReference.TYPE_PATH);
+                            dinoProperties.add(new PropertyObject(PackKnownProperties.DINO_ENTRY, objRef));
+                        }
 
                         dinoProperties.add(new PropertyInt(PackKnownProperties.DINO_QUANTITY, dino.getQuantity()));
                         dinoProperties.add(new PropertyBool(PackKnownProperties.DINO_IS_MULTIPLE_CHOICE, dino.isMultipleChoice()));
