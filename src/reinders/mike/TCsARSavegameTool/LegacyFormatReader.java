@@ -97,6 +97,10 @@ public class LegacyFormatReader {
             return null;
         }
 
+        if (!clazz.endsWith("_C")) {
+            clazz += "_C";
+        }
+
         return clazz;
     }
 
