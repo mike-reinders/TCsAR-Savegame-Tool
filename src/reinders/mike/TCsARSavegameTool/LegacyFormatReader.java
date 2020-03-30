@@ -250,7 +250,13 @@ public class LegacyFormatReader {
     }
 
     public String[] readTags() {
-        return this.readProperty().split(String.valueOf(LegacyFormatReader.DELIMITER_PACK_ITEM_TAG));
+        String tags = this.readProperty();
+
+        if (tags.length() == 0) {
+            return new String[0];
+        }
+
+        return tags.split(String.valueOf(LegacyFormatReader.DELIMITER_PACK_ITEM_TAG));
     }
 
     public int readPackPurchaseLimit() {
