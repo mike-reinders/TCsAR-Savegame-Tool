@@ -1,7 +1,5 @@
 package reinders.mike.TCsARSavegameTool.Command;
 
-import com.sun.istack.internal.NotNull;
-import com.sun.istack.internal.Nullable;
 import reinders.mike.TCsARSavegameTool.Exception.MissingArgumentException;
 
 import java.util.*;
@@ -14,27 +12,27 @@ public abstract class Command {
     private HashMap<String, String[]> arguments;
     private String[] parameters;
 
-    public abstract  @Nullable String getName();
+    public abstract  String getName();
 
-    public @Nullable String[] getAlias() {
+    public String[] getAlias() {
         return null;
     }
 
-    public @Nullable String getDescription() {
+    public String getDescription() {
         return null;
     }
 
-    public final @NotNull String getDescriptionString() {
+    public final String getDescriptionString() {
         String description =  this.getDescription();
 
         return description == null? "": description;
     }
 
-    public @Nullable String getUsage() {
+    public String getUsage() {
         return null;
     }
 
-    public final @NotNull String getUsageString() {
+    public final String getUsageString() {
         String usage =  this.getUsage();
 
         return usage == null? "": usage;
@@ -74,7 +72,7 @@ public abstract class Command {
         return this.parameters;
     }
 
-    public final Integer getInteger(@NotNull String ...names) throws MissingArgumentException {
+    public final Integer getInteger(String ...names) throws MissingArgumentException {
         try {
             return Integer.parseInt(this.requireArgument(names));
         } catch (NumberFormatException ex) {
@@ -82,7 +80,7 @@ public abstract class Command {
         }
     }
 
-    public final Float getFloat(@NotNull String ...names) throws MissingArgumentException {
+    public final Float getFloat(String ...names) throws MissingArgumentException {
         try {
             return Float.parseFloat(this.requireArgument(names));
         } catch (NumberFormatException ex) {
@@ -90,7 +88,7 @@ public abstract class Command {
         }
     }
 
-    public final Boolean getBoolean(@NotNull String ...names) throws MissingArgumentException {
+    public final Boolean getBoolean(String ...names) throws MissingArgumentException {
         String argument = this.requireArgument(names);
 
         if (argument.equalsIgnoreCase("true")) {
@@ -102,7 +100,7 @@ public abstract class Command {
         }
     }
 
-    public final String requireArgument(@NotNull String ...names) throws MissingArgumentException {
+    public final String requireArgument(String ...names) throws MissingArgumentException {
         String argument = this.getArgumentDefault(null, names);
 
         if (argument == null) {
@@ -112,11 +110,11 @@ public abstract class Command {
         return argument;
     }
 
-    public final String getArgument(@NotNull String ...names) {
+    public final String getArgument(String ...names) {
         return this.getArgumentDefault("", names);
     }
 
-    public final String getArgumentDefault(String defaultValue, @NotNull String ...names) {
+    public final String getArgumentDefault(String defaultValue, String ...names) {
         String[] arguments;
 
         if (names.length == 1) {
@@ -132,7 +130,7 @@ public abstract class Command {
         return defaultValue;
     }
 
-    public final String[] getArguments(@NotNull  String ...names) {
+    public final String[] getArguments( String ...names) {
         List<String[]> foundItems = new ArrayList<>();
 
         if (names.length > 0) {
@@ -166,7 +164,7 @@ public abstract class Command {
         }
     }
 
-    public final String[] requireArguments(@NotNull  String name) throws MissingArgumentException {
+    public final String[] requireArguments( String name) throws MissingArgumentException {
         String[] value = this.getArguments(name);
 
         if (value == null) {
@@ -176,7 +174,7 @@ public abstract class Command {
         return value;
     }
 
-    public final boolean isArgument(@NotNull String name) {
+    public final boolean isArgument(String name) {
         for (Map.Entry<String, String[]> entry : this.getArguments()) {
             if (entry.getKey().equals(name)) {
                 return true;
@@ -186,7 +184,7 @@ public abstract class Command {
         return false;
     }
 
-    public final int getOption(@NotNull String ...names) {
+    public final int getOption(String ...names) {
         Boolean[] options = new Boolean[names.length];
 
         for (int i = 1; i < names.length; i++) {
@@ -198,11 +196,11 @@ public abstract class Command {
         return 0;
     }
 
-    public final int getOptionDefault(@NotNull String ...names) {
+    public final int getOptionDefault(String ...names) {
         return this.getOptionDefault(1, names);
     }
 
-    public final int getOptionDefault(int defaultOption, @NotNull String ...names) {
+    public final int getOptionDefault(int defaultOption, String ...names) {
         int option = this.getOption(names);
 
         if (option > 0) {

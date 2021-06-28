@@ -1,6 +1,5 @@
 package reinders.mike.TCsARSavegameTool.Command;
 
-import com.sun.istack.internal.NotNull;
 import reinders.mike.TCsARSavegameTool.Exception.MissingCommandException;
 
 import java.util.*;
@@ -13,7 +12,7 @@ public class CommandManager {
 
     private LinkedList<Command> commands = new LinkedList<>();
 
-    public void register(@NotNull Command command) {
+    public void register(Command command) {
         if (command == null) {
             throw new IllegalArgumentException("Given command must not be null");
         }
@@ -26,7 +25,7 @@ public class CommandManager {
         this.commands.addFirst(command);
     }
 
-    public boolean unregister(@NotNull Command command) {
+    public boolean unregister(Command command) {
         if (command == null) {
             throw new IllegalArgumentException("Given command must not be null");
         }
@@ -104,7 +103,7 @@ public class CommandManager {
         return true;
     }
 
-    public void dispatch(@NotNull Command command, String[] args) throws Throwable {
+    public void dispatch(Command command, String[] args) throws Throwable {
         HashMap<String, List<String>> arguments = new HashMap<>();
         HashMap<String, String[]> argumentsArray = new HashMap<>();
         String[] parameters;
@@ -156,15 +155,15 @@ public class CommandManager {
         this.dispatch(command, argumentsArray, parameters);
     }
 
-    public boolean dispatch(@NotNull String name) throws Throwable {
+    public boolean dispatch(String name) throws Throwable {
         return this.dispatch(name, null, null);
     }
 
-    public boolean dispatch(@NotNull String name, HashMap<String, String[]> arguments) throws Throwable {
+    public boolean dispatch(String name, HashMap<String, String[]> arguments) throws Throwable {
         return this.dispatch(name, arguments, null);
     }
 
-    public boolean dispatch(@NotNull String name, HashMap<String, String[]> arguments, String[] parameters) throws Throwable {
+    public boolean dispatch(String name, HashMap<String, String[]> arguments, String[] parameters) throws Throwable {
         if (name == null) {
             return false;
         }
@@ -178,15 +177,15 @@ public class CommandManager {
         return true;
     }
 
-    public void dispatch(@NotNull Command command) throws Throwable {
+    public void dispatch(Command command) throws Throwable {
         this.dispatch(command, null, null);
     }
 
-    public void dispatch(@NotNull Command command, HashMap<String, String[]> arguments) throws Throwable {
+    public void dispatch(Command command, HashMap<String, String[]> arguments) throws Throwable {
         this.dispatch(command, arguments, null);
     }
 
-    public void dispatch(@NotNull Command command, HashMap<String, String[]> arguments, String[] parameters) throws Throwable {
+    public void dispatch(Command command, HashMap<String, String[]> arguments, String[] parameters) throws Throwable {
         if (command == null) {
             throw new MissingCommandException("A command must be given in order to execute it");
         }
