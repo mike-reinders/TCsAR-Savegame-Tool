@@ -99,7 +99,7 @@ public class PlayerDataSavegame {
                     }
 
                     if ((prop = playerPropertyList.getProperty(PlayerKnownProperties.STEAM_ID_64)) != null) {
-                        player.setSteamID64(Long.parseLong(((PropertyStr)prop).getValue()));
+                        player.setSteamID64(((PropertyStr)prop).getValue());
                     }
 
                     if ((prop = playerPropertyList.getProperty(PlayerKnownProperties.POINTS)) != null) {
@@ -270,7 +270,12 @@ public class PlayerDataSavegame {
                                                 player.setName(jsonParser.getText());
                                                 break;
                                             case PlayerKnownPropertiesSimplified.STEAM_ID_64:
-                                                player.setSteamID64(jsonParser.getLongValue());
+                                                if (jsonParser.currentToken() == JsonToken.VALUE_STRING) {
+                                                    player.setSteamID64(jsonParser.getText());
+                                                } if (jsonParser.currentToken().isNumeric()) {
+                                                    player.setSteamID64(Float.toString(jsonParser.getFloatValue()));
+                                                }
+                                                player.setSteamID64(jsonParser.getText());
                                                 break;
                                             case PlayerKnownPropertiesSimplified.POINTS:
                                                 player.setPoints(jsonParser.getIntValue());
@@ -579,7 +584,7 @@ public class PlayerDataSavegame {
                     jsonGenerator.writeStartObject();
 
                     jsonGenerator.writeStringField(PlayerKnownPropertiesSimplified.PLAYER_NAME, player.getName());
-                    jsonGenerator.writeNumberField(PlayerKnownPropertiesSimplified.STEAM_ID_64, player.getSteamID64());
+                    jsonGenerator.writeStringField(PlayerKnownPropertiesSimplified.STEAM_ID_64, player.getSteamID64());
                     jsonGenerator.writeNumberField(PlayerKnownPropertiesSimplified.POINTS, player.getPoints());
                     jsonGenerator.writeNumberField(PlayerKnownPropertiesSimplified.TOTAL_EARNED, player.getTotalEarned());
                     jsonGenerator.writeNumberField(PlayerKnownPropertiesSimplified.INCOME, player.getIncome());
@@ -658,13 +663,13 @@ public class PlayerDataSavegame {
         return this.players;
     }
 
-    public Player getPlayer(String steam64ID) {
-        return this.getPlayer(Long.parseLong(steam64ID));
+    public Player getPlayer(long steam64ID) {
+        return this.getPlayer(Long.toString(steam64ID));
     }
 
-    public Player getPlayer(long steam64ID) {
+    public Player getPlayer(String steam64ID) {
         for (Player player : this.players) {
-            if (player.getSteamID64() == steam64ID) {
+            if (player.getSteamID64().equals(steam64ID)) {
                 return player;
             }
         }
@@ -672,13 +677,13 @@ public class PlayerDataSavegame {
         return null;
     }
 
-    public boolean hasPlayer(String steam64ID) {
-        return this.hasPlayer(Long.parseLong(steam64ID));
+    public boolean hasPlayer(long steam64ID) {
+        return this.hasPlayer(Long.toString(steam64ID));
     }
 
-    public boolean hasPlayer(long steam64ID) {
+    public boolean hasPlayer(String steam64ID) {
         for (Player player : this.players) {
-            if (player.getSteamID64() == steam64ID) {
+            if (player.getSteamID64().equals(steam64ID)) {
                 return true;
             }
         }

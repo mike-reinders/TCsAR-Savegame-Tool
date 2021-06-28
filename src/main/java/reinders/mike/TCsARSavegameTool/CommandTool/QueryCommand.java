@@ -98,11 +98,11 @@ public class QueryCommand extends Command {
 
         strBuilder.append(System.lineSeparator());
         strBuilder.append(StringC.pad(Pad.RIGHT, "SteamID3:", QueryCommand.PLAYER_DETAILS_LEFT_ROW_SIZE));
-        strBuilder.append(SteamIDC.getSteamID3(player.getSteamID64()));
+        strBuilder.append(player.getSteamID3());
 
         strBuilder.append(System.lineSeparator());
         strBuilder.append(StringC.pad(Pad.RIGHT, "SteamID:", QueryCommand.PLAYER_DETAILS_LEFT_ROW_SIZE));
-        strBuilder.append(SteamIDC.getSteamID(player.getSteamID64()));
+        strBuilder.append(player.getSteamID());
 
         strBuilder.append(System.lineSeparator());
         strBuilder.append(StringC.pad(Pad.RIGHT, "Profile:", QueryCommand.PLAYER_DETAILS_LEFT_ROW_SIZE));

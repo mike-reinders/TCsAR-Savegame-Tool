@@ -7,7 +7,7 @@ import java.util.*;
 public final class Player {
 
     private String name;
-    private long steamID64;
+    private String steamID64;
     private String steamID3;
     private String steamID;
     private int points;
@@ -73,11 +73,11 @@ public final class Player {
         return this;
     }
 
-    public long getSteamID64() {
+    public String getSteamID64() {
         return this.steamID64;
     }
 
-    public Player setSteamID64(long steamID64) {
+    public Player setSteamID64(String steamID64) {
         this.steamID64 = steamID64;
         this.steamID3 = null;
         this.steamID = null;
@@ -85,9 +85,20 @@ public final class Player {
         return this;
     }
 
+    private Long getSteamID64Long() {
+        try {
+            return Long.parseLong(this.getSteamID64());
+        } catch (NumberFormatException ex) {
+            return null;
+        }
+    }
+
     public String getSteamID3() {
         if (this.steamID3 == null) {
-            this.steamID3 = SteamIDC.getSteamID3(this.getSteamID64());
+            Long steamID64 = this.getSteamID64Long();
+            if (steamID64 != null) {
+                this.steamID3 = SteamIDC.getSteamID3(steamID64);
+            }
         }
 
         return this.steamID3;
@@ -95,7 +106,10 @@ public final class Player {
 
     public String getSteamID() {
         if (this.steamID == null) {
-            this.steamID = SteamIDC.getSteamID(this.getSteamID64());
+            Long steamID64 = this.getSteamID64Long();
+            if (steamID64 != null) {
+                this.steamID = SteamIDC.getSteamID(steamID64);
+            }
         }
 
         return this.steamID;
