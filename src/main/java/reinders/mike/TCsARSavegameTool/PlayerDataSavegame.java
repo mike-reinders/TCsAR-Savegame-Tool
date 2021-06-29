@@ -11,10 +11,7 @@ import reinders.mike.TCsARSavegameTool.Exception.SaveGameException;
 import reinders.mike.TCsARSavegameTool.Util.ObjectA;
 
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class PlayerDataSavegame {
 
@@ -669,7 +666,7 @@ public class PlayerDataSavegame {
 
     public Player getPlayer(String steam64ID) {
         for (Player player : this.players) {
-            if (player.getSteamID64().equals(steam64ID)) {
+            if (Objects.equals(player.getSteamID64(), steam64ID)) {
                 return player;
             }
         }
@@ -683,7 +680,7 @@ public class PlayerDataSavegame {
 
     public boolean hasPlayer(String steam64ID) {
         for (Player player : this.players) {
-            if (player.getSteamID64().equals(steam64ID)) {
+            if (Objects.equals(player.getSteamID64(), steam64ID)) {
                 return true;
             }
         }
