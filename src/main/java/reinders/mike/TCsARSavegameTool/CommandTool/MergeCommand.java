@@ -173,7 +173,7 @@ public class MergeCommand extends Command {
                 return true;
             }
 
-            this.merge(targetSavegame, sourceSavegame);
+            this.merge(targetSavegame, sourceSavegame, this.isArgument("ignore-version"));
         }
 
         System.out.println("Updating Players API Version once for " + targetSavegame.getPlayers().size() + " players");
@@ -426,8 +426,8 @@ public class MergeCommand extends Command {
         }
     }
 
-    public PlayerDataSavegame merge(PlayerDataSavegame targetSavegame, PlayerDataSavegame sourceSavegame) throws ModVersionMismatchException {
-        if (sourceSavegame.getModVersion() != targetSavegame.getModVersion()) {
+    public PlayerDataSavegame merge(PlayerDataSavegame targetSavegame, PlayerDataSavegame sourceSavegame, boolean ignoreVersion) throws ModVersionMismatchException {
+        if (!ignoreVersion && sourceSavegame.getModVersion() != targetSavegame.getModVersion()) {
             throw new ModVersionMismatchException(targetSavegame.getModVersion(), sourceSavegame.getModVersion());
         }
         targetSavegame.setModVersion(sourceSavegame.getModVersion());
