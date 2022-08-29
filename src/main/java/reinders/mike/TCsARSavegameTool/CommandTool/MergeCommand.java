@@ -504,7 +504,7 @@ public class MergeCommand extends Command {
                     targetPlayer.getPurchaseCooldowns().putAll(this.merge_option_purchaseCooldowns_ensure);
                 }
             } else {
-                System.out.println("Merging Player " + targetPlayer.getSteamID64() + " (" + targetPlayer.getName() + ")");
+                System.out.println("Merging Player " + sourcePlayer.getSteamID64() + " (" + sourcePlayer.getName() + ") => " + targetPlayer.getSteamID64() + " (" + targetPlayer.getName() + ")");
 
                 // Points
                 if (this.merge_option_points == MergeCommand.MERGE_POINTS_ADD_ALL) {

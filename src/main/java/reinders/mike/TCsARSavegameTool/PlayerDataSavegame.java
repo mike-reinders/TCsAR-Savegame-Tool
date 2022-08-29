@@ -269,10 +269,9 @@ public class PlayerDataSavegame {
                                             case PlayerKnownPropertiesSimplified.STEAM_ID_64:
                                                 if (jsonParser.currentToken() == JsonToken.VALUE_STRING) {
                                                     player.setSteamID64(jsonParser.getText());
-                                                } if (jsonParser.currentToken().isNumeric()) {
+                                                } else if (jsonParser.currentToken().isNumeric()) {
                                                     player.setSteamID64(Float.toString(jsonParser.getFloatValue()));
                                                 }
-                                                player.setSteamID64(jsonParser.getText());
                                                 break;
                                             case PlayerKnownPropertiesSimplified.POINTS:
                                                 player.setPoints(jsonParser.getIntValue());
@@ -665,7 +664,15 @@ public class PlayerDataSavegame {
     }
 
     public Player getPlayer(String steam64ID) {
+        if (steam64ID == null) {
+            return null;
+        }
+
         for (Player player : this.players) {
+            if (player.getSteamID64() == null) {
+                continue;
+            }
+
             if (Objects.equals(player.getSteamID64(), steam64ID)) {
                 return player;
             }
